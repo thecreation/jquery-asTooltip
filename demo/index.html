@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>jQuery Tooltip</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+
+        <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/prism.css">
+        <script src="js/vendor/jquery-1.8.0.min.js"></script>
+        <script src="js/vendor/prism.js"></script>
+        <script src="js/vendor/jquery.toc.js"></script>
+        <script src="js/tooltip.js"></script>
+    </head>
+<body>
+<!--[if lt IE 7]>
+    <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+<![endif]-->
+
+<div id="toc"></div>
+<div id="wrapper">
+    <section>
+        <h2>Options</h2>
+        <section>
+            <h3>position</h3>
+                <pre class="has-example"><code class="language-javascript">
+$(".tooltip").tooltip({
+    position: nw
+});
+                </code></pre>
+                <div class="positon_wrap example">
+                    <span class="position_tooltip" data-tooltip-position="nw">North West</span>
+                    <span class="position_tooltip" data-tooltip-position="n">North</span>
+                    <span class="position_tooltip" data-tooltip-position="n">North East</span>
+                    <span class="position_tooltip" data-tooltip-position="w">West</span>
+                    <span class="position_tooltip" data-tooltip-position="c">Center</span>
+                    <span class="position_tooltip" data-tooltip-position="e">East</span>
+                    <span class="position_tooltip" data-tooltip-position="sw">South West</span>
+                    <span class="position_tooltip" data-tooltip-position="s">South</span>
+                    <span class="position_tooltip" data-tooltip-position="se">South East</span>
+                    <script>
+                        (function(){
+                            $(".position_tooltip").tooltip();
+                        })();
+                    </script>
+                </div>
+        </section>
+    </section>
+    <section>
+        <h2>API</h2>
+        <pre class="has-example"><code class="language-javascript">
+var api = $("#api_tooltip").tooltip();
+$('#api_show').on('click',function(){
+    api.show();
+});
+$('#api_hide').on('click',function(){
+    api.hide();
+});
+$('#api_update').on('click',function(){
+    api.update();
+});
+$('#api_disable').on('click',function(){
+    api.disable();
+});
+$('#api_enable').on('click',function(){
+    api.enable();
+});
+$('#api_destory').on('click',function(){
+    api.destory();
+});
+        </code></pre>
+        <div class="example">
+            <span id="api_tooltip" data-tooltip-content="tooltip text">I have a tooltip</span>
+            <div>
+             <button id="api_show">show</button>
+                <button id="api_hide">hide</button>
+                <button id="api_update">update</button>
+                <button id="api_disable">disable</button>
+                <button id="api_enable">enable</button>
+                <button id="api_destroy">destroy</button>
+            </div>
+            <script>
+            (function(){
+                var api = $("#api_tooltip").tooltip().data('tooltip');
+
+                $('#api_show').on('click',function(){
+                    api.show();
+                });
+                $('#api_hide').on('click',function(){
+                    api.hide();
+                });
+                $('#api_update').on('click',function(){
+                    api.update();
+                });
+                $('#api_disable').on('click',function(){
+                    api.disable();
+                });
+                $('#api_enable').on('click',function(){
+                    api.enable();
+                });
+                $('#api_destroy').on('click',function(){
+                    api.destroy();
+                });
+            })();
+            </script>
+        </div>
+    </section>
+</div>
+<script src="js/main.js"></script>
+<script>
+(function(){
+$('#toc').toc();
+})();
+</script>
+</body>
+</html>
