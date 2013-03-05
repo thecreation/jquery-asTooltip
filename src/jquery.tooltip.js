@@ -31,6 +31,79 @@
     function is_touch_device() {
         return !!('ontouchstart' in window);
     }
+
+    function computePlacementCoords(element, placement, popWidth, popHeight) {
+        // grab measurements
+        var objectOffset = element.offset(),
+            objectWidth = element.outerWidth(),
+            objectHeight = element.outerHeight(),
+            x = 0,
+            y = 0;
+
+        // calculate the appropriate x and y position in the document
+        switch (placement) {
+        case 'n':
+            x = (objectOffset.left + (objectWidth / 2)) - (popWidth / 2);
+            y = objectOffset.top - popHeight - options.offset;
+            break;
+        case 'e':
+            x = objectOffset.left + objectWidth + options.offset;
+            y = (objectOffset.top + (objectHeight / 2)) - (popHeight / 2);
+            break;
+        case 's':
+            x = (objectOffset.left + (objectWidth / 2)) - (popWidth / 2);
+            y = objectOffset.top + objectHeight + options.offset;
+            break;
+        case 'w':
+            x = objectOffset.left - popWidth - options.offset;
+            y = (objectOffset.top + (objectHeight / 2)) - (popHeight / 2);
+            break;
+        case 'nw':
+            x = (objectOffset.left - popWidth) + 20;
+            y = objectOffset.top - popHeight - options.offset;
+            break;
+        case 'ne':
+            x = (objectOffset.left + objectWidth) - 20;
+            y = objectOffset.top - popHeight - options.offset;
+            break;
+        case 'sw':
+            x = (objectOffset.left - popWidth) + 20;
+            y = objectOffset.top + objectHeight + options.offset;
+            break;
+        case 'se':
+            x = (objectOffset.left + objectWidth) - 20;
+            y = objectOffset.top + objectHeight + options.offset;
+            break;
+        }
+
+        return {
+            x: Math.round(x),
+            y: Math.round(y)
+        };
+    }
+
+    function getViewportCollisions(coords, elementWidth, elementHeight) {
+        var scrollLeft = $window.scrollLeft(),
+            scrollTop = $window.scrollTop(),
+            windowWidth = $window.width(),
+            windowHeight = $window.height(),
+            collisions = [];
+
+        if (coords.y < scrollTop) {
+            collisions.push('top');
+        }
+        if (coords.y + elementHeight > scrollTop + windowHeight) {
+            collisions.push('bottom');
+        }
+        if (coords.x < scrollLeft) {
+            collisions.push('left');
+        }
+        if (coords.x + elementWidth > scrollLeft + windowWidth) {
+            collisions.push('right');
+        }
+
+        return collisions;
+    } 
     
     // detecting support for CSS transitions
     function supportsTransitions() {
@@ -57,8 +130,7 @@
         var metas = {};
 
         this.$elem = $elem;
-        this._name = 'Tooltip';
-        
+        this._name = 'Tooltip';       
 
         $.each($elem.data(), function(k, v) {
             if (/^tooltip/i.test(k)) {
@@ -70,6 +142,7 @@
         this.options = $.extend( {}, Tooltip.defaults, options, metas );   
 
         this.content = this.options.content;   
+        this.target = this.options.target || $elem;
         
         this.isOpen = null;
         this.enabled = true;
@@ -113,9 +186,10 @@
             dataPool.push(this);
         },
         show: function() {
-            var this.$container = $(opts.container),
-                this.$arrow = $(opts.arrow),
-                this.$close = $(opts.close),
+            var this.$container = $(opts.tpl.container),
+                this.$arrow = $(opts.tpl.arrow),
+                this.$close = $(opts.tpl.close),
+                this.$content = $(opts.tpl.content),
                 self = this;
 
             if (this.enabled !== true) { 
@@ -187,7 +261,8 @@
         },
 
         afterLoad: function() {
-            this.$container.append(this.content);
+
+            this.$content.empty().append(this.content);
         }
 
         hide: function() {
@@ -225,38 +300,37 @@
         },
         _showLoading: function() {},
         _hideLoading: function() {},
-        _compute: function() {
-            var winWidth = $win.width(),
-                winHeight = $win.height(),
-                containerWidth = this.$container.outerWidth(),
-                containerHeight = this.$container.outerHeight();
 
-            var list = posList[this.optins.position];
-            if (this.options.autoPosition === true) {
-                $.each(list,function(i,v) {
+        positionOnElem: function() {
+            if (this.autoPosition === true) {
+                getViewportCollisions();
+            }
+        },
+        positionOnMouse: function() {
 
-                }) ;
-            }   
         }
+
+        
     }
 
     // Static method default options.
     Tooltip.default = {
 
+        target: null, // mouse element
+ 
         trigger: 'hover', // hover click
         interactive: false,
         mouseTrace: false,
         closeBtn: false,
+        position: 'nw',
+        autoPosition: true,
 
         delay: 0,
         effect: 'fade', // fade none zoom
         duration: 200,
 
         inline: false,
-        ajax: false,
-
-        position: 'nw',
-        autoPosition: true,
+        ajax: false,       
 
 
         onShow: null,
@@ -265,6 +339,7 @@
 
         tpl: {
             container: '',
+            content: '',
             arrow: '',
             close: ''
         }
@@ -273,7 +348,39 @@
     //open effect
     var transition = {};
     transition.fade = {
-        openEffect: function(instance) {},
+        openEffect: function(instance) {
+            //if support css3 transtions use css transitions
+            if (supportsTransitions()) {
+                tooltipster.css({
+                    'width': '',
+                    '-webkit-transition': 'all ' + object.options.speed + 'ms, width 0ms, height 0ms, left 0ms, top 0ms',
+                    '-moz-transition': 'all ' + object.options.speed + 'ms, width 0ms, height 0ms, left 0ms, top 0ms',
+                    '-o-transition': 'all ' + object.options.speed + 'ms, width 0ms, height 0ms, left 0ms, top 0ms',
+                    '-ms-transition': 'all ' + object.options.speed + 'ms, width 0ms, height 0ms, left 0ms, top 0ms',
+                    'transition': 'all ' + object.options.speed + 'ms, width 0ms, height 0ms, left 0ms, top 0ms'
+                }).addClass('tooltipster-content-changing');
+                
+                // reset the CSS transitions and finish the change animation
+                setTimeout(function() {
+                    tooltipster.removeClass('tooltipster-content-changing');
+                    // after the changing animation has completed, reset the CSS transitions
+                    setTimeout(function() {
+                        tooltipster.css({
+                            '-webkit-transition': object.options.speed + 'ms',
+                            '-moz-transition': object.options.speed + 'ms',
+                            '-o-transition': object.options.speed + 'ms',
+                            '-ms-transition': object.options.speed + 'ms',
+                            'transition': object.options.speed + 'ms'
+                        });
+                    }, object.options.speed);
+                }, object.options.speed);
+            }
+            else {
+                tooltipster.fadeTo(object.options.speed, 0.5, function() {
+                    tooltipster.fadeTo(object.options.speed, 1);
+                });
+            }
+        },
         closeEffect: function(instance) {}
     };
     transition.zoom = {
@@ -282,7 +389,7 @@
     };
 
 
-    // Collection method.
+    // Collection method
     $.fn.tooltip = function(options) {
 
 
@@ -295,7 +402,7 @@
         });
     };
 
-    // Custom selector.
+    // Custom selector
     $.expr[':'].tooltip = function(elem) {
         // Is this element tooltip?
         return $(elem).text().indexOf('awesome') !== -1;
