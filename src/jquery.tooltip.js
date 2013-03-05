@@ -10,8 +10,22 @@
     "use strict";
 
     var doc = window.document,
+        timer = null,
         $doc = $(document),
         $win = $(window);
+
+    var active = false; 
+    var dataPool = []; 
+    var posList = {
+        n:  ['s'],
+        s:  ['n'],
+        w:  ['e'],
+        e:  ['w'],
+        nw: ['sw','ne'],
+        ne: ['se','nw'],
+        sw: ['se','nw'],
+        se: ['ne','sw']
+    }; 
 
     // we'll use this to detect for mobile devices
     function is_touch_device() {
@@ -40,11 +54,22 @@
 
     // Static method.
     var Tooltip = $.tooltip = function($elem,options) {
+        var metas = {};
 
         this.$elem = $elem;
         this._name = 'Tooltip';
-        this.options = $.extend( {}, Tooltip.defaults, options );
         
+
+        $.each($elem.data(), function(k, v) {
+            if (/^tooltip/i.test(k)) {
+                metas[k.toLowerCase().replace(/^tooltip/i, '')] = v;
+            }
+        }); 
+
+        //options is a static properity
+        this.options = $.extend( {}, Tooltip.defaults, options, metas );   
+
+        this.content = this.options.content;   
         
         this.isOpen = null;
         this.enabled = true;
@@ -54,30 +79,20 @@
     };
 
     Tooltip.prototype = {
-        constructor: Tooltip,
+        constructor: Tooltip, 
         init: function() {
-            var opts = this.options,
-                this.$container = $(opts.container),
-                this.$arrow = $(opts.arrow),
-                this.$close = $(opts.close),
-                self = this;
-
-
-            if (opts.closeBtn === true) {
-                this.$container.append(this.$close);
-            }
-            this.$container.append(this.$arrow);
+            var opts = this.options;
             
             if (opts.trigger === 'hover') {
-                this.$elem.on('mouseenter',$.proxy(this.show,this));
-                if (opts.interactive === false) {
-                    this.$elem.on('mouseleave',$.proxy(this.hide,this));
+                this.$elem.on('mouseenter.tooltip',$.proxy(this.show,this));
+                if (opts.interactive === true) {
+                    
                 } else {
-
+                    this.$elem.on('mouseleave',$.proxy(this.hide,this));
                 }
 
                 if (this.options.mouseTrace === true) {
-                    this.$elem.on('mousemove',function(event) {
+                    this.$elem.on('mousemove.tooltip',function(event) {
                         var x = event.top,
                             y = event.left;
 
@@ -89,32 +104,118 @@
 
             }
             if (opts.trigger === 'click') {
-                this.$elem.on('click',function() {
+                this.$elem.on('click.tooltip',function() {
 
                 });
             }
 
+            //store all instance in dataPool
+            dataPool.push(this);
         },
-        show: function(elem) {
+        show: function() {
+            var this.$container = $(opts.container),
+                this.$arrow = $(opts.arrow),
+                this.$close = $(opts.close),
+                self = this;
+
             if (this.enabled !== true) { 
                 return ;
             }
 
+            //close other tooltip before open a new one
+            if (active === true) {
+                $.each(dataPool,function(i,v) {
+                    if (v.isOpen === true) {
+                        v.hide();
+                    }
+                });
+            }
+
+
+            if (opts.closeBtn === true) {
+                this.$container.append(this.$close);
+            }
+
+            this.$container.append(this.$arrow);
+           
+            if (opts.autoPosition === true) {
+                var rez;
+                rez = this._position();
+                this.$container.css( rez );
+            } else {
+
+            }
+            
+                       
+            //callback
+            this.options.onShow(elem);
+
+            //support event
+            this.$container.trigger('show');
+
+            active = true;
+
+            this.isOpen = true;
+
             //open effect
             transitions[opts.effect]['openEffect'](this);
-            
-            this.options.onShow(elem);
-            this.$container.trigger('show');
-            this.isOpen = true;
-        },
-        hide: function(elem) {
 
+            this._load();
+        },
+
+        _load: function() {
+            var self = this;
+                opts = this.options;
+            if (opts.title) {
+                this.content = opts.title;
+                this.afterLoad();
+            } else if (opts.inline === true) {
+                this.content = $(opts.content).html();
+                this.afterLoad();
+            } else if (opts.ajax === true) {
+                $.ajax($.extend({},opts.ajaxSettings,{
+                    url: opts.content,
+                    error: function() {},
+                    succes: function(data,status) {
+                        if (status === 'success') {
+                            self.content = data;
+                            self.afterLoad();
+                        }
+                    }
+                }));
+            } 
+        },
+
+        afterLoad: function() {
+            this.$container.append(this.content);
+        }
+
+        hide: function() {
+
+            //unbinded all custom event
+            this.$container.off('.tooltip');
+
+            //open effect
+            transitions[opts.effect]['closeEffect'](this);
+
+            //callback
             this.options.onHide(elem);
+
+            //support event
             this.$container.trigger('hide');
+
             this.isOpen = false;
+            active = false;
+        },
+        setContent: function(content) {
+            this.content = content;
         },
         update: function() {
             this.options.onUpdate(elem);
+
+            //some change here
+
+            this.show();
         },
         enable: function() {
             this.enabled = true;
@@ -124,11 +225,18 @@
         },
         _showLoading: function() {},
         _hideLoading: function() {},
-        _position: function() {
+        _compute: function() {
             var winWidth = $win.width(),
                 winHeight = $win.height(),
-                containerWidth = this.$container.outerWidth(false),
-                containerHeight = this.$container.outerHeight(false);
+                containerWidth = this.$container.outerWidth(),
+                containerHeight = this.$container.outerHeight();
+
+            var list = posList[this.optins.position];
+            if (this.options.autoPosition === true) {
+                $.each(list,function(i,v) {
+
+                }) ;
+            }   
         }
     }
 
@@ -143,6 +251,13 @@
         delay: 0,
         effect: 'fade', // fade none zoom
         duration: 200,
+
+        inline: false,
+        ajax: false,
+
+        position: 'nw',
+        autoPosition: true,
+
 
         onShow: null,
         onHide: null,
@@ -169,7 +284,6 @@
 
     // Collection method.
     $.fn.tooltip = function(options) {
-
 
 
 
