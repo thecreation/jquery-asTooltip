@@ -14,10 +14,11 @@
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/prism.css">
+        <link rel="stylesheet" href="css/tooltip.css">
         <script src="js/vendor/jquery-1.8.0.min.js"></script>
         <script src="js/vendor/prism.js"></script>
         <script src="js/vendor/jquery.toc.js"></script>
-        <script src="js/tooltip.js"></script>
+        <script src="../src/jquery.tooltip.js"></script>
     </head>
 <body>
 <!--[if lt IE 7]>
@@ -32,23 +33,24 @@
             <h3>position</h3>
                 <pre class="has-example"><code class="language-javascript">
 $(".tooltip").tooltip({
-    position: nw
+    position: 'nw'
 });
                 </code></pre>
                 <div class="positon_wrap example">
-                    <span class="position_tooltip" data-tooltip-position="nw">North West</span>
-                    <span class="position_tooltip" data-tooltip-position="n">North</span>
-                    <span class="position_tooltip" data-tooltip-position="n">North East</span>
-                    <span class="position_tooltip" data-tooltip-position="w">West</span>
-                    <span class="position_tooltip" data-tooltip-position="c">Center</span>
-                    <span class="position_tooltip" data-tooltip-position="e">East</span>
-                    <span class="position_tooltip" data-tooltip-position="sw">South West</span>
-                    <span class="position_tooltip" data-tooltip-position="s">South</span>
-                    <span class="position_tooltip" data-tooltip-position="se">South East</span>
+                    <span class="position_tooltip" data-tooltip-position="nw" title="North West">North West</span>
+                    <span class="position_tooltip" data-tooltip-position="n" title="North">North</span>
+                    <span class="position_tooltip" data-tooltip-position="ne" title="North East">North East</span>
+                    <span class="position_tooltip" data-tooltip-position="w" title="West">West</span>
+                    <span class="position_tooltip" data-tooltip-position="n" title="North West">Center</span>
+                    <span class="position_tooltip" data-tooltip-position="e" title="East">East</span>
+                    <span class="position_tooltip" data-tooltip-position="sw" title="South West">South West</span>
+                    <span class="position_tooltip" data-tooltip-position="s" title="South">South</span>
+                    <span class="position_tooltip" data-tooltip-position="se" title="South East">South East</span>
                     <script>
-                        (function(){
-                            $(".position_tooltip").tooltip();
-                        })();
+                        
+                        $(document).ready(function() {
+                          $(".position_tooltip").tooltip();                               
+                        });
                     </script>
                 </div>
         </section>
@@ -87,7 +89,8 @@ $('#api_destory').on('click',function(){
                 <button id="api_destroy">destroy</button>
             </div>
             <script>
-            (function(){
+
+            $(document).ready(function() {
                 var api = $("#api_tooltip").tooltip().data('tooltip');
 
                 $('#api_show').on('click',function(){
@@ -107,8 +110,9 @@ $('#api_destory').on('click',function(){
                 });
                 $('#api_destroy').on('click',function(){
                     api.destroy();
-                });
-            })();
+                });                            
+            });
+            
             </script>
         </div>
     </section>

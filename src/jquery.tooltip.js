@@ -30,7 +30,7 @@
     // we'll use this to detect for mobile devices
     function is_touch_device() {
         return !!('ontouchstart' in window);
-    }
+    }  
 
     function computePlacementCoords(element, placement, popWidth, popHeight) {
         // grab measurements
@@ -44,62 +44,74 @@
         switch (placement) {
         case 'n':
             x = (objectOffset.left + (objectWidth / 2)) - (popWidth / 2);
-            y = objectOffset.top - popHeight - options.offset;
+            y = objectOffset.top - popHeight;
             break;
         case 'e':
-            x = objectOffset.left + objectWidth + options.offset;
+            x = objectOffset.left + objectWidth;
             y = (objectOffset.top + (objectHeight / 2)) - (popHeight / 2);
             break;
         case 's':
             x = (objectOffset.left + (objectWidth / 2)) - (popWidth / 2);
-            y = objectOffset.top + objectHeight + options.offset;
+            y = objectOffset.top + objectHeight;
             break;
         case 'w':
-            x = objectOffset.left - popWidth - options.offset;
+            x = objectOffset.left - popWidth;
             y = (objectOffset.top + (objectHeight / 2)) - (popHeight / 2);
             break;
         case 'nw':
             x = (objectOffset.left - popWidth) + 20;
-            y = objectOffset.top - popHeight - options.offset;
+            y = objectOffset.top - popHeight;
             break;
         case 'ne':
             x = (objectOffset.left + objectWidth) - 20;
-            y = objectOffset.top - popHeight - options.offset;
+            y = objectOffset.top - popHeight;
             break;
         case 'sw':
             x = (objectOffset.left - popWidth) + 20;
-            y = objectOffset.top + objectHeight + options.offset;
+            y = objectOffset.top + objectHeight;
             break;
         case 'se':
             x = (objectOffset.left + objectWidth) - 20;
-            y = objectOffset.top + objectHeight + options.offset;
+            y = objectOffset.top + objectHeight;
             break;
         }
 
         return {
-            x: Math.round(x),
-            y: Math.round(y)
+            left: Math.round(x),
+            top: Math.round(y)
         };
     }
 
-    function getViewportCollisions(coords, elementWidth, elementHeight) {
-        var scrollLeft = $window.scrollLeft(),
-            scrollTop = $window.scrollTop(),
-            windowWidth = $window.width(),
-            windowHeight = $window.height(),
-            collisions = [];
+    function getViewportCollisions(target, popElem) {
+        var scrollLeft = $win.scrollLeft(),
+            scrollTop = $win.scrollTop(),
+            offset = target.offset(),
+            elementWidth = target.outerWidth(),
+            elementHeight = target.outerHeight(),
+            windowWidth = $win.width(),
+            windowHeight = $win.height(),
+            collisions = [],
+            popWidth,popHeight;
 
-        if (coords.y < scrollTop) {
-            collisions.push('top');
+        if (popElem) {
+            popWidth = popElem.outerWidth();
+            popHeight = popElem.outerHeight();
+        } else {
+            popWidth = 100;
+            popHeight = 50;
         }
-        if (coords.y + elementHeight > scrollTop + windowHeight) {
-            collisions.push('bottom');
+
+        if (offset.top < scrollTop + popHeight) {
+            collisions.push('n');
         }
-        if (coords.x < scrollLeft) {
-            collisions.push('left');
+        if (offset.top + elementHeight + popHeight > scrollTop + windowHeight) {
+            collisions.push('s');
         }
-        if (coords.x + elementWidth > scrollLeft + windowWidth) {
-            collisions.push('right');
+        if (offset.left < scrollLeft + popWidth) {
+            collisions.push('w');
+        }
+        if (offset.left + elementWidth + popWidth > scrollLeft + windowWidth) {
+            collisions.push('e');
         }
 
         return collisions;
@@ -126,27 +138,36 @@
     }
 
     // Static method.
-    var Tooltip = $.tooltip = function($elem,options) {
+    var Tooltip = $.tooltip = function(elem,options) {
         var metas = {};
 
-        this.$elem = $elem;
+        this.$elem = $(elem);
         this._name = 'Tooltip';       
 
-        $.each($elem.data(), function(k, v) {
+        $.each(this.$elem.data(), function(k, v) {
             if (/^tooltip/i.test(k)) {
                 metas[k.toLowerCase().replace(/^tooltip/i, '')] = v;
             }
         }); 
 
+
+
         //options is a static properity
         this.options = $.extend( {}, Tooltip.defaults, options, metas );   
 
+        if (this.$elem.attr('title')) {
+            this.options.title = this.$elem.attr('title');
+            this.$elem.removeAttr('title');
+        }
+
         this.content = this.options.content;   
-        this.target = this.options.target || $elem;
+        this.target = this.options.target || this.$elem;
         
         this.isOpen = null;
         this.enabled = true;
-        
+
+        this.onlyOne = this.options.onlyOne || false;
+
         this.init();
 
     };
@@ -170,9 +191,9 @@
                             y = event.left;
 
                         self.$container.css({
-                            top: 
-                        })
-                    })
+                             
+                        });
+                    });
                 }
 
             }
@@ -186,21 +207,27 @@
             dataPool.push(this);
         },
         show: function() {
-            var this.$container = $(opts.tpl.container),
-                this.$arrow = $(opts.tpl.arrow),
-                this.$close = $(opts.tpl.close),
-                this.$content = $(opts.tpl.content),
+            var opts = this.options,
+                pos,               
                 self = this;
+
+            this.$container = $(opts.tpl.container);
+            this.$arrow = $(opts.tpl.arrow);
+            this.$close = $(opts.tpl.close);
+            this.$content = $(opts.tpl.content);
 
             if (this.enabled !== true) { 
                 return ;
             }
 
-            //close other tooltip before open a new one
-            if (active === true) {
+            if (this.onlyOne === true) {
                 $.each(dataPool,function(i,v) {
-                    if (v.isOpen === true) {
-                        v.hide();
+                    if (v === self) {
+                        return ;
+                    } else {
+                        if (v.isOpen === true) {
+                            v.hide();
+                        }
                     }
                 });
             }
@@ -210,74 +237,123 @@
                 this.$container.append(this.$close);
             }
 
-            this.$container.append(this.$arrow);
+            this.$container.append(this.$arrow).append(this.$content);
            
-            if (opts.autoPosition === true) {
-                var rez;
-                rez = this._position();
-                this.$container.css( rez );
-            } else {
+            if (opts.ajax === true) {
+                
+                this._load();
+                this._showLoading();
+                this.ajax();
 
+                
+
+
+
+            } else {
+                this._load();
+
+                this.$content.empty().append(this.content);
+                this.$container.appendTo($('body')).css({display:'none'});
+
+                if ( opts.autoPosition === true ) {
+                    var calPos = [],
+                        newPos,
+                        collisions = [];    
+
+                    // change opts.postion
+                    collisions = getViewportCollisions($(this.target), this.$container);
+
+                    if ( collisions.length > 0 ) {
+                        
+                        $.each(opts.position.split(''),function(i,v) {
+                            
+                            if ($.inArray(v,collisions) !== -1) {
+                                calPos.push(posList[v]);
+                            } else {
+                                calPos.push(v);
+                                
+                            }
+                        });
+
+                        newPos = calPos.join('');
+
+                    } else {
+                        newPos = opts.position;
+                    }
+
+                    pos = computePlacementCoords(this.target,newPos,this.$container.outerWidth(),this.$container.outerHeight());
+
+                } else {
+
+                    pos = computePlacementCoords(this.target,opts.position,this.$container.outerWidth(),this.$container.outerHeight());
+                   
+                }
+                
+                this.$container.addClass(opts.skin).css({
+                    display: 'block',
+                    position: 'absolute',
+                    zIndex: 99990,
+                    top: pos.top,
+                    left: pos.left 
+                });
             }
             
                        
             //callback
-            this.options.onShow(elem);
-
+            if (opts.onShow === 'function') {
+                opts.onShow(this.$elem);
+            }
+            
             //support event
             this.$container.trigger('show');
 
-            active = true;
-
             this.isOpen = true;
 
-            //open effect
-            transitions[opts.effect]['openEffect'](this);
-
-            this._load();
         },
 
         _load: function() {
-            var self = this;
+            var self = this,
                 opts = this.options;
             if (opts.title) {
                 this.content = opts.title;
-                this.afterLoad();
+                
             } else if (opts.inline === true) {
                 this.content = $(opts.content).html();
-                this.afterLoad();
-            } else if (opts.ajax === true) {
+                
+            } 
+        },
+
+        ajax: function() {
+            if (opts.ajax === true) {
                 $.ajax($.extend({},opts.ajaxSettings,{
                     url: opts.content,
                     error: function() {},
                     succes: function(data,status) {
                         if (status === 'success') {
                             self.content = data;
-                            self.afterLoad();
+                            self.$content.empty().append(self.content);
                         }
                     }
                 }));
             } 
         },
 
-        afterLoad: function() {
-
-            this.$content.empty().append(this.content);
-        }
-
+ 
         hide: function() {
 
             //unbinded all custom event
             this.$container.off('.tooltip');
-
-            //open effect
-            transitions[opts.effect]['closeEffect'](this);
-
-            //callback
-            this.options.onHide(elem);
-
             //support event
             this.$container.trigger('hide');
+
+            this.$container.remove();
+
+            //callback
+            if (this.options.onHide === 'function') {
+               this.options.onHide(this.$elem); 
+            }
+            
+            
 
             this.isOpen = false;
             active = false;
@@ -308,13 +384,17 @@
         },
         positionOnMouse: function() {
 
+        },
+        _position: function() {
+            var collisions = getViewportCollisions();
+
+
         }
 
-        
     }
 
     // Static method default options.
-    Tooltip.default = {
+    Tooltip.defaults = {
 
         target: null, // mouse element
  
@@ -322,7 +402,10 @@
         interactive: false,
         mouseTrace: false,
         closeBtn: false,
-        position: 'nw',
+
+        skin: 'simple',
+
+        position: 'n',
         autoPosition: true,
 
         delay: 0,
@@ -338,19 +421,21 @@
         onUpdate: null,
 
         tpl: {
-            container: '',
-            content: '',
-            arrow: '',
-            close: ''
+            container: '<div class="tooltip-container"></div>',
+            content: '<div class="tooltip-content"></div>',
+            arrow: '<span class="tooltip-arrow"></span>',
+            close: '<a class="tooltip-close"></a>'
         }
     };
+
+
 
     //open effect
     var transition = {};
     transition.fade = {
         openEffect: function(instance) {
             //if support css3 transtions use css transitions
-            if (supportsTransitions()) {
+            if (transitionSupport === true) {
                 tooltipster.css({
                     'width': '',
                     '-webkit-transition': 'all ' + object.options.speed + 'ms, width 0ms, height 0ms, left 0ms, top 0ms',
@@ -392,14 +477,23 @@
     // Collection method
     $.fn.tooltip = function(options) {
 
+        if (typeof options === 'string') {
+            var method = options;
+            var method_arguments = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : undefined;
 
-
-        return this.each(function(i) {
-
-            if (!$.data(this, Tooltip)) {
-                $.data(this, Tooltip, new Tooltip( this, options ));
-            }
-        });
+            return this.each(function() {
+                var api = $.data(this, 'tooltip');
+                if (typeof api[method] === 'function') {
+                    api[method].apply(api, method_arguments);
+                }
+            });
+        } else {
+            return this.each(function() {
+                if (!$.data(this, 'tooltip')) {
+                    $.data(this, 'tooltip', new Tooltip(this, options));
+                }
+            });
+        }
     };
 
     // Custom selector
