@@ -413,7 +413,8 @@
         duration: 200,
 
         inline: false,
-        ajax: false,       
+        ajax: false,   
+        ajaxSettings: {},    
 
 
         onShow: null,

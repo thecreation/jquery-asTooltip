@@ -32,9 +32,7 @@
         <section>
             <h3>position</h3>
                 <pre class="has-example"><code class="language-javascript">
-$(".tooltip").tooltip({
-    position: 'nw'
-});
+$(".tooltip").tooltip();
                 </code></pre>
                 <div class="positon_wrap example">
                     <span class="position_tooltip" data-tooltip-position="nw" title="North West">North West</span>
@@ -53,6 +51,107 @@ $(".tooltip").tooltip({
                         });
                     </script>
                 </div>
+        </section>
+        <section>
+            <h3>Ajax</h3>
+            <pre class="has-example"><code class="language-javascript">
+$(".tooltip-ajax").tooltip({
+    ajax: true
+});
+            </code></pre>
+            <div class="positon_wrap example">
+                <span class="tooltip-ajax show" data-tooltip-position="nw" title="ajax content">ajax content</span>
+                
+                <script>
+                    
+                    $(document).ready(function() {
+                        $(".tooltip-ajax").tooltip({
+                            ajax: true
+                        });                             
+                    });
+                </script>
+            </div>
+        </section>
+
+        <section>
+            <h3>Mosuce Trace</h3>
+            <pre class="has-example"><code class="language-javascript">
+$(".tooltip-ajax").tooltip({
+    mouseTrace: true
+});
+            </code></pre>
+            <div class="positon_wrap example">
+                <span class="tooltip-mouseTrace show trace" data-tooltip-position="nw" title="You trace with me !">mouseTrace area</span>
+                
+                <script>
+                    
+                    $(document).ready(function() {
+                        $(".tooltip-mouseTrace").tooltip({
+                            mouseTrace: true
+                        });                             
+                    });
+                </script>
+            </div>
+        </section>
+        <section>
+            <h3>Interactive</h3>
+            <pre class="has-example"><code class="language-javascript">
+$(".tooltip-ajax").tooltip({
+    interactive: true
+});
+            </code></pre>
+            <div class="positon_wrap example">
+                <span class="tooltip-interactive show" data-tooltip-position="nw" title="Interactive with popup">Interactive with popup</span>
+                
+                <script>
+                    
+                    $(document).ready(function() {
+                        $(".tooltip-interactive").tooltip({
+                            interactive: true
+                        });                             
+                    });
+                </script>
+            </div>
+        </section>
+        <section>
+            <h3>Autoposition</h3>
+            <pre class="has-example"><code class="language-javascript">
+$(".tooltip-ajax").tooltip({
+    autoPosition: true
+});
+            </code></pre>
+            <div class="positon_wrap example">
+                <span class="tooltip-autoPosition show" data-tooltip-position="nw" title="Autoposition with viewport">Autoposition</span>
+                
+                <script>
+                    
+                    $(document).ready(function() {
+                        $(".tooltip-autoPosition").tooltip({
+                            autoPosition: true
+                        });                             
+                    });
+                </script>
+            </div>
+        </section>
+        <section>
+            <h3>Skin</h3>
+            <pre class="has-example"><code class="language-javascript">
+$(".tooltip-ajax").tooltip({
+    skin: 'sea'
+});
+            </code></pre>
+            <div class="positon_wrap example">
+                <span class="tooltip-autoPosition show" data-tooltip-position="nw" title="a beautiful skin">I have a 'sea' skin</span>
+                
+                <script>
+                    
+                    $(document).ready(function() {
+                        $(".tooltip-autoPosition").tooltip({
+                            skin: 'sea'
+                        });                             
+                    });
+                </script>
+            </div>
         </section>
     </section>
     <section>
