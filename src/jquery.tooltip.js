@@ -32,13 +32,23 @@
         return !!('ontouchstart' in window);
     }  
 
-    function computePlacementCoords(element, placement, popWidth, popHeight) {
+    function computePlacementCoords(element, placement, popWidth, popHeight,onCursor) {
         // grab measurements
-        var objectOffset = element.offset(),
-            objectWidth = element.outerWidth(),
-            objectHeight = element.outerHeight(),
+        var objectOffset,objectWidth,objectHeight,
             x = 0,
             y = 0;
+
+        if (onCursor) {
+            objectOffset = element;
+            objectWidth = 0;
+            objectHeight = 0;
+        } else {
+            objectOffset = element.offset();
+            objectWidth = element.outerWidth();
+            objectHeight = element.outerHeight();
+
+        }
+
 
         // calculate the appropriate x and y position in the document
         switch (placement) {
@@ -160,7 +170,7 @@
             this.$elem.removeAttr('title');
         }
 
-        this.content = this.options.content;   
+        this.content = null;   
         this.target = this.options.target || this.$elem;
         
         this.isOpen = null;
@@ -175,43 +185,94 @@
     Tooltip.prototype = {
         constructor: Tooltip, 
         init: function() {
-            var opts = this.options;
+            var opts = this.options,
+                self = this;
             
             if (opts.trigger === 'hover') {
-                this.$elem.on('mouseenter.tooltip',$.proxy(this.show,this));
+
+                this.target.on('mouseenter.tooltip',$.proxy(self.show,self));
+
                 if (opts.interactive === true) {
+
+                    this.target.on('mouseleave.tooltip',function() {
+                        var keepShow = false;
+
+                        self.$container.on('mouseenter',function() {
+                            keepShow = true;
+                        });
+                        self.$container.on('mouseleave',function() {
+                            keepShow = false;
+                        });
+
+                        var tolerance = setTimeout(function() {
+                            if (keepShow == true) {
+                                self.$container.on('mouseleave.tooltip',$.proxy(self.hide,self));
+                            } else {
+                                $.proxy(self.hide,self)();
+                            }
+                                                        
+                        },self.options.interactiveDelay);
+
+                    });
+
                     
                 } else {
-                    this.$elem.on('mouseleave',$.proxy(this.hide,this));
+
+                    this.target.on('mouseleave.tooltip',$.proxy(self.hide,self));
                 }
 
                 if (this.options.mouseTrace === true) {
-                    this.$elem.on('mousemove.tooltip',function(event) {
-                        var x = event.top,
-                            y = event.left;
+
+
+                    this.target.on('mousemove.tooltip',function(event) {
+                        var pos,cursor = {},
+                            x = event.pageX,
+                            y = event.pageY;  
+
+                        cursor = {
+                            top: y,
+                            left: x
+                        };
+
+                        pos = computePlacementCoords(cursor,self.options.position,self.width,self.height,true);
+
 
                         self.$container.css({
-                             
+                            display: 'block',
+                            top: pos.top,
+                            left: pos.left
                         });
+
+                        //debugger;
                     });
                 }
 
             }
-            if (opts.trigger === 'click') {
-                this.$elem.on('click.tooltip',function() {
 
+
+            if (opts.trigger === 'click') {
+                this.target.on('click.tooltip',function() {
+                    if (self.isOpen === true) {
+                        $.proxy(self.hide,self)();
+                    } else {
+                        $.proxy(self.show,self)();
+                    }
                 });
             }
 
             //store all instance in dataPool
             dataPool.push(this);
         },
+
+        
         show: function() {
             var opts = this.options,
-                pos,               
-                self = this;
+                pos, 
+                posCss = 'tooltip-' + opts.position,              
+                self = this;  
 
             this.$container = $(opts.tpl.container);
+            this.$loading = $(opts.tpl.loading);
             this.$arrow = $(opts.tpl.arrow);
             this.$close = $(opts.tpl.close);
             this.$content = $(opts.tpl.content);
@@ -238,30 +299,46 @@
             }
 
             this.$container.append(this.$arrow).append(this.$content);
-           
-            if (opts.ajax === true) {
-                
-                this._load();
-                this._showLoading();
-                this.ajax();
 
-                
+            // here judge the position first and then insert into body
+            // if content has loaded , never load again
 
+            this.content === null && this._load();
 
-
+            if (this.content === null) {
+                this.$content.append(this.$loading);
             } else {
-                this._load();
-
                 this.$content.empty().append(this.content);
-                this.$container.appendTo($('body')).css({display:'none'});
+            }
+
+                       
+            this.$container.addClass(opts.skin).addClass(posCss).css({
+                display: 'none',
+                top: 0,
+                left: 0,
+                position: 'absolute',
+                zIndex: 99990,
+            }).appendTo($('body')); 
+
+            this.width = this.$container.outerWidth();
+            this.height = this.$container.outerHeight();          
+          
+            if (opts.mouseTrace === false) {
+                //compute position
 
                 if ( opts.autoPosition === true ) {
                     var calPos = [],
                         newPos,
                         collisions = [];    
 
-                    // change opts.postion
-                    collisions = getViewportCollisions($(this.target), this.$container);
+                    if (opts.ajax === true) {
+                        // use default value to judge collisions
+                        collisions = getViewportCollisions($(this.target));
+                    } else {
+                        // change opts.postion
+                        collisions = getViewportCollisions($(this.target), this.$container);
+                    }
+                    
 
                     if ( collisions.length > 0 ) {
                         
@@ -270,8 +347,7 @@
                             if ($.inArray(v,collisions) !== -1) {
                                 calPos.push(posList[v]);
                             } else {
-                                calPos.push(v);
-                                
+                                calPos.push(v);                               
                             }
                         });
 
@@ -281,24 +357,29 @@
                         newPos = opts.position;
                     }
 
-                    pos = computePlacementCoords(this.target,newPos,this.$container.outerWidth(),this.$container.outerHeight());
+                    pos = computePlacementCoords(this.target,newPos,this.width,this.height);
 
                 } else {
 
-                    pos = computePlacementCoords(this.target,opts.position,this.$container.outerWidth(),this.$container.outerHeight());
+                    pos = computePlacementCoords(this.target,opts.position,this.width,this.height);
                    
-                }
-                
-                this.$container.addClass(opts.skin).css({
+                }        
+
+                //show container
+
+                this.$container.css({
                     display: 'block',
-                    position: 'absolute',
-                    zIndex: 99990,
                     top: pos.top,
                     left: pos.left 
-                });
+                });       
+            } else {
+
+                this.$container.addClass('pointer-events-none');
+
             }
+
             
-                       
+                                  
             //callback
             if (opts.onShow === 'function') {
                 opts.onShow(this.$elem);
@@ -314,31 +395,51 @@
         _load: function() {
             var self = this,
                 opts = this.options;
-            if (opts.title) {
-                this.content = opts.title;
-                
-            } else if (opts.inline === true) {
-                this.content = $(opts.content).html();
-                
-            } 
-        },
 
-        ajax: function() {
+            if (!opts.title) {
+                console.log(' there is not content');
+                return
+            }       
+
             if (opts.ajax === true) {
                 $.ajax($.extend({},opts.ajaxSettings,{
-                    url: opts.content,
-                    error: function() {},
-                    succes: function(data,status) {
+                    url: opts.title,
+                    error: function() {
+                        console.log('error')
+                    },
+                    success: function(data,status) {
                         if (status === 'success') {
+
+                            console.log('ajax-success');
+
                             self.content = data;
+
+                            // here fixed the issue when content add to container , the container become big
+                            // it will cover the target element and results the mouse pointer leave the target element
+
+                            self.$container.css({
+                                display: 'none'
+                            });
                             self.$content.empty().append(self.content);
+
+                            var pos = computePlacementCoords(self.target,opts.position,self.$container.outerWidth(),self.$container.outerHeight());
+                            
+                            self.$container.css({
+                                display: 'block',
+                                top: pos.top,
+                                left: pos.left 
+                            });
+
                         }
                     }
                 }));
-            } 
+            } else if (opts.inline === true){
+                this.content = $(opts.content).html();
+            } else {
+                this.content = opts.title;
+            }
         },
 
- 
         hide: function() {
 
             //unbinded all custom event
@@ -353,38 +454,54 @@
                this.options.onHide(this.$elem); 
             }
             
-            
-
             this.isOpen = false;
             active = false;
         },
+
         setContent: function(content) {
             this.content = content;
         },
+
         update: function() {
-            this.options.onUpdate(elem);
+            this.$container.css({
+                display: 'none'
+            });
 
-            //some change here
+            this.$content.empty().append(this.content);
 
-            this.show();
+            var pos = computePlacementCoords(this.target,opts.position,this.$container.outerWidth(),this.$container.outerHeight());
+            
+            this.$container.css({
+                display: 'block',
+                top: pos.top,
+                left: pos.left 
+            });
         },
+
         enable: function() {
             this.enabled = true;
         },
+        
         disable: function() {
             this.enabled = false;
         },
-        _showLoading: function() {},
-        _hideLoading: function() {},
 
-        positionOnElem: function() {
-            if (this.autoPosition === true) {
-                getViewportCollisions();
-            }
+        destroy: function() {
+            this.target.off('.tooltip');
         },
-        positionOnMouse: function() {
 
+        _showLoading: function() {
+            this.$content.empty();
+            this.$loading.css({
+                display: 'block'
+            });
         },
+        _hideLoading: function() {
+            this.$loading.css({
+                display: 'none'
+            });
+        },
+
         _position: function() {
             var collisions = getViewportCollisions();
 
@@ -400,10 +517,11 @@
  
         trigger: 'hover', // hover click
         interactive: false,
+        interactiveDelay: 500,
         mouseTrace: false,
         closeBtn: false,
 
-        skin: 'simple',
+        skin: 'sea',
 
         position: 'n',
         autoPosition: true,
@@ -414,7 +532,10 @@
 
         inline: false,
         ajax: false,   
-        ajaxSettings: {},    
+        ajaxSettings: {
+            dataType: 'html',
+            headers  : { 'tooltip': true } 
+        },    
 
 
         onShow: null,
@@ -423,55 +544,11 @@
 
         tpl: {
             container: '<div class="tooltip-container"></div>',
+            loading: '<span class="tooltip-loading"></span>',
             content: '<div class="tooltip-content"></div>',
             arrow: '<span class="tooltip-arrow"></span>',
             close: '<a class="tooltip-close"></a>'
         }
-    };
-
-
-
-    //open effect
-    var transition = {};
-    transition.fade = {
-        openEffect: function(instance) {
-            //if support css3 transtions use css transitions
-            if (transitionSupport === true) {
-                tooltipster.css({
-                    'width': '',
-                    '-webkit-transition': 'all ' + object.options.speed + 'ms, width 0ms, height 0ms, left 0ms, top 0ms',
-                    '-moz-transition': 'all ' + object.options.speed + 'ms, width 0ms, height 0ms, left 0ms, top 0ms',
-                    '-o-transition': 'all ' + object.options.speed + 'ms, width 0ms, height 0ms, left 0ms, top 0ms',
-                    '-ms-transition': 'all ' + object.options.speed + 'ms, width 0ms, height 0ms, left 0ms, top 0ms',
-                    'transition': 'all ' + object.options.speed + 'ms, width 0ms, height 0ms, left 0ms, top 0ms'
-                }).addClass('tooltipster-content-changing');
-                
-                // reset the CSS transitions and finish the change animation
-                setTimeout(function() {
-                    tooltipster.removeClass('tooltipster-content-changing');
-                    // after the changing animation has completed, reset the CSS transitions
-                    setTimeout(function() {
-                        tooltipster.css({
-                            '-webkit-transition': object.options.speed + 'ms',
-                            '-moz-transition': object.options.speed + 'ms',
-                            '-o-transition': object.options.speed + 'ms',
-                            '-ms-transition': object.options.speed + 'ms',
-                            'transition': object.options.speed + 'ms'
-                        });
-                    }, object.options.speed);
-                }, object.options.speed);
-            }
-            else {
-                tooltipster.fadeTo(object.options.speed, 0.5, function() {
-                    tooltipster.fadeTo(object.options.speed, 1);
-                });
-            }
-        },
-        closeEffect: function(instance) {}
-    };
-    transition.zoom = {
-        openEffect: function(instance) {},
-        closeEffect: function(instance) {}
     };
 
 
@@ -516,8 +593,10 @@
     }
 
     // on window resize, reposition and open tooltips
-    $(window).on('resize.tooltipster', function() {
-        var origin = $('.tooltipster-base').data('origin');
+    $(window).on('resize.tooltip', function() {
+        var origin = $('.tooltipste-container').data('origin');
+
+
                 
         if ((origin !== null) && (origin !== undefined)) {
             origin.tooltipster('reposition');

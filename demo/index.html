@@ -53,6 +53,28 @@ $(".tooltip").tooltip();
                 </div>
         </section>
         <section>
+            <h3>Trigger</h3>
+            <pre class="has-example"><code class="language-javascript">
+$(".tooltip-ajax").tooltip({
+    trigger: 'click',
+    position: 'ne'
+});
+            </code></pre>
+            <div class="positon_wrap example">
+                <span class="tooltip-click show"  title="this triggers by click">click show</span>
+                
+                <script>
+                    
+                    $(document).ready(function() {
+                        $(".tooltip-click").tooltip({
+                            trigger: 'click',
+                            position: 'ne'
+                        });                             
+                    });
+                </script>
+            </div>
+        </section>
+        <section>
             <h3>Ajax</h3>
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-ajax").tooltip({
@@ -60,13 +82,14 @@ $(".tooltip-ajax").tooltip({
 });
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-ajax show" data-tooltip-position="nw" title="ajax content">ajax content</span>
+                <span class="tooltip-ajax show"  title="ajax.txt">ajax content</span>
                 
                 <script>
                     
                     $(document).ready(function() {
                         $(".tooltip-ajax").tooltip({
-                            ajax: true
+                            ajax: true,
+                            position: 'nw'
                         });                             
                     });
                 </script>

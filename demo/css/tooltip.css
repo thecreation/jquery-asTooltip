@@ -1,0 +1,82 @@
+.sea.tooltip-container {
+  max-width: 500px;
+  opacity: 0.5;
+}
+
+.sea.tooltip-container .tooltip-content {
+  padding: 10px;
+  color: #fff;
+  background-color: #4C4C4C;
+  border-radius: 5px;
+}
+
+.sea.tooltip-container .tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.sea.tooltip-container .tooltip-loading {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: url(../img/tooltip-loading.gif) no-repeat scroll 0 0 transparent;
+}
+
+.sea.tooltip-n {
+  padding-bottom: 10px;
+}
+
+.sea.tooltip-n .tooltip-arrow {
+  border-top: 10px solid #4C4C4C;
+}
+
+.sea.tooltip-s {
+  padding-top: 10px;
+}
+
+.sea.tooltip-s .tooltip-arrow {
+  border-bottom: 10px solid #000;
+}
+
+.sea.tooltip-w {
+  padding-left: 10px;
+}
+
+.sea.tooltip-w .tooltip-arrow {
+  border-right: 10px solid #000;
+}
+
+.sea.tooltip-e {
+  padding-right: 10px;
+}
+
+.sea.tooltip-e .tooltip-arrow {
+  border-left: 10px solid #000;
+}
+
+.sea.tooltip-ne {
+  padding-bottom: 10px;
+}
+
+.sea.tooltip-nw {
+  padding-bottom: 10px;
+}
+
+.sea.tooltip-nw .tooltip-arrow {
+  right: 0;
+  bottom: -10px;
+  border-top: 10px solid #000;
+}
+
+.sea.tooltip-se {
+  padding-top: 10px;
+}
+
+.sea.tooltip-sw {
+  padding-top: 10px;
+}
+
+.pointer-events-none {
+  pointer-events: none;
+}
