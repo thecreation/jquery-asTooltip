@@ -1,0 +1,124 @@
+//mixins
+//===================================================
+.border-radius (@radius) {
+	border-radius: @radius;
+	-moz-border-radius: @radius;
+	-webkit-border-radius: @radius;
+}
+.rotate (@rotate) {
+	transform: rotate(@rotate);
+	-ms-transform: rotate(@rotate);
+	-moz-transform: rotate(@rotate);
+	-webkit-transform: rotate(@rotate);
+	-o-transform: rotate(@rotate);
+}
+.background (@color-first: #000, @color-last: #000, @opacity-first: 0%, @opacity-last: 100%) {
+	background-color: @color-first;
+	background-image: -moz-linear-gradient(top,  @color-first @opacity-first, @color-last @opacity-last);
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(@opacity-first,@color-first), color-stop(@opacity-last,@color-last));
+	background-image: -webkit-linear-gradient(top,  @color-first @opacity-first,@color-last @opacity-last);
+	background-image: -o-linear-gradient(top,  @color-first @opacity-first,@color-last @opacity-last);
+	background-image: -ms-linear-gradient(top,  @color-first @opacity-first,@color-last @opacity-last);
+	background-image: linear-gradient(to bottom,  @color-first @opacity-first,@color-last @opacity-last);
+}
+.text-shadow (@Horizontal, @Vertical, @Blur, @color: #000) {
+	text-shadow: @Horizontal @Vertical @Blur @color;
+	-moz-text-shadow: @Horizontal @Vertical @Blur @color;
+	-webkit-text-shadow: @Horizontal @Vertical @Blur @color;
+}
+.box-shadow (@Horizontal, @Vertical, @Blur, @Spread, @color: #000) {
+	box-shadow: @Horizontal @Vertical @Blur @Spread @color;
+	-moz-box-shadow: @Horizontal @Vertical @Blur @Spread @color;
+	-webkit-box-shadow: @Horizontal @Vertical @Blur @Spread @color;
+}
+
+//skin-dream
+//====================================================
+.skin-dream {
+	position: relative;
+	display: inline-block;
+	.tooltip-arrow {
+		position: absolute;
+		display: inline-block;
+
+		width: 20px;
+		height: 20px;
+		z-index: -1;
+		background-color: #434240;
+		.rotate (45deg);
+	}
+	.tooltip-content {
+		display: inline-block;
+		max-width: 199px;
+		padding: 10px;
+		font-size: 15px;
+		color: #fff;
+		.text-shadow (1px, -1px, 1px, #777);
+		background-color: #434240;
+		.border-radius (3px);
+	}
+}
+
+.skin-dream.tooltip-n {
+    padding-bottom: 10px;
+
+    .tooltip-arrow {
+        border-top: 10px solid #4C4C4C;
+    }
+}
+.skin-dream.tooltip-s {
+    padding-top: 10px;
+
+    .tooltip-arrow {
+        border-bottom: 10px solid #000;
+    }
+}
+.skin-dream.tooltip-w {
+    padding-left: 10px;
+
+    .tooltip-arrow {
+        border-right: 10px solid #000;
+    }
+}
+.skin-dream.tooltip-e {
+    padding-right: 10px;
+
+    .tooltip-arrow {
+        border-left: 10px solid #000;
+    }
+}
+.skin-dream.tooltip-ne {
+    padding-bottom: 10px;
+
+    .tooltip-arrow {
+    	top: -8px;
+		left: 88px;
+
+    }
+
+}
+.skin-dream.tooltip-nw {
+    padding-bottom: 10px;
+
+    .tooltip-arrow {
+        border-top: 10px solid #000;
+        right: 0;
+        bottom:  -10px;
+    }
+}
+.skin-dream.tooltip-se {
+    padding-top: 10px;
+
+    .tooltip-arrow {
+        border-bottom: 10px solid #000;
+    }
+}
+.skin-dream.tooltip-sw {
+    padding-top: 10px;
+
+    .tooltip-arrow {
+        border-bottom: 10px solid #000;
+    }
+}
+
+

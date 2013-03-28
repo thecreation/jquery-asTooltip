@@ -179,7 +179,6 @@
         this.onlyOne = this.options.onlyOne || false;
 
         this.init();
-
     };
 
     Tooltip.prototype = {
@@ -263,8 +262,7 @@
             //store all instance in dataPool
             dataPool.push(this);
         },
-
-        
+       
         show: function() {
             var opts = this.options,
                 pos, 
@@ -481,7 +479,7 @@
         enable: function() {
             this.enabled = true;
         },
-        
+
         disable: function() {
             this.enabled = false;
         },
@@ -500,14 +498,7 @@
             this.$loading.css({
                 display: 'none'
             });
-        },
-
-        _position: function() {
-            var collisions = getViewportCollisions();
-
-
         }
-
     }
 
     // Static method default options.
@@ -521,7 +512,7 @@
         mouseTrace: false,
         closeBtn: false,
 
-        skin: 'sea',
+        skin: 'skin-dream',
 
         position: 'n',
         autoPosition: true,
@@ -583,24 +574,18 @@
     // hide tooltips on orientation change
     if (is_touch_device()) {
         window.addEventListener("orientationchange", function() {
-            if ($('.tooltipster-base').length > 0) {
-                $('.tooltipster-base').each(function() {
-                    var origin = $(this).data('origin');
-                    origin.data('plugin_tooltipster').hideTooltip();
-                });
-            }
+            
         }, false);
     }
 
     // on window resize, reposition and open tooltips
-    $(window).on('resize.tooltip', function() {
-        var origin = $('.tooltipste-container').data('origin');
+    // $(window).on('resize.tooltip', function() {
+        
+    //     $.each(dataPool,function(i,v)) {
+    //         if (v.isOpen === true) {
 
-
-                
-        if ((origin !== null) && (origin !== undefined)) {
-            origin.tooltipster('reposition');
-        }
-    });
+    //         }
+    //     }
+    // });
 
 }(jQuery));

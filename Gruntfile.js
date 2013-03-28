@@ -69,7 +69,7 @@ module.exports = function(grunt) {
                     compile: true
                 },
                 files: {
-                    'demo/css/tooltip.css': ['less/sea.less','less/tooltip-core.less']
+                    'demo/css/tooltip.css': ['less/sea.less','less/tooltip-core.less','less/skin-dream.less']
                 }
             }
         },
