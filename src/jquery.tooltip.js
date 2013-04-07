@@ -10,7 +10,6 @@
     "use strict";
 
     var doc = window.document,
-        timer = null,
         $doc = $(document),
         $win = $(window);
 
@@ -32,7 +31,9 @@
         return !!('ontouchstart' in window);
     }  
 
-    function computePlacementCoords(element, placement, popWidth, popHeight,onCursor) {
+    // this is the core function to compute the position to show depended on the given placement argument 
+
+    function computePlacementCoords(element, placement, popWidth, popHeight,popSpace,onCursor) {
         // grab measurements
         var objectOffset,objectWidth,objectHeight,
             x = 0,
@@ -54,35 +55,35 @@
         switch (placement) {
         case 'n':
             x = (objectOffset.left + (objectWidth / 2)) - (popWidth / 2);
-            y = objectOffset.top - popHeight;
+            y = objectOffset.top - popHeight - popSpace;
             break;
         case 'e':
-            x = objectOffset.left + objectWidth;
+            x = objectOffset.left + objectWidth + popSpace;
             y = (objectOffset.top + (objectHeight / 2)) - (popHeight / 2);
             break;
         case 's':
             x = (objectOffset.left + (objectWidth / 2)) - (popWidth / 2);
-            y = objectOffset.top + objectHeight;
+            y = objectOffset.top + objectHeight + popSpace;
             break;
         case 'w':
-            x = objectOffset.left - popWidth;
+            x = objectOffset.left - popWidth - popSpace;
             y = (objectOffset.top + (objectHeight / 2)) - (popHeight / 2);
             break;
         case 'nw':
             x = (objectOffset.left - popWidth) + 20;
-            y = objectOffset.top - popHeight;
+            y = objectOffset.top - popHeight - popSpace;
             break;
         case 'ne':
             x = (objectOffset.left + objectWidth) - 20;
-            y = objectOffset.top - popHeight;
+            y = objectOffset.top - popHeight - popSpace;
             break;
         case 'sw':
             x = (objectOffset.left - popWidth) + 20;
-            y = objectOffset.top + objectHeight;
+            y = objectOffset.top + objectHeight + popSpace;
             break;
         case 'se':
             x = (objectOffset.left + objectWidth) - 20;
-            y = objectOffset.top + objectHeight;
+            y = objectOffset.top + objectHeight + popSpace;
             break;
         }
 
@@ -175,6 +176,7 @@
         
         this.isOpen = null;
         this.enabled = true;
+        this.tolerance = null;
 
         this.onlyOne = this.options.onlyOne || false;
 
@@ -189,7 +191,14 @@
             
             if (opts.trigger === 'hover') {
 
-                this.target.on('mouseenter.tooltip',$.proxy(self.show,self));
+                this.target.on('mouseenter.tooltip',function() {
+                    if (self.isOpen === true) {
+                        clearTimeout(this.tolerance);
+                        return;
+                    } else {
+                        $.proxy(self.show,self)();
+                    }
+                });
 
                 if (opts.interactive === true) {
 
@@ -203,7 +212,9 @@
                             keepShow = false;
                         });
 
-                        var tolerance = setTimeout(function() {
+                        clearTimeout(this.tolerance);
+
+                        this.tolerance = setTimeout(function() {
                             if (keepShow == true) {
                                 self.$container.on('mouseleave.tooltip',$.proxy(self.hide,self));
                             } else {
@@ -233,7 +244,7 @@
                             left: x
                         };
 
-                        pos = computePlacementCoords(cursor,self.options.position,self.width,self.height,true);
+                        pos = computePlacementCoords(cursor,self.options.position,self.width,self.height,self.options.popSpace,true);
 
 
                         self.$container.css({
@@ -242,7 +253,7 @@
                             left: pos.left
                         });
 
-                        //debugger;
+                        
                     });
                 }
 
@@ -310,7 +321,7 @@
             }
 
                        
-            this.$container.addClass(opts.skin).addClass(posCss).css({
+            this.$container.addClass(opts.skin).css({
                 display: 'none',
                 top: 0,
                 left: 0,
@@ -355,11 +366,14 @@
                         newPos = opts.position;
                     }
 
-                    pos = computePlacementCoords(this.target,newPos,this.width,this.height);
+
+                    posCss = 'tooltip-' + newPos
+
+                    pos = computePlacementCoords(this.target,newPos,this.width,this.height,this.options.popSpace);
 
                 } else {
 
-                    pos = computePlacementCoords(this.target,opts.position,this.width,this.height);
+                    pos = computePlacementCoords(this.target,opts.position,this.width,this.height,this.options.popSpace);
                    
                 }        
 
@@ -375,6 +389,8 @@
                 this.$container.addClass('pointer-events-none');
 
             }
+
+            this.$container.addClass(posCss);
 
             
                                   
@@ -397,8 +413,10 @@
             if (!opts.title) {
                 console.log(' there is not content');
                 return
-            }       
+            }    
 
+
+            // when ajax content add to container , recompulate the position again
             if (opts.ajax === true) {
                 $.ajax($.extend({},opts.ajaxSettings,{
                     url: opts.title,
@@ -412,15 +430,12 @@
 
                             self.content = data;
 
-                            // here fixed the issue when content add to container , the container become big
-                            // it will cover the target element and results the mouse pointer leave the target element
-
                             self.$container.css({
                                 display: 'none'
                             });
                             self.$content.empty().append(self.content);
 
-                            var pos = computePlacementCoords(self.target,opts.position,self.$container.outerWidth(),self.$container.outerHeight());
+                            var pos = computePlacementCoords(self.target,opts.position,self.$container.outerWidth(),self.$container.outerHeight(),opts.popSpace);
                             
                             self.$container.css({
                                 display: 'block',
@@ -512,6 +527,8 @@
         mouseTrace: false,
         closeBtn: false,
 
+        popSpace: 10,  //set the distance between tooltip and element
+
         skin: 'skin-dream',
 
         position: 'n',
@@ -565,11 +582,6 @@
         }
     };
 
-    // Custom selector
-    $.expr[':'].tooltip = function(elem) {
-        // Is this element tooltip?
-        return $(elem).text().indexOf('awesome') !== -1;
-    };
 
     // hide tooltips on orientation change
     if (is_touch_device()) {

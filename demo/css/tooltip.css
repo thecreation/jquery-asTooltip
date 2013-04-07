@@ -88,8 +88,6 @@
 
 .skin-dream .tooltip-arrow {
   position: absolute;
-  top: -8px;
-  left: 88px;
   z-index: -1;
   display: inline-block;
   width: 20px;
@@ -122,7 +120,9 @@
 }
 
 .skin-dream.tooltip-n .tooltip-arrow {
-  border-top: 10px solid #4C4C4C;
+  bottom: 6px;
+  left: 50%;
+  margin-left: -10px;
 }
 
 .skin-dream.tooltip-s {
@@ -130,27 +130,38 @@
 }
 
 .skin-dream.tooltip-s .tooltip-arrow {
-  border-bottom: 10px solid #000;
+  top: 6px;
+  left: 50%;
+  margin-left: -10px;
 }
 
 .skin-dream.tooltip-w {
-  padding-left: 10px;
-}
-
-.skin-dream.tooltip-w .tooltip-arrow {
-  border-right: 10px solid #000;
-}
-
-.skin-dream.tooltip-e {
   padding-right: 10px;
 }
 
+.skin-dream.tooltip-w .tooltip-arrow {
+  top: 50%;
+  right: 6px;
+  margin-top: -10px;
+}
+
+.skin-dream.tooltip-e {
+  padding-left: 10px;
+}
+
 .skin-dream.tooltip-e .tooltip-arrow {
-  border-left: 10px solid #000;
+  top: 50%;
+  left: 6px;
+  margin-top: -10px;
 }
 
 .skin-dream.tooltip-ne {
   padding-bottom: 10px;
+}
+
+.skin-dream.tooltip-ne .tooltip-arrow {
+  bottom: 6px;
+  left: 9px;
 }
 
 .skin-dream.tooltip-nw {
@@ -158,9 +169,8 @@
 }
 
 .skin-dream.tooltip-nw .tooltip-arrow {
-  right: 0;
-  bottom: -10px;
-  border-top: 10px solid #000;
+  right: 9px;
+  bottom: 6px;
 }
 
 .skin-dream.tooltip-se {
@@ -168,7 +178,8 @@
 }
 
 .skin-dream.tooltip-se .tooltip-arrow {
-  border-bottom: 10px solid #000;
+  top: 6px;
+  left: 9px;
 }
 
 .skin-dream.tooltip-sw {
@@ -176,5 +187,6 @@
 }
 
 .skin-dream.tooltip-sw .tooltip-arrow {
-  border-bottom: 10px solid #000;
+  top: 6px;
+  right: 9px;
 }
