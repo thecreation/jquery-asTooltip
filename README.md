@@ -3,7 +3,7 @@
 jquery-tooltip was designed to make implementation as easy as possible. Before implementing, make sure you meet the minimum requirements.
 
 ![image][]
- [image]: https://github.com/amazingSurge/jquery-tooltip/blob/master/demo/img/tooltip.png
+ [image]: https://raw.github.com/amazingSurge/jquery-tooltip/master/demo/img/tooltip.png
 
 ### Requirements
 - 	jQuery 1.4.x or greater
