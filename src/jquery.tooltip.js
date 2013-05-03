@@ -161,8 +161,6 @@
             }
         }); 
 
-
-
         //options is a static properity
         this.options = $.extend( {}, Tooltip.defaults, options, metas );   
 
@@ -224,10 +222,7 @@
                         },self.options.interactiveDelay);
 
                     });
-
-                    
                 } else {
-
                     this.target.on('mouseleave.tooltip',$.proxy(self.hide,self));
                 }
 
@@ -245,7 +240,6 @@
                         };
 
                         pos = computePlacementCoords(cursor,self.options.position,self.width,self.height,self.options.popSpace,true);
-
 
                         self.$container.css({
                             display: 'block',
@@ -403,7 +397,6 @@
             this.$container.trigger('show');
 
             this.isOpen = true;
-
         },
 
         _load: function() {
@@ -509,6 +502,7 @@
                 display: 'block'
             });
         },
+        
         _hideLoading: function() {
             this.$loading.css({
                 display: 'none'
@@ -590,14 +584,5 @@
         }, false);
     }
 
-    // on window resize, reposition and open tooltips
-    // $(window).on('resize.tooltip', function() {
-        
-    //     $.each(dataPool,function(i,v)) {
-    //         if (v.isOpen === true) {
-
-    //         }
-    //     }
-    // });
 
 }(jQuery));
