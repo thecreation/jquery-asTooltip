@@ -42,7 +42,8 @@ For the most basic implementation, follow the steps below:
 		<link rel="stylesheet" type="text/css" href="tooltip.css" />
 
 8.	The final page should look like the following:
-
+		
+		```html
 		<!DOCTYPE html>
 		<html>
 			<head>
@@ -60,7 +61,7 @@ For the most basic implementation, follow the steps below:
 				<span class="tooltip-click"  title="this is a simple tooltip">a simple show</span>
 			</body>
 		</html>
-
+		```
 
 ### Documentation
 _(Coming soon)_
