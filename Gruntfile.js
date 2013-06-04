@@ -69,7 +69,7 @@ module.exports = function(grunt) {
                     compile: true
                 },
                 files: {
-                    'demo/css/tooltip.css': ['less/sea.less','less/tooltip-core.less','less/skin-dream.less']
+                    'demo/css/tooltip.css': ['less/sea.less', 'less/tooltip-core.less', 'less/skin-dream.less']
                 }
             }
         },
@@ -97,5 +97,7 @@ module.exports = function(grunt) {
 
     // Default task.
     grunt.registerTask('default', ['jshint', 'jsbeautifier', 'clean', 'concat', 'uglify']);
+
+    grunt.registerTask('js', ['jsbeautifier', 'jshint']);
     grunt.registerTask('css', ['recess']);
 };
