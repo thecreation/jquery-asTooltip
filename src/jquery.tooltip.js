@@ -9,8 +9,7 @@
 (function($) {
     "use strict";
 
-    var v,
-        $win = $(window);
+    var v,$win = $(window);
 
     var active = false;
     var dataPool = [];
@@ -156,7 +155,6 @@
         var metas = {};
 
         this.$elem = $(elem);
-        this._name = 'Tooltip';
 
         $.each(this.$elem.data(), function(k, v) {
             if (/^tooltip/i.test(k)) {
@@ -166,6 +164,7 @@
 
         //options is a static properity
         this.options = $.extend({}, Tooltip.defaults, options, metas);
+        this.namespace = this.options.namespace;
 
         if (this.$elem.attr('title')) {
             this.options.title = this.$elem.attr('title');
@@ -189,6 +188,9 @@
         init: function() {
             var opts = this.options,
                 self = this;
+
+            // add namespace
+            opts.tpl = this.addNamespace(opts.tpl);
 
             this.$container = $(opts.tpl.container);
             this.$loading = $(opts.tpl.loading);
@@ -239,7 +241,7 @@
 
                     this.target.on('mousemove.tooltip', function(event) {
                         var pos, cursor = {},
-                            x = event.pageX,
+                        x = event.pageX,
                             y = event.pageY;
 
                         cursor = {
@@ -259,8 +261,6 @@
                     });
                 }
             }
-
-
             if (opts.trigger === 'click') {
                 this.target.on('click.tooltip', function() {
                     if (self.isOpen === true) {
@@ -274,128 +274,7 @@
             //store all instance in dataPool
             dataPool.push(this);
         },
-
-        show: function() {
-            var opts = this.options,
-                pos,
-                posCss = 'tooltip-' + opts.position,
-                self = this;
-
-            if (this.enabled !== true) {
-                return;
-            }
-
-            if (this.onlyOne === true) {
-                $.each(dataPool, function(i, v) {
-                    if (v === self) {
-                        return;
-                    } else {
-                        if (v.isOpen === true) {
-                            v.hide();
-                        }
-                    }
-                });
-            }
-
-
-            if (opts.closeBtn === true) {
-                this.$container.append(this.$close);
-            }
-
-            this.$container.append(this.$arrow).append(this.$content);
-
-            // here judge the position first and then insert into body
-            // if content has loaded , never load again
-
-            this.content === null && this._load();
-
-            if (this.content === null) {
-                this.$content.append(this.$loading);
-            } else {
-                this.$content.empty().append(this.content);
-            }
-
-
-            this.$container.addClass(opts.skin).css({
-                display: 'none',
-                top: 0,
-                left: 0,
-                position: 'absolute',
-                zIndex: 99990
-            }).appendTo($('body'));
-
-            this.width = this.$container.outerWidth();
-            this.height = this.$container.outerHeight();
-
-            if (opts.mouseTrace === false) {
-                //compute position
-
-                if (opts.autoPosition === true) {
-                    var calPos = [],
-                        newPos,
-                        collisions = [];
-
-                    if (opts.ajax === true) {
-                        // use default value to judge collisions
-                        collisions = getViewportCollisions($(this.target));
-                    } else {
-                        // change opts.postion
-                        collisions = getViewportCollisions($(this.target), this.$container);
-                    }
-
-
-                    if (collisions.length > 0) {
-
-                        $.each(opts.position.split(''), function(i, v) {
-
-                            if ($.inArray(v, collisions) !== -1) {
-                                calPos.push(posList[v]);
-                            } else {
-                                calPos.push(v);
-                            }
-                        });
-
-                        newPos = calPos.join('');
-
-                    } else {
-                        newPos = opts.position;
-                    }
-
-                    posCss = 'tooltip-' + newPos;
-
-                    pos = computePlacementCoords(this.target, newPos, this.width, this.height, this.options.popSpace);
-
-                } else {
-
-                    pos = computePlacementCoords(this.target, opts.position, this.width, this.height, this.options.popSpace);
-
-                }
-
-                //show container
-
-                this.$container.css({
-                    display: 'block',
-                    top: pos.top,
-                    left: pos.left
-                });
-            } else {
-                this.$container.addClass('pointer-events-none');
-            }
-
-            this.$container.addClass(posCss);
-
-            //callback
-            if (opts.onShow === 'function') {
-                opts.onShow(this.$elem);
-            }
-
-            //support event
-            this.$container.trigger('show');
-
-            this.isOpen = true;
-        },
-
-        _load: function() {
+        load: function() {
             var self = this,
                 opts = this.options;
 
@@ -438,13 +317,144 @@
                 this.content = opts.title;
             }
         },
+        addNamespace: function(obj) {
+            var tpl = {},
+                self = this;
+            $.each(obj, function(key,value) {
+                tpl[key] = value.replace('{{namespace}}', self.namespace);
+            });
 
+            return tpl;
+        },
+        showLoading: function() {
+            this.$content.empty();
+            this.$loading.css({
+                display: 'block'
+            });
+        },
+        hideLoading: function() {
+            this.$loading.css({
+                display: 'none'
+            });
+        },
+
+        /*
+            Public Method
+         */
+        
+        show: function() {
+            var opts = this.options,
+                pos,
+                posCss = this.namespace + '-' + opts.position,
+                self = this;
+
+            if (this.enabled === false) {
+                return;
+            }
+            if (this.onlyOne === true) {
+                $.each(dataPool, function(i, v) {
+                    if (v === self) {
+                        return;
+                    } else {
+                        if (v.isOpen === true) {
+                            v.hide();
+                        }
+                    }
+                });
+            }
+            if (opts.closeBtn === true) {
+                this.$container.append(this.$close);
+            }
+            this.$container.append(this.$arrow).append(this.$content);
+
+            this.$elem.addClass(this.namespace + '_active');
+
+            // here judge the position first and then insert into body
+            // if content has loaded , never load again
+            this.content === null && this.load();
+
+            if (this.content === null) {
+                this.$content.append(this.$loading);
+            } else {
+                this.$content.empty().append(this.content);
+            }
+
+            this.$container.addClass(opts.skin).css({
+                display: 'none',
+                top: 0,
+                left: 0,
+                position: 'absolute',
+                zIndex: 99990
+            }).appendTo($('body'));
+
+            this.width = this.$container.outerWidth();
+            this.height = this.$container.outerHeight();
+
+            if (opts.mouseTrace === false) {
+                //compute position
+                if (opts.autoPosition === true) {
+                    var calPos = [],
+                        newPos,
+                        collisions = [];
+
+                    if (opts.ajax === true) {
+                        // use default value to judge collisions
+                        collisions = getViewportCollisions($(this.target));
+                    } else {
+                        // change opts.postion
+                        collisions = getViewportCollisions($(this.target), this.$container);
+                    }
+
+                    if (collisions.length > 0) {
+                        $.each(opts.position.split(''), function(i, v) {
+
+                            if ($.inArray(v, collisions) !== -1) {
+                                calPos.push(posList[v]);
+                            } else {
+                                calPos.push(v);
+                            }
+                        });
+                        newPos = calPos.join('');
+                    } else {
+                        newPos = opts.position;
+                    }
+                    posCss = this.namespace + '-' + newPos;
+                    pos = computePlacementCoords(this.target, newPos, this.width, this.height, this.options.popSpace);
+                } else {
+                    pos = computePlacementCoords(this.target, opts.position, this.width, this.height, this.options.popSpace);
+                }
+
+                //show container
+                this.$container.css({
+                    display: 'block',
+                    top: pos.top,
+                    left: pos.left
+                });
+            } else {
+                this.$container.addClass('pointer-events-none');
+            }
+
+            this.$container.addClass(posCss);
+
+            //callback
+            if (opts.onShow === 'function') {
+                opts.onShow(this.$elem);
+            }
+
+            //support event
+            this.$container.trigger('show');
+            this.isOpen = true;
+
+            return this;
+        },
         hide: function() {
 
             //unbinded all custom event
             this.$container.off('.tooltip');
             //support event
             this.$container.trigger('hide');
+
+            this.$elem.removeClass(this.namespace + '_active');
 
             this.$container.remove();
 
@@ -456,55 +466,27 @@
             this.isOpen = false;
             active = false;
         },
-
         setContent: function(content) {
             this.content = content;
         },
-
-        // update: function() {
-        //     this.$container.css({
-        //         display: 'none'
-        //     });
-
-        //     this.$content.empty().append(this.content);
-
-        //     var pos = computePlacementCoords(this.target, opts.position, this.$container.outerWidth(), this.$container.outerHeight());
-
-        //     this.$container.css({
-        //         display: 'block',
-        //         top: pos.top,
-        //         left: pos.left
-        //     });
-        // },
-
         enable: function() {
             this.enabled = true;
+            this.container.addClass(this.namespace + '-enabled');
+            return this;
         },
-
         disable: function() {
             this.enabled = false;
+            this.container.removeClass(this.namespace + '-enabled');
+            return this;
         },
-
         destroy: function() {
             this.target.off('.tooltip');
-        },
-
-        _showLoading: function() {
-            this.$content.empty();
-            this.$loading.css({
-                display: 'block'
-            });
-        },
-
-        _hideLoading: function() {
-            this.$loading.css({
-                display: 'none'
-            });
         }
     };
 
     // Static method default options.
     Tooltip.defaults = {
+        namespace: 'tooltip',
 
         target: null, // mouse element
 
@@ -540,16 +522,15 @@
         onUpdate: null,
 
         tpl: {
-            container: '<div class="tooltip-container"></div>',
-            loading: '<span class="tooltip-loading"></span>',
-            content: '<div class="tooltip-content"></div>',
-            arrow: '<span class="tooltip-arrow"></span>',
-            close: '<a class="tooltip-close"></a>'
+            container: '<div class="{{namespace}}-container"></div>',
+            loading: '<span class="{{namespace}}-loading"></span>',
+            content: '<div class="{{namespace}}-content"></div>',
+            arrow: '<span class="{{namespace}}-arrow"></span>',
+            close: '<a class="{{namespace}}-close"></a>'
         }
     };
 
 
-    // Collection method
     $.fn.tooltip = function(options) {
 
         if (typeof options === 'string') {
@@ -570,14 +551,5 @@
             });
         }
     };
-
-
-    // hide tooltips on orientation change
-    if (is_touch_device()) {
-        window.addEventListener("orientationchange", function() {
-
-        }, false);
-    }
-
 
 }(jQuery));
