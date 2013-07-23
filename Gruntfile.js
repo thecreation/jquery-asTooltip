@@ -17,8 +17,8 @@ module.exports = function(grunt) {
                 stripBanners: true
             },
             dist: {
-                src: ['src/jquery.<%= pkg.name %>.js'],
-                dest: 'dist/jquery.<%= pkg.name %>.js'
+                src: ['src/<%= pkg.name %>.js'],
+                dest: 'dist/<%= pkg.name %>.js'
             },
         },
         uglify: {
@@ -27,7 +27,7 @@ module.exports = function(grunt) {
             },
             dist: {
                 src: '<%= concat.dist.dest %>',
-                dest: 'dist/jquery.<%= pkg.name %>.min.js'
+                dest: 'dist/<%= pkg.name %>.min.js'
             },
         },
         jshint: {
@@ -97,6 +97,8 @@ module.exports = function(grunt) {
 
     // Default task.
     grunt.registerTask('default', ['jshint', 'jsbeautifier', 'clean', 'concat', 'uglify']);
+
+    grunt.registerTask('dist', ['concat', 'uglify']);
 
     grunt.registerTask('js', ['jsbeautifier', 'jshint']);
     grunt.registerTask('css', ['recess']);
