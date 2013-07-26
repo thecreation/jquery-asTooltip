@@ -6,8 +6,7 @@
   "homepage": "https://github.com/amazingSurge/jquery-tooltip",
   "author": {
     "name": "amazingSurge",
-    "email": "amazingSurge@yahoo.com",
-    "url": "amazingSurge.com"
+    "email": "amazingSurge@gmail.com"
   },
   "repository": {
     "type": "git",
@@ -16,8 +15,8 @@
   "bugs": "https://github.com/amazingSurge/jquery-tooltip/issues",
   "licenses": [
     {
-      "type": "MIT",
-      "url": "https://github.com/amazingSurge/jquery-tooltip/blob/master/LICENSE-MIT"
+      "type": "GPL",
+      "url": "https://github.com/amazingSurge/jquery-tooltip/blob/master/LICENSE-GPL"
     }
   ],
   "engines": {
@@ -29,8 +28,11 @@
     "grunt-contrib-uglify": "~0.1.1",
     "grunt-contrib-watch": "~0.2.0",
     "grunt-contrib-clean": "~0.4.0",
-    "grunt": "~0.4.0",
-    "grunt-jsbeautifier": "~0.1.5",
+    "grunt": "~0.4.1",
+    "grunt-jsbeautifier": "~0.1.6",
     "grunt-recess": "~0.3.1"
+  },
+  "dependencies": {
+    "grunt-text-replace": "~0.3.6"
   }
 }
