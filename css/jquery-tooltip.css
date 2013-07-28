@@ -1,0 +1,194 @@
+.sea.tooltip-container {
+  max-width: 250px;
+  opacity: 0.5;
+}
+
+.sea.tooltip-container .tooltip-content {
+  padding: 10px;
+  color: #fff;
+  background-color: #4C4C4C;
+  border-radius: 5px;
+}
+
+.sea.tooltip-container .tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.sea.tooltip-container .tooltip-loading {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: url(../img/tooltip-loading.gif) no-repeat scroll 0 0 transparent;
+}
+
+.sea.tooltip-n {
+  padding-bottom: 10px;
+}
+
+.sea.tooltip-n .tooltip-arrow {
+  border-top: 10px solid #4C4C4C;
+}
+
+.sea.tooltip-s {
+  padding-top: 10px;
+}
+
+.sea.tooltip-s .tooltip-arrow {
+  border-bottom: 10px solid #000;
+}
+
+.sea.tooltip-w {
+  padding-left: 10px;
+}
+
+.sea.tooltip-w .tooltip-arrow {
+  border-right: 10px solid #000;
+}
+
+.sea.tooltip-e {
+  padding-right: 10px;
+}
+
+.sea.tooltip-e .tooltip-arrow {
+  border-left: 10px solid #000;
+}
+
+.sea.tooltip-ne {
+  padding-bottom: 10px;
+}
+
+.sea.tooltip-nw {
+  padding-bottom: 10px;
+}
+
+.sea.tooltip-nw .tooltip-arrow {
+  right: 0;
+  bottom: -10px;
+  border-top: 10px solid #000;
+}
+
+.sea.tooltip-se {
+  padding-top: 10px;
+}
+
+.sea.tooltip-sw {
+  padding-top: 10px;
+}
+
+.skin-dream {
+  position: relative;
+  display: inline-block;
+}
+
+.skin-dream .tooltip-arrow {
+  position: absolute;
+  z-index: -1;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #434240;
+  -webkit-transform: rotate(45deg);
+     -moz-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+       -o-transform: rotate(45deg);
+          transform: rotate(45deg);
+}
+
+.skin-dream .tooltip-content {
+  display: inline-block;
+  max-width: 199px;
+  padding: 10px;
+  font-size: 15px;
+  color: #fff;
+  -webkit-text-shadow: 1px -1px 1px #777777;
+     -moz-text-shadow: 1px -1px 1px #777777;
+          text-shadow: 1px -1px 1px #777777;
+  background-color: #434240;
+  -webkit-border-radius: 3px;
+     -moz-border-radius: 3px;
+          border-radius: 3px;
+}
+
+.skin-dream.tooltip-n {
+  padding-bottom: 10px;
+}
+
+.skin-dream.tooltip-n .tooltip-arrow {
+  bottom: 6px;
+  left: 50%;
+  margin-left: -10px;
+}
+
+.skin-dream.tooltip-s {
+  padding-top: 10px;
+}
+
+.skin-dream.tooltip-s .tooltip-arrow {
+  top: 6px;
+  left: 50%;
+  margin-left: -10px;
+}
+
+.skin-dream.tooltip-w {
+  padding-right: 10px;
+}
+
+.skin-dream.tooltip-w .tooltip-arrow {
+  top: 50%;
+  right: 6px;
+  margin-top: -10px;
+}
+
+.skin-dream.tooltip-e {
+  padding-left: 10px;
+}
+
+.skin-dream.tooltip-e .tooltip-arrow {
+  top: 50%;
+  left: 6px;
+  margin-top: -10px;
+}
+
+.skin-dream.tooltip-ne {
+  padding-bottom: 10px;
+}
+
+.skin-dream.tooltip-ne .tooltip-arrow {
+  bottom: 6px;
+  left: 9px;
+}
+
+.skin-dream.tooltip-nw {
+  padding-bottom: 10px;
+}
+
+.skin-dream.tooltip-nw .tooltip-arrow {
+  right: 9px;
+  bottom: 6px;
+}
+
+.skin-dream.tooltip-se {
+  padding-top: 10px;
+}
+
+.skin-dream.tooltip-se .tooltip-arrow {
+  top: 6px;
+  left: 9px;
+}
+
+.skin-dream.tooltip-sw {
+  padding-top: 10px;
+}
+
+.skin-dream.tooltip-sw .tooltip-arrow {
+  top: 6px;
+  right: 9px;
+}
+
+
+
+.pointer-events-none {
+  pointer-events: none;
+}

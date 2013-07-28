@@ -71,6 +71,13 @@ module.exports = function(grunt) {
                 files: {
                     'demo/css/tooltip.css': ['less/sea.less', 'less/tooltip-core.less', 'less/skin-dream.less']
                 }
+            },
+            css: {
+                src: ["less/**/*.less"],
+                dest: 'css/<%= pkg.name %>.css',
+                options: {
+                    compile: true
+                }
             }
         },
         watch: {
