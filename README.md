@@ -213,11 +213,11 @@ jquery tooltip has different medthod , we can use it as below :
 // make event become invalid $("#api_tooltip").tooltip().data('tooltip').disable();
 // make event become valid $("#api_tooltip").tooltip().data('tooltip').enable();
 // remove tooltip Dom emement and unbound all events $("#api_tooltip").tooltip().data('tooltip').destroy();
+```
+## Event / Callback
 
-## event / Callback
-
-* <code> show </code>: trigger when show called
-* <code> hide </code>: trigger when hide called
+* <code>show</code>: trigger when show called
+* <code>hide</code>: trigger when hide called
 * 
 ## Browser support
 jquery-tooltip is verified to work in Internet Explorer 7+, Firefox 2+, Opera 9+, Google Chrome and Safari browsers. Should also work in many others.
