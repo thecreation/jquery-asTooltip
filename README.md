@@ -58,126 +58,81 @@ $(".position_tooltip").tooltip({
 
 ## Settings
 
-<table>
-    <thead>
-        <tr>
-            <th>Property</th>
-            <th>Default</th>
-            <th>Description</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>namespace</td>
-            <td>'tooltip'</td>
-            <td>Optional property, Set a namespace for css class, for example, we have <code>.tooltip_active</code> class for active effect, if namespace set to 'as-tooltip', then it will be <code>.as-tooltip_active</code></td>
-        </tr>
-        <tr>
-            <td>target</td>
-            <td>null</td>
-            <td>Optional property, set target that show tooltip</td>
-        </tr>
-        <tr>
-            <td>trigger</td>
-            <td>'hover'</td>
-            <td>Compulsory property， the way to active tooltip,optional 'click'</td>
-        </tr>
-        <tr>
-            <td>interactive</td>
-            <td>false</td>
-            <td>Optional property, if true, tooltip will keepshow some time</td>
-        </tr>
-        <tr>
-            <td>interactiveDelay</td>
-            <td>500</td>
-            <td>Optional property,it works only when interactive set to true, it sets the delay when tooltip keepshow</td>
-        </tr>
-        <tr>
-            <td>mouseTrace</td>
-            <td>false</td>
-            <td>Optional property, if true tooltip will trace mouse</td>
-        </tr>
-        <tr>
-            <td>closeBtn</td>
-            <td>false</td>
-            <td>Optional property, </td>
-        </tr>
-        <tr>
-            <td>popSpace</td>
-            <td>10</td>
-            <td>Optional property, set the space between target and tooltip</td>
-        </tr>
-        <tr>
-            <td>skin</td>
-            <td>'skin-dream'</td>
-            <td>Optional property,set transtion effect, it works after you load specified skin file</td>
-        </tr>
-        <tr>
-            <td>position</td>
-            <td>'n'</td>
-            <td>Optional property,set the position of tooltip relative target</td>
-        </tr>
-        <tr>
-            <td>autoPosition</td>
-            <td>true</td>
-            <td>Optional property, if true, it will adjust tooltip's position when viewport occur collisions</td>
-        </tr>
-        <tr>
-            <td>effect</td>
-            <td>'fade'</td>
-            <td>Optional property, set transition effect, more effects are coming/td>
-        </tr>
-        <tr>
-            <td>duration</td>
-            <td>200</td>
-            <td>Optional property, define how long animation will run</td>
-        </tr>
-        <tr>
-            <td>inline</td>
-            <td>false</td>
-            <td>Optional property, set inline element as tooltip content</td>
-        </tr>
-        <tr>
-            <td>ajax</td>
-            <td>false</td>
-            <td>Optional property, if true, it will load content with ajax, the url attached in element's   <code>title</code> </td>
-        </tr>
-        <tr>
-            <td>ajaxSettings</td>
-            <td>
-                dataType:'html', </br>
-                headers:{'tooltiop':true}
-            </td>
-            <td>Optional property, it works only when ajax is set to true, if true, tooltip will cach loaded content</td>
-        </tr>
-        <tr>
-            <td>onShow</td>
-            <td>null</td>
-            <td>Optional property, callback for event <code>show()</code></td>
-        </tr>
-        <tr>
-            <td>onHide</td>
-            <td>null</td>
-            <td>Optional property, callback for event <code>hide()</code> </td>
-        </tr>
-        <tr>
-            <td>onUpdate</td>
-            <td>null</td>
-            <td>Optional property, callback , call when tooltip content update</td>
-        </tr>       
-        <tr>
-            <td>tpl</td>
-            <td>
-            container: '< div class="{{namespace}}-container" >< /div >',</br>
-            loading: '< span class="{{namespace}}-loading" >< /span >',</br>
-            content: '< div class="{{namespace}}-content" >< /div >',</br>
-            arrow: ' < span class="{{namespace}}-arrow" > < /span >'</br>
-            close: '< a class="{{namespace}}-close" >< /a >'
-            </td>
-            <td>optional property, tooltip template</td>
-        </tr>                
-    </tbody>
-</table>
+```javascript
+{   
+    // Optional property, Set a namespace for css class
+    namespace: 'tooltip',
+
+    // Optional property, set target that show tooltip 
+    // it works when title property was not set
+    target: null, 
+
+    // Optional property, the way to trigger tooltip content
+    // 'hover'/'click' to choose
+    trigger: 'hover', // hover click
+
+    // Optional property, if true, tooltip will allow you interact with it 
+    // so you can some stuff, for example, copy the tooltip content
+    interactive: false,
+
+     // Optional property, set how long the tooltip will stay  
+    interactiveDelay: 500,
+
+    // Optional property, if true, tip will trace with mouse inside selected element
+    mouseTrace: false,
+
+    // Optional property, if true, it will bind close function to a element
+    closeBtn: false,
+
+    // Optional property, set the distance between tip and element 
+    popSpace: 10, 
+
+    // Optional property, choose tooltip skin, more skins is coming soon
+    skin: null,
+
+    // Optional property, set tip display position according to element
+    position: 'n',
+
+    // Optional property,  if true, it will adjust tooltip's position when tooltip occur collisions with viewport
+    autoPosition: true,
+
+    // Optional property, set transition effect, 'fade'/'zoom'/'none' to choose, more effects are coming soon
+    effect: 'fade', // fade none zoom
+
+    // Optional property, define how long animation effect will last
+    duration: 200,
+
+    // Optional property, set inline element as tooltip content
+    inline: false,
+
+    // Optional property, if true, it will load content with ajax, the url attached in element's title property
+    ajax: false,
+
+    // Optional property, set ajax config
+    ajaxSettings: {
+        dataType: 'html',
+        headers: {
+            'tooltip': true
+        }
+    },
+
+    // callback
+
+    onShow: null,
+    onHide: null,
+    onUpdate: null,
+
+    // tooltip template
+    tpl: {
+        container: '<div class="{{namespace}}-container"></div>',
+        loading: '<span class="{{namespace}}-loading"></span>',
+        content: '<div class="{{namespace}}-content"></div>',
+        arrow: '<span class="{{namespace}}-arrow"></span>',
+        close: '<a class="{{namespace}}-close"></a>'
+    }
+
+}
+```
 
 ## Public metheds
 
