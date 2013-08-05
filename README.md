@@ -206,13 +206,21 @@ $(".position_tooltip").tooltip({
 
 ## Public metheds
 
-jquery tooltip has different medthod , we can use it as below :
-```javascript
-// show tooltip $("#api_tooltip").tooltip().data('tooltip').show();
-// hide tooltip $("#api_tooltip").tooltip().data('tooltip').hide();
-// make event become invalid $("#api_tooltip").tooltip().data('tooltip').disable();
-// make event become valid $("#api_tooltip").tooltip().data('tooltip').enable();
-// remove tooltip Dom emement and unbound all events $("#api_tooltip").tooltip().data('tooltip').destroy();
+jquery tooltip has different medthod , we can use it as below :```javascript
+// show tooltip 
+$("#api_tooltip").tooltip().data('tooltip').show();
+
+// hide tooltip 
+$("#api_tooltip").tooltip().data('tooltip').hide();
+
+// make event become invalid 
+$("#api_tooltip").tooltip().data('tooltip').disable();
+
+// make event become valid 
+$("#api_tooltip").tooltip().data('tooltip').enable();
+
+// remove tooltip Dom emement and unbound all events 
+$("#api_tooltip").tooltip().data('tooltip').destroy();
 ```
 ## Event / Callback
 
