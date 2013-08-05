@@ -206,7 +206,9 @@ $(".position_tooltip").tooltip({
 
 ## Public metheds
 
-jquery tooltip has different medthod , we can use it as below :```javascript
+jquery tooltip has different medthod , we can use it as below :
+```javascript
+
 // show tooltip 
 $("#api_tooltip").tooltip().data('tooltip').show();
 
