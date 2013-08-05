@@ -13,10 +13,6 @@ Download:<a href="https://github.com/amazingSurge/jquery-tooltip/archive/master.
 * **Auto position** — auto reposition to avoid being covered
 * **Lightweight size** — 1 kb gzipped
 
-
-##Description
-
-jquery-tooltip was designed to make implementation as easy as possible. Before implementing, make sure you meet the minimum requirements.
 ![image][]
  [image]: https://raw.github.com/amazingSurge/jquery-tooltip/master/demo/img/tooltip.png
 
