@@ -7,11 +7,15 @@ Download:<a href="https://github.com/amazingSurge/jquery-tooltip/archive/master.
 ***
 
 ##features
-* **History support** — tooltip can handle browser's back and forward buttons
-* **AJAXed tabs support** — ajax load content support
-* **Keyboard navigation support** — use `Arrow left/right` to navigate
-*  **Lightweight size** — 1 kb gzipped
+
+* **different positions** — tooltip provides 9 position for tips to display
+* **AJAXed tooltip spport** — ajax load content support
+* **Auto position** — auto reposition to avoid being covered
+* **Lightweight size** — 1 kb gzipped
+
+
 ##Description
+
 jquery-tooltip was designed to make implementation as easy as possible. Before implementing, make sure you meet the minimum requirements.
 ![image][]
  [image]: https://raw.github.com/amazingSurge/jquery-tooltip/master/demo/img/tooltip.png
@@ -33,12 +37,10 @@ And CSS:
 
 Create base input element:
 ```html
-<div class="positon_wrap example">
-    <span class="position_tooltip" data-tooltip-position="n" title="North">North</span>                   
-    <span class="position_tooltip" data-tooltip-position="w" title="West">West</span>
-    <span class="position_tooltip" data-tooltip-position="e" title="East">East</span>                  
-    <span class="position_tooltip" data-tooltip-position="s" title="South">South</span>
-</div>
+<span class="position_tooltip" data-tooltip-position="n" title="North">North</span>                   
+<span class="position_tooltip" data-tooltip-position="w" title="West">West</span>
+<span class="position_tooltip" data-tooltip-position="e" title="East">East</span>                  
+<span class="position_tooltip" data-tooltip-position="s" title="South">South</span>
 ```
 
 Initialize tooltip:
@@ -50,32 +52,7 @@ Or initialize tooltip with custom settings:
 ```javascript
 $(".position_tooltip").tooltip({
      namespace: 'tooltip',
-     target: null,    // mouse element
-     trigger: 'hover',    // hover click
-     interactive: false,
-     interactiveDelay: 500,
-     mouseTrace: false,
-     closeBtn: false,
-     popSpace: 10, //set the distance between tooltip and element
-     skin: 'skin-dream',
-     position: 'n',
-     autoPosition: true,
-     delay: 0,
-     effect: 'fade',    // fade none zoom
-     duration: 200,
-     inline: false,
-     ajax: false,    //open ajax load function
-     ajaxSettings: { dataType: 'html', headers: {'tooltip': true}},
-     onShow: null,
-     onHide: null,
-     onUpdate: null,
-     tpl: {
-            container: '<div class="{{namespace}}-container"></div>',
-            loading: '<span class="{{namespace}}-loading"></span>',
-            content: '<div class="{{namespace}}-content"></div>',
-            arrow: '<span class="{{namespace}}-arrow"></span>',
-            close: '<a class="{{namespace}}-close"></a>'
-        }
+     trigger: 'hover'    // hover click
 });
 ```
 
@@ -146,24 +123,19 @@ $(".position_tooltip").tooltip({
             <td>Optional property, if true, it will adjust tooltip's position when viewport occur collisions</td>
         </tr>
         <tr>
-            <td>delay</td>
-            <td>0</td>
-            <td>Optional property, Defines when the transition will start. </td>
-        </tr>
-        <tr>
             <td>effect</td>
             <td>'fade'</td>
-            <td>Optional property, set transition effect, you can use 'fade', more effects are coming/td>
+            <td>Optional property, set transition effect, more effects are coming/td>
         </tr>
         <tr>
             <td>duration</td>
             <td>200</td>
-            <td>Optional property, if true , open keyboard navigation function</td>
+            <td>Optional property, define how long animation will run</td>
         </tr>
         <tr>
             <td>inline</td>
             <td>false</td>
-            <td>Optional property,</td>
+            <td>Optional property, set inline element as tooltip content</td>
         </tr>
         <tr>
             <td>ajax</td>
@@ -172,7 +144,10 @@ $(".position_tooltip").tooltip({
         </tr>
         <tr>
             <td>ajaxSettings</td>
-            <td>dataType:'html',headers:{'tooltiop':true}</td>
+            <td><code>{
+                dataType:'html',
+                headers:{'tooltiop':true}
+            } </code></td>
             <td>Optional property, it works only when ajax is set to true, if true, tooltip will cach loaded content</td>
         </tr>
         <tr>
@@ -188,18 +163,20 @@ $(".position_tooltip").tooltip({
         <tr>
             <td>onUpdate</td>
             <td>null</td>
-            <td>Optional property, callback after page update</td>
+            <td>Optional property, callback , call when tooltip content update</td>
         </tr>       
         <tr>
             <td>tpl</td>
-            <td>
-               container: '< div class="{{namespace}}-container" >< /div >',<br/>
-               loading: '< span class="{{namespace}}-loading" >< /span >',<br/>
-               content: '< div class="{{namespace}}-content" >< /div >',<br/>
-               arrow: ' < span class="{{namespace}}-arrow" > < /span > ',<br/>
-               close: '< a class="{{namespace}}-close" >< /a >'
-            </td>
-            <td>compulsory property, tooltip's container</td>
+            <td><code>{
+                container: '< div class="{{namespace}}-container" >< /div >',
+                loading: '< span class="{{namespace}}-loading" >< /span >',
+                content: '< div class="{{namespace}}-content" >< /div >',
+                arrow: ' < span class="{{namespace}}-arrow" > < /span >'
+                close: '< a class="{{namespace}}-close" >< /a >'
+            }
+               
+            </code></td>
+            <td>optional property, tooltip template</td>
         </tr>                
     </tbody>
 </table>
@@ -210,25 +187,36 @@ jquery tooltip has different medthod , we can use it as below :
 ```javascript
 
 // show tooltip 
-$("#api_tooltip").tooltip().data('tooltip').show();
+$("#api_tooltip").tooltip('show');
 
 // hide tooltip 
-$("#api_tooltip").tooltip().data('tooltip').hide();
+$("#api_tooltip").tooltip('hide');
 
-// make event become invalid 
-$("#api_tooltip").tooltip().data('tooltip').disable();
+// add a disable class to tooltip elment
+$("#api_tooltip").tooltip('disable');
 
-// make event become valid 
-$("#api_tooltip").tooltip().data('tooltip').enable();
+// remove the disable class
+$("#api_tooltip").tooltip('enable');
 
 // remove tooltip Dom emement and unbound all events 
-$("#api_tooltip").tooltip().data('tooltip').destroy();
+$("#api_tooltip").tooltip('destroy');
 ```
+
+
 ## Event / Callback
 
 * <code>show</code>: trigger when show called
 * <code>hide</code>: trigger when hide called
-* 
+
+how to use event:
+```javascript
+$(document).on('tooltip::show', function(event,instance) {
+    // instance means current tooltip instance 
+    // some stuff
+});
+```
+
+
 ## Browser support
 jquery-tooltip is verified to work in Internet Explorer 7+, Firefox 2+, Opera 9+, Google Chrome and Safari browsers. Should also work in many others.
 
@@ -238,15 +226,15 @@ Mobile browsers (like Opera mini, Chrome mobile, Safari mobile, Android browser 
 
 | Version | Notes                                                            |
 |---------|------------------------------------------------------------------|
-|   0.2.x | ([compare][compare-1.2]) add history function                    |
-|   0.1.x | ([compare][compare-1.1]) add keyboard function                   |
+|   0.2.x | ([compare][compare-1.2]) add interactive function                    |
+|   0.1.x | ([compare][compare-1.1]) add auto position function                   |
 |     ... | ...                                                              |
 
-[compare-1.2]: https://github.com/amazingSurge/jquery-tabs/compare/v1.2.0...v1.3.0
-[compare-1.1]: https://github.com/amazingSurge/jquery-tabs/compare/v1.1.0...v1.2.0
+[compare-1.2]: https://github.com/amazingSurge/jquery-tooltip/compare/v1.2.0...v1.3.0
+[compare-1.1]: https://github.com/amazingSurge/jquery-tooltip/compare/v1.1.0...v1.2.0
 
 ## Author
 [amazingSurge](http://amazingSurge.com)
 
 ## License
-jQuery-tooltip plugin is released under the <a href="https://github.com/amazingSurge/jquery-tooltip/blob/master/LICENCE.GPL" target="_blank">GPL licence</a>.
+jquery-tooltip plugin is released under the <a href="https://github.com/amazingSurge/jquery-tooltip/blob/master/LICENCE.GPL" target="_blank">GPL licence</a>.
