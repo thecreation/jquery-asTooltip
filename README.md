@@ -144,10 +144,10 @@ $(".position_tooltip").tooltip({
         </tr>
         <tr>
             <td>ajaxSettings</td>
-            <td><code>{
-                dataType:'html',
+            <td>
+                dataType:'html', </br>
                 headers:{'tooltiop':true}
-            } </code></td>
+            </td>
             <td>Optional property, it works only when ajax is set to true, if true, tooltip will cach loaded content</td>
         </tr>
         <tr>
@@ -168,16 +168,12 @@ $(".position_tooltip").tooltip({
         <tr>
             <td>tpl</td>
             <td>
-            ```javascript
-            {
-                container: '< div class="{{namespace}}-container" >< /div >',
-                loading: '< span class="{{namespace}}-loading" >< /span >',
-                content: '< div class="{{namespace}}-content" >< /div >',
-                arrow: ' < span class="{{namespace}}-arrow" > < /span >'
-                close: '< a class="{{namespace}}-close" >< /a >'
-            }
-            ```   
-            </code></td>
+            container: '< div class="{{namespace}}-container" >< /div >',</br>
+            loading: '< span class="{{namespace}}-loading" >< /span >',</br>
+            content: '< div class="{{namespace}}-content" >< /div >',</br>
+            arrow: ' < span class="{{namespace}}-arrow" > < /span >'</br>
+            close: '< a class="{{namespace}}-close" >< /a >'
+            </td>
             <td>optional property, tooltip template</td>
         </tr>                
     </tbody>
