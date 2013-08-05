@@ -117,7 +117,6 @@ $(".position_tooltip").tooltip({
     },
 
     // callback
-
     onShow: null,
     onHide: null,
     onUpdate: null,
@@ -156,10 +155,11 @@ $("#api_tooltip").tooltip('destroy');
 ```
 
 
-## Event / Callback
+## Event
 
-* <code>show</code>: trigger when show called
-* <code>hide</code>: trigger when hide called
+* <code>toooltip::show</code>: trigger when show called
+* <code>tooltip::hide</code>: trigger when hide called
+* <code>tooltip::update</code>: trigger when hide called
 
 how to use event:
 ```javascript
