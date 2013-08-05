@@ -167,14 +167,16 @@ $(".position_tooltip").tooltip({
         </tr>       
         <tr>
             <td>tpl</td>
-            <td><code>{
+            <td>
+            ```javascript
+            {
                 container: '< div class="{{namespace}}-container" >< /div >',
                 loading: '< span class="{{namespace}}-loading" >< /span >',
                 content: '< div class="{{namespace}}-content" >< /div >',
                 arrow: ' < span class="{{namespace}}-arrow" > < /span >'
                 close: '< a class="{{namespace}}-close" >< /a >'
             }
-               
+            ```   
             </code></td>
             <td>optional property, tooltip template</td>
         </tr>                
