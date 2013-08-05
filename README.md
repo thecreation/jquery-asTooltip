@@ -1,69 +1,83 @@
-# jQuery tabs
+#jquery-tooltip
 
-The powerful jQuery plugin that creates a tab. <a href="http://amazingsurge.github.io/jquery-tabs/">Project page and demos</a><br />
-Download: <a href="https://github.com/amazingSurge/jquery-tabs/archive/master.zip">jquery-tabs-master.zip</a>
+The powerful jQuery plugin that creates tooltip.<a href="https://github.com/amazingSurge/jquery-tooltip">project page and dems</a>
+
+Download:<a href="https://github.com/amazingSurge/jquery-tooltip/archive/master.zip">jquery-tooltip-master.zip.</a>
 
 ***
 
-## Features
-
-* **History support** — tabs can handle browser's back and forward buttons
+##features
+* **History support** — tooltip can handle browser's back and forward buttons
 * **AJAXed tabs support** — ajax load content support
 * **Keyboard navigation support** — use `Arrow left/right` to navigate
-* **Lightweight size** — 1 kb gzipped
+*  **Lightweight size** — 1 kb gzipped
+##Description
+jquery-tooltip was designed to make implementation as easy as possible. Before implementing, make sure you meet the minimum requirements.
+![image][]
+ [image]: https://raw.github.com/amazingSurge/jquery-tooltip/master/demo/img/tooltip.png
+
 
 ## Dependencies
-* <a href="http://jquery.com/" target="_blank">jQuery 1.83+</a>
+*<a href="http://jquery.com/" target="_blank">jQuery 1.83+</a>
+
 
 ## Usage
 
 Import this libraries:
 * jQuery
-* jquery-tabs.min.js
+* jquery-tooltip.js
 
 And CSS:
-* jquery-tabs.css - desirable if you have not yet connected one
+* jquery-tooltip.css - desirable if you have not yet connected one
 
 
-Create base html element:
+Create base input element:
 ```html
-<ul class="demo tabs">
-    <li>tab1</li>
-    <li>tab2</li>
-    <li>tab3</li>
-</ul>
-<div class="panes">
-    <div>panes</div>
-    <div>panle2</div>
-    <div>panle3</div>
+<div class="positon_wrap example">
+    <span class="position_tooltip" data-tooltip-position="n" title="North">North</span>                   
+    <span class="position_tooltip" data-tooltip-position="w" title="West">West</span>
+    <span class="position_tooltip" data-tooltip-position="e" title="East">East</span>                  
+    <span class="position_tooltip" data-tooltip-position="s" title="South">South</span>
 </div>
 ```
 
-Initialize tabs:
+Initialize tooltip:
 ```javascript
-$(".demo").tabs({panes: '.panes'});
+ $(".position_tooltip").tooltip();
 ```
 
-Or initialize tabs with custom settings:
+Or initialize tooltip with custom settings:
 ```javascript
-$(".demo").tabs({
-        namespace: 'tabs',  // namespace for css class
-        panes: '.panes',
-        skin: null,         // set custom skin
-        initialIndex: 0,    // set initial index when first open
-        effect: 'fade',     // set transition effect
-        ajax: false,        // open ajax load function
-        cached: false,      // if true, cach ajax load content after first loaded
-        history: false,     // open history state function
-        keyboard: false,    // keyboard navigation
-        event: 'click'      // change index use 'click' or 'mouseover'
+$(".position_tooltip").tooltip({
+     namespace: 'tooltip',
+     target: null,    // mouse element
+     trigger: 'hover',    // hover click
+     interactive: false,
+     interactiveDelay: 500,
+     mouseTrace: false,
+     closeBtn: false,
+     popSpace: 10, //set the distance between tooltip and element
+     skin: 'skin-dream',
+     position: 'n',
+     autoPosition: true,
+     delay: 0,
+     effect: 'fade',    // fade none zoom
+     duration: 200,
+     inline: false,
+     ajax: false,    //open ajax load function
+     ajaxSettings: { dataType: 'html', headers: {'tooltip': true}},
+     onShow: null,
+     onHide: null,
+     onUpdate: null,
+     tpl: {
+            container: '<div class="{{namespace}}-container"></div>',
+            loading: '<span class="{{namespace}}-loading"></span>',
+            content: '<div class="{{namespace}}-content"></div>',
+            arrow: '<span class="{{namespace}}-arrow"></span>',
+            close: '<a class="{{namespace}}-close"></a>'
+        }
 });
 ```
-
-the most important thing is you should set panes value to let plugin find his panes content
-
-
-
 
 ## Settings
 
@@ -77,104 +91,144 @@ the most important thing is you should set panes value to let plugin find his pa
     </thead>
     <tbody>
         <tr>
-            <td>panes</td>
-            <td>'.panes'</td>
-            <td>compulsory property, specify the content to tabs</td>
+            <td>namespace</td>
+            <td>'tooltip'</td>
+            <td>Optional property, Set a namespace for css class, for example, we have <code>.tooltip_active</code> class for active effect, if namespace set to 'as-tooltip', then it will be <code>.as-tooltip_active</code></td>
         </tr>
         <tr>
-            <td>namespace</td>
-            <td>"tabs"</td>
-            <td>Optional property, set a namspace for css class, for example, we have <code>.tabs_active</code> class for active effect, if namespace set to 'as-tabs', then it will be <code>.as-tabs_active</code></td>
+            <td>target</td>
+            <td>null</td>
+            <td>Optional property, set target that show tooltip</td>
+        </tr>
+        <tr>
+            <td>trigger</td>
+            <td>'hover'</td>
+            <td>Compulsory property， the way to active tooltip,optional 'click'</td>
+        </tr>
+        <tr>
+            <td>interactive</td>
+            <td>false</td>
+            <td>Optional property, if true, tooltip will keepshow some time</td>
+        </tr>
+        <tr>
+            <td>interactiveDelay</td>
+            <td>500</td>
+            <td>Optional property,it works only when interactive set to true, it sets the delay when tooltip keepshow</td>
+        </tr>
+        <tr>
+            <td>mouseTrace</td>
+            <td>false</td>
+            <td>Optional property, if true tooltip will trace mouse</td>
+        </tr>
+        <tr>
+            <td>closeBtn</td>
+            <td>false</td>
+            <td>Optional property, </td>
+        </tr>
+        <tr>
+            <td>popSpace</td>
+            <td>10</td>
+            <td>Optional property, set the space between target and tooltip</td>
         </tr>
         <tr>
             <td>skin</td>
-            <td>null</td>
-            <td>Optional property, set transition effect, it works after you load   specified skin file</td>
+            <td>'skin-dream'</td>
+            <td>Optional property,set transtion effect, it works after you load specified skin file</td>
         </tr>
         <tr>
-            <td>initialIndex</td>
+            <td>position</td>
+            <td>'n'</td>
+            <td>Optional property,set the position of tooltip relative target</td>
+        </tr>
+        <tr>
+            <td>autoPosition</td>
+            <td>true</td>
+            <td>Optional property, if true, it will adjust tooltip's position when viewport occur collisions</td>
+        </tr>
+        <tr>
+            <td>delay</td>
             <td>0</td>
-            <td>Optional property, set initial index when tabs initilize</td>
+            <td>Optional property, Defines when the transition will start. </td>
         </tr>
         <tr>
             <td>effect</td>
-            <td>'none'</td>
-            <td>Optional property, set transition effect, you can use <code>'fade'</code>, more effects are coming</td>
+            <td>'fade'</td>
+            <td>Optional property, set transition effect, you can use 'fade', more effects are coming/td>
+        </tr>
+        <tr>
+            <td>duration</td>
+            <td>200</td>
+            <td>Optional property, if true , open keyboard navigation function</td>
+        </tr>
+        <tr>
+            <td>inline</td>
+            <td>false</td>
+            <td>Optional property,</td>
         </tr>
         <tr>
             <td>ajax</td>
             <td>false</td>
-            <td>Optional property, if true, it will load content with ajax, the url attached in tab list element's <code>data-href</code> </td>
+            <td>Optional property, if true, it will load content with ajax, the url attached in element's   <code>title</code> </td>
         </tr>
         <tr>
-            <td>cached</td>
-            <td>false</td>
-            <td>Optional property, it works only when ajax is set to true, if true, tabs will cach loaded content</td>
+            <td>ajaxSettings</td>
+            <td>dataType:'html',headers:{'tooltiop':true}</td>
+            <td>Optional property, it works only when ajax is set to true, if true, tooltip will cach loaded content</td>
         </tr>
         <tr>
-            <td>history</td>
-            <td>false</td>
-            <td>Optional property, if true, use history state function</td>
+            <td>onShow</td>
+            <td>null</td>
+            <td>Optional property, callback for event <code>show()</code></td>
         </tr>
         <tr>
-            <td>keyboard</td>
-            <td>false</td>
-            <td>Optional property, if true , open keyboard navigation function</td>
+            <td>onHide</td>
+            <td>null</td>
+            <td>Optional property, callback for event <code>hide()</code> </td>
         </tr>
         <tr>
-            <td>event</td>
-            <td>'click'</td>
-            <td>Optional property, the way to active tabs index, optioal 'mouseover'</td>
-        </tr>    
+            <td>onUpdate</td>
+            <td>null</td>
+            <td>Optional property, callback after page update</td>
+        </tr>       
+        <tr>
+            <td>tpl</td>
+            <td>
+               container: '< div class="{{namespace}}-container" >< /div >',<br/>
+               loading: '< span class="{{namespace}}-loading" >< /span >',<br/>
+               content: '< div class="{{namespace}}-content" >< /div >',<br/>
+               arrow: ' < span class="{{namespace}}-arrow" > < /span > ',<br/>
+               close: '< a class="{{namespace}}-close" >< /a >'
+            </td>
+            <td>compulsory property, tooltip's container</td>
+        </tr>                
     </tbody>
 </table>
 
-## Public methods
+## Public metheds
 
-jquery tabs has different methods , we can use it as below :
+jquery tooltip has different medthod , we can use it as below :
 ```javascript
+// show tooltip $("#api_tooltip").tooltip().data('tooltip').show();
+// hide tooltip $("#api_tooltip").tooltip().data('tooltip').hide();
+// make event become invalid $("#api_tooltip").tooltip().data('tooltip').disable();
+// make event become valid $("#api_tooltip").tooltip().data('tooltip').enable();
+// remove tooltip Dom emement and unbound all events $("#api_tooltip").tooltip().data('tooltip').destroy();
 
-// get all tabs element
-$(".demo").tabs("getTabs");
+## event / Callback
 
-// get all panes element
-$(".demo").tabs("getPanes");
-
-// get current index, start from 0
-$(".demo").tabs("getIndex");
-
-// get current pane element
-$(".demo").tabs("getCurrentPane");
-
-// get current tab elemnt
-$(".demo").tabs("getCurrentTab");
-
-// goto the next tab, the last will goto the first
-$(".demo").tabs("next");
-
-// goto the prevous tab, the first will goto the last
-$(".demo").tabs("prev");
-
-// remove tabs Dom element and unbound all events
-$(".demo").tabs("destroy");
-```
-
-## Event / Callback
-
-* <code>tabs::init</code>: trigger when tabs initilize
-* <code>tabs::active</code>: trigger when tabs is selected
-* <code>tabs::afterActive</code>:  trigger after acitve
+* <code>show</code>: trigger when show called
+* <code>hide</code>: trigger when hide call
 
 how to use event:
 ```javascript
-$(document).on('tabs::init', function(event,instance) {
-    // instance means current tabs instance 
+$(document).on('mouseenter.tooltip', function(event,instance) {
+    // instance means current tooltip instance 
     // some stuff
 });
 ```
 
 ## Browser support
-jquery-tabs is verified to work in Internet Explorer 7+, Firefox 2+, Opera 9+, Google Chrome and Safari browsers. Should also work in many others.
+jquery-tooltip is verified to work in Internet Explorer 7+, Firefox 2+, Opera 9+, Google Chrome and Safari browsers. Should also work in many others.
 
 Mobile browsers (like Opera mini, Chrome mobile, Safari mobile, Android browser and others) is coming soon.
 
@@ -193,4 +247,4 @@ Mobile browsers (like Opera mini, Chrome mobile, Safari mobile, Android browser 
 [amazingSurge](http://amazingSurge.com)
 
 ## License
-jQuery-tabs plugin is released under the <a href="https://github.com/amazingSurge/jquery-tabs/blob/master/LICENCE.GPL" target="_blank">GPL licence</a>.
+jQuery-tooltip plugin is released under the <a href="https://github.com/amazingSurge/jquery-tooltip/blob/master/LICENCE.GPL" target="_blank">GPL licence</a>.
