@@ -216,17 +216,9 @@ jquery tooltip has different medthod , we can use it as below :
 
 ## event / Callback
 
-* <code>show</code>: trigger when show called
-* <code>hide</code>: trigger when hide call
-
-how to use event:
-```javascript
-$(document).on('mouseenter.tooltip', function(event,instance) {
-    // instance means current tooltip instance 
-    // some stuff
-});
-```
-
+* <code> show </code>: trigger when show called
+* <code> hide </code>: trigger when hide called
+* 
 ## Browser support
 jquery-tooltip is verified to work in Internet Explorer 7+, Firefox 2+, Opera 9+, Google Chrome and Safari browsers. Should also work in many others.
 
