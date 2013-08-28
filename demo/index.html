@@ -157,6 +157,31 @@ $(".tooltip-ajax").tooltip({
             </div>
         </section>
         <section>
+            <h3>Inline</h3>
+            <pre class="has-example"><code class="language-javascript">
+$(".tooltip-ajax").tooltip({
+    inline: true,
+    content: '#tip'
+});
+            </code></pre>
+            <div class="positon_wrap example">
+                <span class="tooltip-inline show" data-tooltip-position="nw">Autoposition</span>
+                <div id="tip" style="display:none;">
+                    <h6>hello</h6>
+                    <span>this is inline content</span>
+                </div>
+                
+                <script>
+                    $(document).ready(function() {
+                        $(".tooltip-inline").tooltip({
+                            inline: true,
+                            content: '#tip'
+                        });                             
+                    });
+                </script>
+            </div>
+        </section>
+        <section>
             <h3>Skin</h3>
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-ajax").tooltip({
