@@ -45,10 +45,16 @@ $(".tooltip").tooltip();
                     <span class="position_tooltip" data-tooltip-position="s" title="South">South</span>
                     <span class="position_tooltip" data-tooltip-position="se" title="South East">South East</span>
                     <script>
+                        $(document).ready(function() {
+                          $.tooltip.defaults.skin = 'skin-dream';                              
+                        });
                         
                         $(document).ready(function() {
                           $(".position_tooltip").tooltip();                               
                         });
+
+                        
+
                     </script>
                 </div>
         </section>

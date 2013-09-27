@@ -77,12 +77,12 @@
   padding-top: 10px;
 }
 
-.skin-dream {
+.tooltip_skin-dream {
   position: relative;
   display: inline-block;
 }
 
-.skin-dream .tooltip-arrow {
+.tooltip_skin-dream .tooltip-arrow {
   position: absolute;
   z-index: -1;
   display: inline-block;
@@ -96,7 +96,7 @@
           transform: rotate(45deg);
 }
 
-.skin-dream .tooltip-content {
+.tooltip_skin-dream .tooltip-content {
   display: inline-block;
   max-width: 199px;
   padding: 10px;
@@ -111,79 +111,47 @@
           border-radius: 3px;
 }
 
-.skin-dream.tooltip-n {
-  padding-bottom: 10px;
-}
-
-.skin-dream.tooltip-n .tooltip-arrow {
-  bottom: 6px;
+.tooltip_skin-dream.tooltip-n .tooltip-arrow {
+  bottom: -4px;
   left: 50%;
   margin-left: -10px;
 }
 
-.skin-dream.tooltip-s {
-  padding-top: 10px;
-}
-
-.skin-dream.tooltip-s .tooltip-arrow {
-  top: 6px;
+.tooltip_skin-dream.tooltip-s .tooltip-arrow {
+  top: -4px;
   left: 50%;
   margin-left: -10px;
 }
 
-.skin-dream.tooltip-w {
-  padding-right: 10px;
-}
-
-.skin-dream.tooltip-w .tooltip-arrow {
+.tooltip_skin-dream.tooltip-w .tooltip-arrow {
   top: 50%;
-  right: 6px;
+  right: -4px;
   margin-top: -10px;
 }
 
-.skin-dream.tooltip-e {
-  padding-left: 10px;
-}
-
-.skin-dream.tooltip-e .tooltip-arrow {
+.tooltip_skin-dream.tooltip-e .tooltip-arrow {
   top: 50%;
-  left: 6px;
+  left: -4px;
   margin-top: -10px;
 }
 
-.skin-dream.tooltip-ne {
-  padding-bottom: 10px;
-}
-
-.skin-dream.tooltip-ne .tooltip-arrow {
-  bottom: 6px;
+.tooltip_skin-dream.tooltip-ne .tooltip-arrow {
+  bottom: -4px;
   left: 9px;
 }
 
-.skin-dream.tooltip-nw {
-  padding-bottom: 10px;
-}
-
-.skin-dream.tooltip-nw .tooltip-arrow {
+.tooltip_skin-dream.tooltip-nw .tooltip-arrow {
   right: 9px;
-  bottom: 6px;
+  bottom: -4px;
 }
 
-.skin-dream.tooltip-se {
-  padding-top: 10px;
-}
-
-.skin-dream.tooltip-se .tooltip-arrow {
-  top: 6px;
+.tooltip_skin-dream.tooltip-se .tooltip-arrow {
+  top: -4px;
   left: 9px;
 }
 
-.skin-dream.tooltip-sw {
-  padding-top: 10px;
-}
-
-.skin-dream.tooltip-sw .tooltip-arrow {
-  top: 6px;
+.tooltip_skin-dream.tooltip-sw .tooltip-arrow {
+  top: -4px;
   right: 9px;
 }
 

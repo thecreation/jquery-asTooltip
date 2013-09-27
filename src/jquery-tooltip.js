@@ -306,9 +306,9 @@
                 this.content = opts.title;
             }
 
-            if (this.content === null) {
-                throw new Error('no content');
-            }
+            // if (this.content === null) {
+            //     throw new Error('no content');
+            // }
         },
         parseTpl: function(obj) {
             var tpl = {},
@@ -372,7 +372,11 @@
                 this.$content.empty().append(this.content);
             }
 
-            this.$container.addClass(opts.skin).css({
+            if (opts.skin !== null) {
+                this.$container.addClass(this.namespace + '_' + opts.skin);
+            }
+
+            this.$container.css({
                 display: 'none',
                 top: 0,
                 left: 0,
@@ -480,7 +484,7 @@
     // Static method default options.
     Tooltip.defaults = {
         namespace: 'tooltip',
-        skin: 'skin-dream',
+        skin: null,
 
         target: null, // mouse element
 
