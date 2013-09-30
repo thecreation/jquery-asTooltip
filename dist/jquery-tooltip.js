@@ -1,6 +1,6 @@
-/*! jQuery tooltip - v0.1.0 - 2013-07-23
+/*! jQuery tooltip - v0.1.0 - 2013-09-29
 * https://github.com/amazingSurge/jquery-tooltip
-* Copyright (c) 2013 amazingSurge; Licensed MIT */
+* Copyright (c) 2013 amazingSurge; Licensed GPL */
 (function($) {
     "use strict";
 
@@ -185,7 +185,7 @@
                 self = this;
 
             // add namespace
-            opts.tpl = this.addNamespace(opts.tpl);
+            opts.tpl = this.parseTpl(opts.tpl);
 
             this.$container = $(opts.tpl.container);
             this.$loading = $(opts.tpl.loading);
@@ -194,7 +194,6 @@
             this.$content = $(opts.tpl.content);
 
             if (opts.trigger === 'hover') {
-
                 this.target.on('mouseenter.tooltip', function() {
                     if (self.isOpen === true) {
                         clearTimeout(this.tolerance);
@@ -205,7 +204,6 @@
                 });
 
                 if (opts.interactive === true) {
-
                     this.target.on('mouseleave.tooltip', function() {
                         var keepShow = false;
 
@@ -224,16 +222,14 @@
                             } else {
                                 $.proxy(self.hide, self)();
                             }
-
                         }, self.options.interactiveDelay);
-
                     });
+
                 } else {
                     this.target.on('mouseleave.tooltip', $.proxy(self.hide, self));
                 }
 
                 if (this.options.mouseTrace === true) {
-
                     this.target.on('mousemove.tooltip', function(event) {
                         var pos, cursor = {},
                         x = event.pageX,
@@ -251,8 +247,6 @@
                             top: pos.top,
                             left: pos.left
                         });
-
-
                     });
                 }
             }
@@ -272,11 +266,6 @@
         load: function() {
             var self = this,
                 opts = this.options;
-
-            if (!opts.title) {
-                throw new Error('there is no content');
-            }
-
 
             // when ajax content add to container , recompulate the position again
             if (opts.ajax === true) {
@@ -307,12 +296,16 @@
                     }
                 }));
             } else if (opts.inline === true) {
-                this.content = $(opts.content).html();
+                this.content = $(opts.content).css({display:'block'});
             } else {
                 this.content = opts.title;
             }
+
+            // if (this.content === null) {
+            //     throw new Error('no content');
+            // }
         },
-        addNamespace: function(obj) {
+        parseTpl: function(obj) {
             var tpl = {},
                 self = this;
             $.each(obj, function(key,value) {
@@ -374,7 +367,11 @@
                 this.$content.empty().append(this.content);
             }
 
-            this.$container.addClass(opts.skin).css({
+            if (opts.skin !== null) {
+                this.$container.addClass(this.namespace + '_' + opts.skin);
+            }
+
+            this.$container.css({
                 display: 'none',
                 top: 0,
                 left: 0,
@@ -482,6 +479,7 @@
     // Static method default options.
     Tooltip.defaults = {
         namespace: 'tooltip',
+        skin: null,
 
         target: null, // mouse element
 
@@ -493,8 +491,6 @@
 
         popSpace: 10, //set the distance between tooltip and element
 
-        skin: 'skin-dream',
-
         position: 'n',
         autoPosition: true,
 
@@ -503,6 +499,8 @@
         duration: 200,
 
         inline: false,
+        content: null,
+
         ajax: false,
         ajaxSettings: {
             dataType: 'html',
@@ -510,7 +508,6 @@
                 'tooltip': true
             }
         },
-
 
         onShow: null,
         onHide: null,
@@ -527,7 +524,6 @@
 
 
     $.fn.tooltip = function(options) {
-
         if (typeof options === 'string') {
             var method = options;
             var method_arguments = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : undefined;
