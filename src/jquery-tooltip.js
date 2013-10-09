@@ -301,7 +301,12 @@
                     }
                 }));
             } else if (opts.inline === true) {
-                this.content = $(opts.content).css({display:'block'});
+                if (opts.content.indexOf('+') !== -1) {
+                    this.content = this.$elem.next().css({display:'block'});
+                } else {
+                    this.content = $(opts.content).css({display:'block'});
+                }
+                
             } else {
                 this.content = opts.title;
             }

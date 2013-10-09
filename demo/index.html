@@ -165,13 +165,19 @@ $(".tooltip-ajax").tooltip({
         <section>
             <h3>Inline</h3>
             <pre class="has-example"><code class="language-javascript">
-$(".tooltip-ajax").tooltip({
+$(".tooltip-inline").tooltip({
     inline: true,
     content: '#tip'
 });
+
+// add content from next siblings
+$(".tooltip-inline-siblings").tooltip({
+    inline: true,
+    content: '+'
+});
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-inline show" data-tooltip-position="nw">Autoposition</span>
+                <span class="tooltip-inline show" data-tooltip-position="nw">Inline</span>
                 <div id="tip" style="display:none;">
                     <h6>hello</h6>
                     <span>this is inline content</span>
@@ -182,6 +188,22 @@ $(".tooltip-ajax").tooltip({
                         $(".tooltip-inline").tooltip({
                             inline: true,
                             content: '#tip'
+                        });                             
+                    });
+                </script>
+            </div>
+            <div class="positon_wrap example">
+                <span class="tooltip-inline-siblings show" data-tooltip-position="nw">Inline-siblings</span>
+                <div style="display:none;">
+                    <h6>hello</h6>
+                    <span>this is inline siblings</span>
+                </div>
+                
+                <script>
+                    $(document).ready(function() {
+                        $(".tooltip-inline-siblings").tooltip({
+                            inline: true,
+                            content: '+'
                         });                             
                     });
                 </script>

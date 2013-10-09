@@ -1,4 +1,4 @@
-/*! jQuery tooltip - v0.1.0 - 2013-09-29
+/*! jQuery tooltip - v0.1.0 - 2013-10-09
 * https://github.com/amazingSurge/jquery-tooltip
 * Copyright (c) 2013 amazingSurge; Licensed GPL */
 (function($) {
@@ -296,7 +296,12 @@
                     }
                 }));
             } else if (opts.inline === true) {
-                this.content = $(opts.content).css({display:'block'});
+                if (opts.content.indexOf('+') !== -1) {
+                    this.content = this.$elem.next().css({display:'block'});
+                } else {
+                    this.content = $(opts.content).css({display:'block'});
+                }
+                
             } else {
                 this.content = opts.title;
             }
