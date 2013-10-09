@@ -301,10 +301,10 @@
                     }
                 }));
             } else if (opts.inline === true) {
-                if (opts.content.indexOf('+') !== -1) {
+                if (opts.title.indexOf('+') !== -1) {
                     this.content = this.$elem.next().css({display:'block'});
                 } else {
-                    this.content = $(opts.content).css({display:'block'});
+                    this.content = $(opts.title).css({display:'block'});
                 }
                 
             } else {

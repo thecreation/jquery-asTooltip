@@ -101,6 +101,12 @@ $(".position_tooltip").tooltip({
     // Optional property, set inline element as tooltip content
     inline: false,
 
+    // set tooltip content
+    // by defaults, you can set your content as strings
+    // if ajax is true, you can use resource reference, for example:'ajax.txt'
+    // if inline is true, you can use inline DOm selector, for example: '#id', or '+', means select current element's next sibling element
+    title: content or resource reference or '+'
+
     // Optional property, if true, it will load content with ajax, the url attached in element's title property
     ajax: false,
 
@@ -175,8 +181,8 @@ Mobile browsers (like Opera mini, Chrome mobile, Safari mobile, Android browser 
 
 | Version | Notes                                                            |
 |---------|------------------------------------------------------------------|
-|   0.2.x | ([compare][compare-1.2]) add interactive function                    |
-|   0.1.x | ([compare][compare-1.1]) add auto position function                   |
+|   0.1.2 | add next siblings selector shortcut                              |
+|   0.1.1 | ([compare][compare-1.1]) add auto position function              |
 |     ... | ...                                                              |
 
 [compare-1.2]: https://github.com/amazingSurge/jquery-tooltip/compare/v1.2.0...v1.3.0
