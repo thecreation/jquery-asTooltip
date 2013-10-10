@@ -1,4 +1,4 @@
-/*! jQuery tooltip - v0.1.0 - 2013-10-09
+/*! jQuery tooltip - v0.1.0 - 2013-10-10
 * https://github.com/amazingSurge/jquery-tooltip
 * Copyright (c) 2013 amazingSurge; Licensed GPL */
 (function($) {
