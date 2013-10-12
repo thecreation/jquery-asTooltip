@@ -1,22 +1,51 @@
-/*! jQuery tooltip - v0.1.0 - 2013-10-10
+/*! jQuery tooltip - v0.1.0 - 2013-10-12
 * https://github.com/amazingSurge/jquery-tooltip
 * Copyright (c) 2013 amazingSurge; Licensed GPL */
 (function($) {
     "use strict";
 
     var v,$win = $(window);
-
     var active = false;
     var dataPool = [];
-    var posList = {
-        n: ['s'],
-        s: ['n'],
-        w: ['e'],
-        e: ['w'],
-        nw: ['sw', 'ne'],
-        ne: ['se', 'nw'],
-        sw: ['se', 'nw'],
-        se: ['ne', 'sw']
+    
+    var POSITION = 'nswe';
+    var resovolution = {
+        n: {
+            n: 's',
+            w: 'ne',
+            e: 'nw'
+        },
+        s: {
+            s: 'n',
+            w: 'se',
+            e: 'sw'
+        },
+        w: {
+            w: 'e',
+            n: 'sw',
+            s: 'nw'
+        },
+        e: {
+            e: 'w',
+            n: 'se',
+            s: 'ne'
+        },
+        nw: {
+            n: 'sw',
+            w: 'ne'
+        },
+        ne: {
+            n: 'se',
+            e: 'nw'
+        },
+        sw: {
+            s: 'nw',
+            w: 'se'
+        },
+        se: {
+            s: 'ne',
+            e: 'sw'
+        }
     };
 
     // we'll use this to detect for mobile devices
@@ -25,11 +54,10 @@
     }
 
     // this is the core function to compute the position to show depended on the given placement argument 
-
     function computePlacementCoords(element, placement, popWidth, popHeight, popSpace, onCursor) {
         // grab measurements
         var objectOffset, objectWidth, objectHeight,
-        x = 0,
+            x = 0,
             y = 0;
 
         if (onCursor) {
@@ -40,7 +68,6 @@
             objectOffset = element.offset();
             objectWidth = element.outerWidth();
             objectHeight = element.outerHeight();
-
         }
 
 
@@ -63,18 +90,22 @@
                 y = (objectOffset.top + (objectHeight / 2)) - (popHeight / 2);
                 break;
             case 'nw':
+            case 'wn':
                 x = (objectOffset.left - popWidth) + 20;
                 y = objectOffset.top - popHeight - popSpace;
                 break;
             case 'ne':
+            case 'en':
                 x = (objectOffset.left + objectWidth) - 20;
                 y = objectOffset.top - popHeight - popSpace;
                 break;
             case 'sw':
+            case 'ws':
                 x = (objectOffset.left - popWidth) + 20;
                 y = objectOffset.top + objectHeight + popSpace;
                 break;
             case 'se':
+            case 'es':
                 x = (objectOffset.left + objectWidth) - 20;
                 y = objectOffset.top + objectHeight + popSpace;
                 break;
@@ -90,17 +121,18 @@
         var scrollLeft = $win.scrollLeft(),
             scrollTop = $win.scrollTop(),
             offset = target.offset(),
-            elementWidth = target.outerWidth(),
-            elementHeight = target.outerHeight(),
+            elementWidth = target.outerWidth(true),
+            elementHeight = target.outerHeight(true),
             windowWidth = $win.width(),
             windowHeight = $win.height(),
             collisions = [],
             popWidth, popHeight;
 
         if (popElem) {
-            popWidth = popElem.outerWidth();
-            popHeight = popElem.outerHeight();
+            popWidth = popElem.outerWidth(true);
+            popHeight = popElem.outerHeight(true);
         } else {
+            // for loading animation icon placeholder
             popWidth = 100;
             popHeight = 50;
         }
@@ -276,22 +308,16 @@
                     },
                     success: function(data, status) {
                         if (status === 'success') {
+                            var collisions,newPos;
 
                             self.content = data;
 
                             self.$container.css({
                                 display: 'none'
                             });
-                            self.$content.empty().append(self.content);
-
-                            var pos = computePlacementCoords(self.target, opts.position, self.$container.outerWidth(), self.$container.outerHeight(), opts.popSpace);
-
-                            self.$container.css({
-                                display: 'block',
-                                top: pos.top,
-                                left: pos.left
-                            });
-
+                            self.$content.empty().append(self.content); 
+                            self.$container.removeClass(self.posCss);       
+                            self.setPosition();
                         }
                     }
                 }));
@@ -329,6 +355,64 @@
             this.$loading.css({
                 display: 'none'
             });
+        },
+        setPosition: function() {
+            var opts = this.options,
+                pos,
+                posCss = this.namespace + '-' + opts.position;
+
+            this.width = this.$container.outerWidth();
+            this.height = this.$container.outerHeight();    
+
+            if (opts.mouseTrace !== true) {
+                //compute position
+                if (opts.autoPosition === true) {
+                    var newPos,
+                        collisions = [];
+
+                    if (opts.ajax === true && this.content === null) {
+                        // use default value to judge collisions
+                        collisions = getViewportCollisions($(this.target));
+                    } else {
+                        // change opts.postion
+                        collisions = getViewportCollisions($(this.target), this.$container);
+                    }
+                    
+                    if (collisions.length === 0) {
+                        newPos = opts.position;
+                    } else if (collisions.length === 1) {
+                        var res = resovolution[opts.position][collisions[0]];
+                        if (res === undefined) {
+                            newPos = opts.position;
+                        } else {
+                            newPos = res;
+                        }
+                    } else {
+                        var cachString = POSITION;
+                        $.each(collisions, function(i,v) {
+                            cachString.replace(v,'');
+                        });
+                        newPos = cachString;
+                    }
+                    
+                    posCss = this.namespace + '-' + newPos;
+                    pos = computePlacementCoords(this.target, newPos, this.width, this.height, this.options.popSpace);
+                } else {
+                    pos = computePlacementCoords(this.target, opts.position, this.width, this.height, this.options.popSpace);
+                }
+
+                //show container
+                this.$container.css({
+                    display: 'block',
+                    top: pos.top,
+                    left: pos.left
+                });
+            } else {
+                this.$container.addClass('pointer-events-none');
+            }
+
+            this.posCss = posCss;
+            this.$container.addClass(posCss);
         },
 
         /*
@@ -384,54 +468,7 @@
                 zIndex: 99990
             }).appendTo($('body'));
 
-            this.width = this.$container.outerWidth();
-            this.height = this.$container.outerHeight();
-
-            if (opts.mouseTrace === false) {
-                //compute position
-                if (opts.autoPosition === true) {
-                    var calPos = [],
-                        newPos,
-                        collisions = [];
-
-                    if (opts.ajax === true) {
-                        // use default value to judge collisions
-                        collisions = getViewportCollisions($(this.target));
-                    } else {
-                        // change opts.postion
-                        collisions = getViewportCollisions($(this.target), this.$container);
-                    }
-
-                    if (collisions.length > 0) {
-                        $.each(opts.position.split(''), function(i, v) {
-
-                            if ($.inArray(v, collisions) !== -1) {
-                                calPos.push(posList[v]);
-                            } else {
-                                calPos.push(v);
-                            }
-                        });
-                        newPos = calPos.join('');
-                    } else {
-                        newPos = opts.position;
-                    }
-                    posCss = this.namespace + '-' + newPos;
-                    pos = computePlacementCoords(this.target, newPos, this.width, this.height, this.options.popSpace);
-                } else {
-                    pos = computePlacementCoords(this.target, opts.position, this.width, this.height, this.options.popSpace);
-                }
-
-                //show container
-                this.$container.css({
-                    display: 'block',
-                    top: pos.top,
-                    left: pos.left
-                });
-            } else {
-                this.$container.addClass('pointer-events-none');
-            }
-
-            this.$container.addClass(posCss);
+            this.setPosition();
 
             //callback
             if (opts.onShow === 'function') {
@@ -454,6 +491,7 @@
             this.$elem.removeClass(this.namespace + '_active');
 
             this.$container.remove();
+            this.$container.removeClass(this.posCss);
 
             //callback
             if (this.options.onHide === 'function') {
