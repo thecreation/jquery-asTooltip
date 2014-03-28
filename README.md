@@ -1,20 +1,20 @@
-#jquery-tooltip
+#jquery-asTooltip
 
-The powerful jQuery plugin that creates tooltip.<a href="https://github.com/amazingSurge/jquery-tooltip">project page and dems</a>
+The powerful jQuery plugin that creates asTooltip.<a href="https://github.com/amazingSurge/jquery-asTooltip">project page and dems</a>
 
-Download:<a href="https://github.com/amazingSurge/jquery-tooltip/archive/master.zip">jquery-tooltip-master.zip.</a>
+Download:<a href="https://github.com/amazingSurge/jquery-asTooltip/archive/master.zip">jquery-asTooltip-master.zip.</a>
 
 ***
 
 ##features
 
-* **different positions** — tooltip provides 9 position for tips to display
-* **AJAXed tooltip spport** — ajax load content support
+* **different positions** — asTooltip provides 9 position for tips to display
+* **AJAXed asTooltip spport** — ajax load content support
 * **Auto position** — auto reposition to avoid being covered
 * **Lightweight size** — 1 kb gzipped
 
 ![image][]
- [image]: https://raw.github.com/amazingSurge/jquery-tooltip/master/demo/img/tooltip.png
+ [image]: https://raw.github.com/amazingSurge/jquery-asTooltip/master/demo/img/asTooltip.png
 
 
 ## Dependencies
@@ -25,29 +25,29 @@ Download:<a href="https://github.com/amazingSurge/jquery-tooltip/archive/master.
 
 Import this libraries:
 * jQuery
-* jquery-tooltip.js
+* jquery-asTooltip.js
 
 And CSS:
-* jquery-tooltip.css - desirable if you have not yet connected one
+* jquery-asTooltip.css - desirable if you have not yet connected one
 
 
 Create base input element:
 ```html
-<span class="position_tooltip" data-tooltip-position="n" title="North">North</span>                   
-<span class="position_tooltip" data-tooltip-position="w" title="West">West</span>
-<span class="position_tooltip" data-tooltip-position="e" title="East">East</span>                  
-<span class="position_tooltip" data-tooltip-position="s" title="South">South</span>
+<span class="position_asTooltip" data-asTooltip-position="n" title="North">North</span>                   
+<span class="position_asTooltip" data-asTooltip-position="w" title="West">West</span>
+<span class="position_asTooltip" data-asTooltip-position="e" title="East">East</span>                  
+<span class="position_asTooltip" data-asTooltip-position="s" title="South">South</span>
 ```
 
-Initialize tooltip:
+Initialize asTooltip:
 ```javascript
- $(".position_tooltip").tooltip();
+ $(".position_asTooltip").asTooltip();
 ```
 
-Or initialize tooltip with custom settings:
+Or initialize asTooltip with custom settings:
 ```javascript
-$(".position_tooltip").tooltip({
-     namespace: 'tooltip',
+$(".position_asTooltip").asTooltip({
+     namespace: 'asTooltip',
      trigger: 'hover'    // hover click
 });
 ```
@@ -57,21 +57,21 @@ $(".position_tooltip").tooltip({
 ```javascript
 {   
     // Optional property, Set a namespace for css class
-    namespace: 'tooltip',
+    namespace: 'asTooltip',
 
-    // Optional property, set target that show tooltip 
+    // Optional property, set target that show asTooltip 
     // it works when title property was not set
     target: null, 
 
-    // Optional property, the way to trigger tooltip content
+    // Optional property, the way to trigger asTooltip content
     // 'hover'/'click' to choose
     trigger: 'hover', // hover click
 
-    // Optional property, if true, tooltip will allow you interact with it 
-    // so you can some stuff, for example, copy the tooltip content
+    // Optional property, if true, asTooltip will allow you interact with it 
+    // so you can some stuff, for example, copy the asTooltip content
     interactive: false,
 
-     // Optional property, set how long the tooltip will stay  
+     // Optional property, set how long the asTooltip will stay  
     interactiveDelay: 500,
 
     // Optional property, if true, tip will trace with mouse inside selected element
@@ -83,13 +83,13 @@ $(".position_tooltip").tooltip({
     // Optional property, set the distance between tip and element 
     popSpace: 10, 
 
-    // Optional property, choose tooltip skin, more skins is coming soon
+    // Optional property, choose asTooltip skin, more skins is coming soon
     skin: null,
 
     // Optional property, set tip display position according to element
     position: 'n',
 
-    // Optional property,  if true, it will adjust tooltip's position when tooltip occur collisions with viewport
+    // Optional property,  if true, it will adjust asTooltip's position when asTooltip occur collisions with viewport
     autoPosition: true,
 
     // Optional property, set transition effect, 'fade'/'zoom'/'none' to choose, more effects are coming soon
@@ -98,10 +98,10 @@ $(".position_tooltip").tooltip({
     // Optional property, define how long animation effect will last
     duration: 200,
 
-    // Optional property, set inline element as tooltip content
+    // Optional property, set inline element as asTooltip content
     inline: false,
 
-    // set tooltip content
+    // set asTooltip content
     // by defaults, you can set your content as strings
     // if ajax is true, you can use resource reference, for example:'ajax.txt'
     // if inline is true, you can use inline DOm selector, for example: '#id', or '+', means select current element's next sibling element
@@ -114,7 +114,7 @@ $(".position_tooltip").tooltip({
     ajaxSettings: {
         dataType: 'html',
         headers: {
-            'tooltip': true
+            'asTooltip': true
         }
     },
 
@@ -123,7 +123,7 @@ $(".position_tooltip").tooltip({
     onHide: null,
     onUpdate: null,
 
-    // tooltip template
+    // asTooltip template
     tpl: {
         container: '<div class="{{namespace}}-container"></div>',
         loading: '<span class="{{namespace}}-loading"></span>',
@@ -137,43 +137,43 @@ $(".position_tooltip").tooltip({
 
 ## Public metheds
 
-jquery tooltip has different medthod , we can use it as below :
+jquery asTooltip has different medthod , we can use it as below :
 ```javascript
 
-// show tooltip 
-$("#api_tooltip").tooltip('show');
+// show asTooltip 
+$("#api_asTooltip").asTooltip('show');
 
-// hide tooltip 
-$("#api_tooltip").tooltip('hide');
+// hide asTooltip 
+$("#api_asTooltip").asTooltip('hide');
 
-// add a disable class to tooltip elment
-$("#api_tooltip").tooltip('disable');
+// add a disable class to asTooltip elment
+$("#api_asTooltip").asTooltip('disable');
 
 // remove the disable class
-$("#api_tooltip").tooltip('enable');
+$("#api_asTooltip").asTooltip('enable');
 
-// remove tooltip Dom emement and unbound all events 
-$("#api_tooltip").tooltip('destroy');
+// remove asTooltip Dom emement and unbound all events 
+$("#api_asTooltip").asTooltip('destroy');
 ```
 
 
 ## Event
 
 * <code>toooltip::show</code>: trigger when show called
-* <code>tooltip::hide</code>: trigger when hide called
-* <code>tooltip::update</code>: trigger when hide called
+* <code>asTooltip::hide</code>: trigger when hide called
+* <code>asTooltip::update</code>: trigger when hide called
 
 how to use event:
 ```javascript
-$(document).on('tooltip::show', function(event,instance) {
-    // instance means current tooltip instance 
+$(document).on('asTooltip::show', function(event,instance) {
+    // instance means current asTooltip instance 
     // some stuff
 });
 ```
 
 
 ## Browser support
-jquery-tooltip is verified to work in Internet Explorer 7+, Firefox 2+, Opera 9+, Google Chrome and Safari browsers. Should also work in many others.
+jquery-asTooltip is verified to work in Internet Explorer 7+, Firefox 2+, Opera 9+, Google Chrome and Safari browsers. Should also work in many others.
 
 Mobile browsers (like Opera mini, Chrome mobile, Safari mobile, Android browser and others) is coming soon.
 
@@ -185,11 +185,11 @@ Mobile browsers (like Opera mini, Chrome mobile, Safari mobile, Android browser 
 |   0.1.1 | ([compare][compare-1.1]) add auto position function              |
 |     ... | ...                                                              |
 
-[compare-1.2]: https://github.com/amazingSurge/jquery-tooltip/compare/v1.2.0...v1.3.0
-[compare-1.1]: https://github.com/amazingSurge/jquery-tooltip/compare/v1.1.0...v1.2.0
+[compare-1.2]: https://github.com/amazingSurge/jquery-asTooltip/compare/v1.2.0...v1.3.0
+[compare-1.1]: https://github.com/amazingSurge/jquery-asTooltip/compare/v1.1.0...v1.2.0
 
 ## Author
 [amazingSurge](http://amazingSurge.com)
 
 ## License
-jquery-tooltip plugin is released under the <a href="https://github.com/amazingSurge/jquery-tooltip/blob/master/LICENCE.GPL" target="_blank">GPL licence</a>.
+jquery-asTooltip plugin is released under the <a href="https://github.com/amazingSurge/jquery-asTooltip/blob/master/LICENCE.GPL" target="_blank">GPL licence</a>.

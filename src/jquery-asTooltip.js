@@ -1,13 +1,18 @@
-/*! jQuery tooltip - v0.1.0 - 2013-10-12
-* https://github.com/amazingSurge/jquery-tooltip
-* Copyright (c) 2013 amazingSurge; Licensed GPL */
+/*
+ * toolTip
+ * https://github.com/amazingSurge/tooltip
+ *
+ * Copyright (c) 2013 amazingSurge
+ * Licensed under the MIT license.
+ */
+
 (function($) {
     "use strict";
 
-    var v,$win = $(window);
+    var v, $win = $(window);
     var active = false;
     var dataPool = [];
-    
+
     var POSITION = 'nswe';
     var resovolution = {
         n: {
@@ -178,19 +183,19 @@
     }
 
     // Static method.
-    var Tooltip = $.tooltip = function(elem, options) {
+    var AsTooltip = $.asTooltip = function(elem, options) {
         var metas = {};
 
         this.$elem = $(elem);
 
         $.each(this.$elem.data(), function(k, v) {
-            if (/^tooltip/i.test(k)) {
-                metas[k.toLowerCase().replace(/^tooltip/i, '')] = v;
+            if (/^asTooltip/i.test(k)) {
+                metas[k.toLowerCase().replace(/^asTooltip/i, '')] = v;
             }
         });
 
         //options is a static properity
-        this.options = $.extend({}, Tooltip.defaults, options, metas);
+        this.options = $.extend({}, AsTooltip.defaults, options, metas);
         this.namespace = this.options.namespace;
 
         if (this.$elem.attr('title')) {
@@ -210,8 +215,8 @@
         this.init();
     };
 
-    Tooltip.prototype = {
-        constructor: Tooltip,
+    AsTooltip.prototype = {
+        constructor: AsTooltip,
         init: function() {
             var opts = this.options,
                 self = this;
@@ -226,7 +231,7 @@
             this.$content = $(opts.tpl.content);
 
             if (opts.trigger === 'hover') {
-                this.target.on('mouseenter.tooltip', function() {
+                this.target.on('mouseenter.asTooltip', function() {
                     if (self.isOpen === true) {
                         clearTimeout(this.tolerance);
                         return;
@@ -236,13 +241,13 @@
                 });
 
                 if (opts.interactive === true) {
-                    this.target.on('mouseleave.tooltip', function() {
+                    this.target.on('mouseleave.asTooltip', function() {
                         var keepShow = false;
 
-                        self.$container.on('mouseenter', function() {
+                        self.$container.on('mouseenter.asTooltip', function() {
                             keepShow = true;
                         });
-                        self.$container.on('mouseleave', function() {
+                        self.$container.on('mouseleave.asTooltip', function() {
                             keepShow = false;
                         });
 
@@ -250,7 +255,7 @@
 
                         this.tolerance = setTimeout(function() {
                             if (keepShow === true) {
-                                self.$container.on('mouseleave.tooltip', $.proxy(self.hide, self));
+                                self.$container.on('mouseleave.asTooltip', $.proxy(self.hide, self));
                             } else {
                                 $.proxy(self.hide, self)();
                             }
@@ -258,13 +263,13 @@
                     });
 
                 } else {
-                    this.target.on('mouseleave.tooltip', $.proxy(self.hide, self));
+                    this.target.on('mouseleave.asTooltip', $.proxy(self.hide, self));
                 }
 
                 if (this.options.mouseTrace === true) {
-                    this.target.on('mousemove.tooltip', function(event) {
+                    this.target.on('mousemove.asTooltip', function(event) {
                         var pos, cursor = {},
-                        x = event.pageX,
+                            x = event.pageX,
                             y = event.pageY;
 
                         cursor = {
@@ -283,7 +288,7 @@
                 }
             }
             if (opts.trigger === 'click') {
-                this.target.on('click.tooltip', function() {
+                this.target.on('click.asTooltip', function() {
                     if (self.isOpen === true) {
                         $.proxy(self.hide, self)();
                     } else {
@@ -308,26 +313,27 @@
                     },
                     success: function(data, status) {
                         if (status === 'success') {
-                            var collisions,newPos;
-
                             self.content = data;
-
                             self.$container.css({
                                 display: 'none'
                             });
-                            self.$content.empty().append(self.content); 
-                            self.$container.removeClass(self.posCss);       
+                            self.$content.empty().append(self.content);
+                            self.$container.removeClass(self.posCss);
                             self.setPosition();
                         }
                     }
                 }));
             } else if (opts.inline === true) {
                 if (opts.title.indexOf('+') !== -1) {
-                    this.content = this.$elem.next().css({display:'block'});
+                    this.content = this.$elem.next().css({
+                        display: 'block'
+                    });
                 } else {
-                    this.content = $(opts.title).css({display:'block'});
+                    this.content = $(opts.title).css({
+                        display: 'block'
+                    });
                 }
-                
+
             } else {
                 this.content = opts.title;
             }
@@ -339,7 +345,7 @@
         parseTpl: function(obj) {
             var tpl = {},
                 self = this;
-            $.each(obj, function(key,value) {
+            $.each(obj, function(key, value) {
                 tpl[key] = value.replace('{{namespace}}', self.namespace);
             });
 
@@ -362,7 +368,7 @@
                 posCss = this.namespace + '-' + opts.position;
 
             this.width = this.$container.outerWidth();
-            this.height = this.$container.outerHeight();    
+            this.height = this.$container.outerHeight();
 
             if (opts.mouseTrace !== true) {
                 //compute position
@@ -377,7 +383,7 @@
                         // change opts.postion
                         collisions = getViewportCollisions($(this.target), this.$container);
                     }
-                    
+
                     if (collisions.length === 0) {
                         newPos = opts.position;
                     } else if (collisions.length === 1) {
@@ -389,12 +395,12 @@
                         }
                     } else {
                         var cachString = POSITION;
-                        $.each(collisions, function(i,v) {
-                            cachString.replace(v,'');
+                        $.each(collisions, function(i, v) {
+                            cachString.replace(v, '');
                         });
                         newPos = cachString;
                     }
-                    
+
                     posCss = this.namespace + '-' + newPos;
                     pos = computePlacementCoords(this.target, newPos, this.width, this.height, this.options.popSpace);
                 } else {
@@ -418,11 +424,9 @@
         /*
             Public Method
          */
-        
+
         show: function() {
             var opts = this.options,
-                pos,
-                posCss = this.namespace + '-' + opts.position,
                 self = this;
 
             if (this.enabled === false) {
@@ -456,7 +460,7 @@
                 this.$content.empty().append(this.content);
             }
 
-            if (opts.skin !== null) {
+            if (opts.skin) {
                 this.$container.addClass(this.namespace + '_' + opts.skin);
             }
 
@@ -484,7 +488,7 @@
         hide: function() {
 
             //unbinded all custom event
-            this.$container.off('.tooltip');
+            this.$container.off('.asTooltip');
             //support event
             this.$container.trigger('hide');
 
@@ -515,13 +519,13 @@
             return this;
         },
         destroy: function() {
-            this.target.off('.tooltip');
+            this.target.off('.asTooltip');
         }
     };
 
     // Static method default options.
-    Tooltip.defaults = {
-        namespace: 'tooltip',
+    AsTooltip.defaults = {
+        namespace: 'asTooltip',
         skin: null,
 
         target: null, // mouse element
@@ -548,7 +552,7 @@
         ajaxSettings: {
             dataType: 'html',
             headers: {
-                'tooltip': true
+                'asTooltip': true
             }
         },
 
@@ -565,22 +569,21 @@
         }
     };
 
-
-    $.fn.tooltip = function(options) {
+    $.fn.asTooltip = function(options) {
         if (typeof options === 'string') {
             var method = options;
             var method_arguments = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : undefined;
 
             return this.each(function() {
-                var api = $.data(this, 'tooltip');
+                var api = $.data(this, 'asTooltip');
                 if (typeof api[method] === 'function') {
                     api[method].apply(api, method_arguments);
                 }
             });
         } else {
             return this.each(function() {
-                if (!$.data(this, 'tooltip')) {
-                    $.data(this, 'tooltip', new Tooltip(this, options));
+                if (!$.data(this, 'asTooltip')) {
+                    $.data(this, 'asTooltip', new AsTooltip(this, options));
                 }
             });
         }

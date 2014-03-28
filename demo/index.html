@@ -6,7 +6,7 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>jQuery Tooltip</title>
+        <title>jQuery asTooltip</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
 
@@ -14,11 +14,11 @@
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/prism.css">
-        <link rel="stylesheet" href="css/tooltip.css">
+        <link rel="stylesheet" href="css/asTooltip.css">
         <script src="js/vendor/jquery-1.8.0.min.js"></script>
         <script src="js/vendor/prism.js"></script>
         <script src="js/vendor/jquery.toc.js"></script>
-        <script src="../src/jquery-tooltip.js"></script>
+        <script src="../src/jquery-asTooltip.js"></script>
     </head>
 <body>
 <!--[if lt IE 7]>
@@ -32,25 +32,25 @@
         <section>
             <h3>position</h3>
                 <pre class="has-example"><code class="language-javascript">
-$(".tooltip").tooltip();
+$(".tooltip").asTooltip();
                 </code></pre>
                 <div class="positon_wrap example">
-                    <span class="position_tooltip" data-tooltip-position="nw" title="North West">North West</span>
-                    <span class="position_tooltip" data-tooltip-position="n" title="North">North</span>
-                    <span class="position_tooltip" data-tooltip-position="ne" title="North East">North East</span>
-                    <span class="position_tooltip" data-tooltip-position="w" title="West">West</span>
-                    <span class="position_tooltip" data-tooltip-position="n" title="North West">Center</span>
-                    <span class="position_tooltip" data-tooltip-position="e" title="East">East</span>
-                    <span class="position_tooltip" data-tooltip-position="sw" title="South West">South West</span>
-                    <span class="position_tooltip" data-tooltip-position="s" title="South">South</span>
-                    <span class="position_tooltip" data-tooltip-position="se" title="South East">South East</span>
+                    <span class="position_tooltip" data-asTooltip-position="nw" title="North West">North West</span>
+                    <span class="position_tooltip" data-asTooltip-position="n" title="North">North</span>
+                    <span class="position_tooltip" data-asTooltip-position="ne" title="North East">North East</span>
+                    <span class="position_tooltip" data-asTooltip-position="w" title="West">West</span>
+                    <span class="position_tooltip" data-asTooltip-position="n" title="North West">Center</span>
+                    <span class="position_tooltip" data-asTooltip-position="e" title="East">East</span>
+                    <span class="position_tooltip" data-asTooltip-position="sw" title="South West">South West</span>
+                    <span class="position_tooltip" data-asTooltip-position="s" title="South">South</span>
+                    <span class="position_tooltip" data-asTooltip-position="se" title="South East">South East</span>
                     <script>
                         $(document).ready(function() {
-                          $.tooltip.defaults.skin = 'skin-dream';                              
+                          $.asTooltip.defaults.skin = 'skin-dream';                              
                         });
                         
                         $(document).ready(function() {
-                          $(".position_tooltip").tooltip();                               
+                          $(".position_tooltip").asTooltip();                               
                         });
 
                         
@@ -61,7 +61,7 @@ $(".tooltip").tooltip();
         <section>
             <h3>Trigger</h3>
             <pre class="has-example"><code class="language-javascript">
-$(".tooltip-ajax").tooltip({
+$(".tooltip-ajax").asTooltip({
     trigger: 'click',
     position: 'ne'
 });
@@ -72,7 +72,7 @@ $(".tooltip-ajax").tooltip({
                 <script>
                     
                     $(document).ready(function() {
-                        $(".tooltip-click").tooltip({
+                        $(".tooltip-click").asTooltip({
                             trigger: 'click',
                             position: 'ne'
                         });                             
@@ -83,7 +83,7 @@ $(".tooltip-ajax").tooltip({
         <section>
             <h3>Ajax</h3>
             <pre class="has-example"><code class="language-javascript">
-$(".tooltip-ajax").tooltip({
+$(".tooltip-ajax").asTooltip({
     ajax: true
 });
             </code></pre>
@@ -93,7 +93,7 @@ $(".tooltip-ajax").tooltip({
                 <script>
                     
                     $(document).ready(function() {
-                        $(".tooltip-ajax").tooltip({
+                        $(".tooltip-ajax").asTooltip({
                             ajax: true,
                             position: 'nw'
                         });                             
@@ -105,17 +105,17 @@ $(".tooltip-ajax").tooltip({
         <section>
             <h3>Mosuce Trace</h3>
             <pre class="has-example"><code class="language-javascript">
-$(".tooltip-ajax").tooltip({
+$(".tooltip-ajax").asTooltip({
     mouseTrace: true
 });
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-mouseTrace show trace" data-tooltip-position="nw" title="You trace with me !">mouseTrace area</span>
+                <span class="tooltip-mouseTrace show trace" data-asTooltip-position="nw" title="You trace with me !">mouseTrace area</span>
                 
                 <script>
                     
                     $(document).ready(function() {
-                        $(".tooltip-mouseTrace").tooltip({
+                        $(".tooltip-mouseTrace").asTooltip({
                             mouseTrace: true
                         });                             
                     });
@@ -125,17 +125,17 @@ $(".tooltip-ajax").tooltip({
         <section>
             <h3>Interactive</h3>
             <pre class="has-example"><code class="language-javascript">
-$(".tooltip-ajax").tooltip({
+$(".tooltip-ajax").asTooltip({
     interactive: true
 });
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-interactive show" data-tooltip-position="nw" title="Interactive with popup">Interactive with popup</span>
+                <span class="tooltip-interactive show" data-asTooltip-position="nw" title="Interactive with popup">Interactive with popup</span>
                 
                 <script>
                     
                     $(document).ready(function() {
-                        $(".tooltip-interactive").tooltip({
+                        $(".tooltip-interactive").asTooltip({
                             interactive: true
                         });                             
                     });
@@ -145,17 +145,17 @@ $(".tooltip-ajax").tooltip({
         <section>
             <h3>Autoposition</h3>
             <pre class="has-example"><code class="language-javascript">
-$(".tooltip-ajax").tooltip({
+$(".tooltip-ajax").asTooltip({
     autoPosition: true
 });
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-autoPosition show" data-tooltip-position="nw" title="Autoposition with viewport">Autoposition</span>
+                <span class="tooltip-autoPosition show" data-asTooltip-position="nw" title="Autoposition with viewport">Autoposition</span>
                 
                 <script>
                     
                     $(document).ready(function() {
-                        $(".tooltip-autoPosition").tooltip({
+                        $(".tooltip-autoPosition").asTooltip({
                             autoPosition: true
                         });                             
                     });
@@ -165,19 +165,19 @@ $(".tooltip-ajax").tooltip({
         <section>
             <h3>Inline</h3>
             <pre class="has-example"><code class="language-javascript">
-$(".tooltip-inline").tooltip({
+$(".tooltip-inline").asTooltip({
     inline: true,
     title: '#tip'
 });
 
 // add content from next siblings
-$(".tooltip-inline-siblings").tooltip({
+$(".tooltip-inline-siblings").asTooltip({
     inline: true,
     title: '+'
 });
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-inline show" data-tooltip-position="nw">Inline</span>
+                <span class="tooltip-inline show" data-asTooltip-position="nw">Inline</span>
                 <div id="tip" style="display:none;">
                     <h6>hello</h6>
                     <span>this is inline content</span>
@@ -185,7 +185,7 @@ $(".tooltip-inline-siblings").tooltip({
                 
                 <script>
                     $(document).ready(function() {
-                        $(".tooltip-inline").tooltip({
+                        $(".tooltip-inline").asTooltip({
                             inline: true,
                             title: '#tip'
                         });                             
@@ -193,7 +193,7 @@ $(".tooltip-inline-siblings").tooltip({
                 </script>
             </div>
             <div class="positon_wrap example">
-                <span class="tooltip-inline-siblings show" data-tooltip-position="nw">Inline-siblings</span>
+                <span class="tooltip-inline-siblings show" data-asTooltip-position="nw">Inline-siblings</span>
                 <div style="display:none;">
                     <h6>hello</h6>
                     <span>this is inline siblings</span>
@@ -201,7 +201,7 @@ $(".tooltip-inline-siblings").tooltip({
                 
                 <script>
                     $(document).ready(function() {
-                        $(".tooltip-inline-siblings").tooltip({
+                        $(".tooltip-inline-siblings").asTooltip({
                             inline: true,
                             title: '+'
                         });                             
@@ -212,17 +212,17 @@ $(".tooltip-inline-siblings").tooltip({
         <section>
             <h3>Skin</h3>
             <pre class="has-example"><code class="language-javascript">
-$(".tooltip-ajax").tooltip({
+$(".tooltip-ajax").asTooltip({
     skin: 'sea'
 });
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-autoPosition show" data-tooltip-position="nw" title="a beautiful skin">I have a 'sea' skin</span>
+                <span class="tooltip-autoPosition show" data-asTooltip-position="nw" title="a beautiful skin">I have a 'sea' skin</span>
                 
                 <script>
                     
                     $(document).ready(function() {
-                        $(".tooltip-autoPosition").tooltip({
+                        $(".tooltip-autoPosition").asTooltip({
                             skin: 'sea'
                         });                             
                     });
@@ -233,7 +233,7 @@ $(".tooltip-ajax").tooltip({
     <section>
         <h2>API</h2>
         <pre class="has-example"><code class="language-javascript">
-var api = $("#api_tooltip").tooltip();
+var api = $("#api_tooltip").asTooltip();
 $('#api_show').on('click',function(){
     api.show();
 });
@@ -265,7 +265,7 @@ $('#api_destory').on('click',function(){
             <script>
 
             $(document).ready(function() {
-                var api = $("#api_tooltip").tooltip().data('tooltip');
+                var api = $("#api_tooltip").asTooltip().data('asTooltip');
 
                 $('#api_show').on('click',function(){
                     api.show();

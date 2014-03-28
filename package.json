@@ -1,38 +1,36 @@
 {
-  "name": "jquery-tooltip",
-  "title": "jQuery tooltip",
-  "description": "A jQuery plugin for showing tooltip text when hover on a element.",
-  "version": "0.1.0",
-  "homepage": "https://github.com/amazingSurge/jquery-tooltip",
-  "author": {
-    "name": "amazingSurge",
-    "email": "amazingSurge@gmail.com"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:amazingSurge/jquery-tooltip.git"
-  },
-  "bugs": "https://github.com/amazingSurge/jquery-tooltip/issues",
-  "licenses": [
-    {
-      "type": "GPL",
-      "url": "https://github.com/amazingSurge/jquery-tooltip/blob/master/LICENSE-GPL"
+    "name": "jquery-asTooltip",
+    "title": "jQuery asTooltip",
+    "description": "A jQuery plugin for showing asTooltip text when hover on a element.",
+    "version": "0.1.0",
+    "homepage": "https://github.com/amazingSurge/jquery-asTooltip",
+    "author": {
+        "name": "amazingSurge",
+        "email": "amazingSurge@gmail.com"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:amazingSurge/jquery-asTooltip.git"
+    },
+    "bugs": "https://github.com/amazingSurge/jquery-asTooltip/issues",
+    "licenses": [{
+        "type": "GPL",
+        "url": "https://github.com/amazingSurge/jquery-asTooltip/blob/master/LICENSE-GPL"
+    }],
+    "engines": {
+        "node": ">= 0.8.0"
+    },
+    "devDependencies": {
+        "grunt-contrib-jshint": "~0.1.1",
+        "grunt-contrib-concat": "~0.1.2",
+        "grunt-contrib-uglify": "~0.1.1",
+        "grunt-contrib-watch": "~0.2.0",
+        "grunt-contrib-clean": "~0.4.0",
+        "grunt": "~0.4.1",
+        "grunt-jsbeautifier": "~0.1.6",
+        "grunt-recess": "~0.3.1"
+    },
+    "dependencies": {
+        "grunt-text-replace": "~0.3.6"
     }
-  ],
-  "engines": {
-    "node": ">= 0.8.0"
-  },
-  "devDependencies": {
-    "grunt-contrib-jshint": "~0.1.1",
-    "grunt-contrib-concat": "~0.1.2",
-    "grunt-contrib-uglify": "~0.1.1",
-    "grunt-contrib-watch": "~0.2.0",
-    "grunt-contrib-clean": "~0.4.0",
-    "grunt": "~0.4.1",
-    "grunt-jsbeautifier": "~0.1.6",
-    "grunt-recess": "~0.3.1"
-  },
-  "dependencies": {
-    "grunt-text-replace": "~0.3.6"
-  }
 }
