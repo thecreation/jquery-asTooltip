@@ -1,4 +1,4 @@
-/*! jQuery asTooltip - v0.1.0 - 2014-03-28
+/*! jQuery asTooltip - v0.1.0 - 2014-04-30
 * https://github.com/amazingSurge/jquery-asTooltip
 * Copyright (c) 2014 amazingSurge; Licensed GPL */
 (function($) {
@@ -424,21 +424,21 @@
             var opts = this.options,
                 self = this;
 
-            if (this.enabled === false) {
+            if (!this.enabled) {
                 return;
             }
-            if (this.onlyOne === true) {
+            if (this.onlyOne) {
                 $.each(dataPool, function(i, v) {
                     if (v === self) {
                         return;
                     } else {
-                        if (v.isOpen === true) {
+                        if (v.isOpen) {
                             v.hide();
                         }
                     }
                 });
             }
-            if (opts.closeBtn === true) {
+            if (opts.closeBtn) {
                 this.$container.append(this.$close);
             }
             this.$container.append(this.$arrow).append(this.$content);
@@ -455,7 +455,7 @@
                 this.$content.empty().append(this.content);
             }
 
-            if (opts.skin !== null) {
+            if (opts.skin) {
                 this.$container.addClass(this.namespace + '_' + opts.skin);
             }
 
@@ -518,13 +518,21 @@
         }
     };
 
+    AsTooltip.closeAll = function() {
+        dataPool.map(function(instance) {
+            if (instance.isOpen) {
+                instance.hide();
+            }
+        });
+    };
+
     // Static method default options.
     AsTooltip.defaults = {
         namespace: 'asTooltip',
         skin: null,
 
         target: null, // mouse element
-
+        onlyOne: false,
         trigger: 'hover', // hover click
         interactive: false,
         interactiveDelay: 500,
