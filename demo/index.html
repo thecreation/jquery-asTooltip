@@ -14,7 +14,9 @@
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" href="css/prism.css">
-        <link rel="stylesheet" href="css/asTooltip.css">
+        <link rel="stylesheet" href="../css/tooltip.css">
+        <link rel="stylesheet" href="../css/tooltip.dream.css">
+         <link rel="stylesheet" href="../css/tooltip.sea.css">
         <script src="js/vendor/jquery-1.8.0.min.js"></script>
         <script src="js/vendor/prism.js"></script>
         <script src="js/vendor/jquery.toc.js"></script>
@@ -46,7 +48,7 @@ $(".tooltip").asTooltip();
                     <span class="position_tooltip" data-asTooltip-position="se" title="South East">South East</span>
                     <script>
                         $(document).ready(function() {
-                          $.asTooltip.defaults.skin = 'skin-dream';                              
+                          $.asTooltip.defaults.skin = 'dream';                              
                         });
                         
                         $(document).ready(function() {
@@ -217,12 +219,12 @@ $(".tooltip-ajax").asTooltip({
 });
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-autoPosition show" data-asTooltip-position="nw" title="a beautiful skin">I have a 'sea' skin</span>
+                <span class="tooltip-skin show" data-asTooltip-position="nw" title="a beautiful skin">I have a 'sea' skin</span>
                 
                 <script>
                     
                     $(document).ready(function() {
-                        $(".tooltip-autoPosition").asTooltip({
+                        $(".tooltip-skin").asTooltip({
                             skin: 'sea'
                         });                             
                     });

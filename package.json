@@ -1,36 +1,40 @@
 {
-    "name": "jquery-asTooltip",
-    "title": "jQuery asTooltip",
-    "description": "A jQuery plugin for showing asTooltip text when hover on a element.",
-    "version": "0.1.0",
-    "homepage": "https://github.com/amazingSurge/jquery-asTooltip",
-    "author": {
-        "name": "amazingSurge",
-        "email": "amazingSurge@gmail.com"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git@github.com:amazingSurge/jquery-asTooltip.git"
-    },
-    "bugs": "https://github.com/amazingSurge/jquery-asTooltip/issues",
-    "licenses": [{
-        "type": "GPL",
-        "url": "https://github.com/amazingSurge/jquery-asTooltip/blob/master/LICENSE-GPL"
-    }],
-    "engines": {
-        "node": ">= 0.8.0"
-    },
-    "devDependencies": {
-        "grunt-contrib-jshint": "~0.1.1",
-        "grunt-contrib-concat": "~0.1.2",
-        "grunt-contrib-uglify": "~0.1.1",
-        "grunt-contrib-watch": "~0.2.0",
-        "grunt-contrib-clean": "~0.4.0",
-        "grunt": "~0.4.1",
-        "grunt-jsbeautifier": "~0.1.6",
-        "grunt-recess": "~0.3.1"
-    },
-    "dependencies": {
-        "grunt-text-replace": "~0.3.6"
+  "name": "jquery-asTooltip",
+  "title": "jQuery asTooltip",
+  "description": "A jQuery plugin for showing asTooltip text when hover on a element.",
+  "version": "0.2.0",
+  "homepage": "https://github.com/amazingSurge/jquery-asTooltip",
+  "author": {
+    "name": "amazingSurge",
+    "email": "amazingSurge@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:amazingSurge/jquery-asTooltip.git"
+  },
+  "bugs": "https://github.com/amazingSurge/jquery-asTooltip/issues",
+  "licenses": [
+    {
+      "type": "GPL",
+      "url": "https://github.com/amazingSurge/jquery-asTooltip/blob/master/LICENSE-GPL"
     }
+  ],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-uglify": "*",
+    "grunt-contrib-watch": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-text-replace": "*",
+    "grunt-jsbeautifier": "*",
+    "grunt-csscomb": "*",
+    "grunt-autoprefixer": "*",
+    "grunt-contrib-less": "~0.11.0",
+    "load-grunt-tasks": "~0.4.0"
+  },
+  "dependencies": {}
 }

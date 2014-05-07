@@ -53,11 +53,6 @@
         }
     };
 
-    // we'll use this to detect for mobile devices
-    function is_touch_device() {
-        return !!('ontouchstart' in window);
-    }
-
     // this is the core function to compute the position to show depended on the given placement argument 
     function computePlacementCoords(element, placement, popWidth, popHeight, popSpace, onCursor) {
         // grab measurements
@@ -413,8 +408,6 @@
                     top: pos.top,
                     left: pos.left
                 });
-            } else {
-                this.$container.addClass('pointer-events-none');
             }
 
             this.posCss = posCss;
@@ -569,7 +562,7 @@
         onUpdate: null,
 
         tpl: {
-            container: '<div class="{{namespace}}-container"></div>',
+            container: '<div class="{{namespace}}"></div>',
             loading: '<span class="{{namespace}}-loading"></span>',
             content: '<div class="{{namespace}}-content"></div>',
             arrow: '<span class="{{namespace}}-arrow"></span>',

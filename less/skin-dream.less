@@ -1,0 +1,83 @@
+// skin dream
+//====================================================
+.asTooltip_dream {
+	position: relative;
+	display: inline-block;
+
+	.asTooltip-arrow {
+		position: absolute;
+		display: inline-block;
+
+		width: 15px;
+		height: 15px;
+		z-index: -1;
+		background-color: #434240;
+		transform: rotate(45deg);
+	}
+
+	.asTooltip-content {
+		display: inline-block;
+		max-width: 200px;
+		padding: 6px 8px;
+		font-size: 13px;
+		color: #fff;
+		text-shadow: 1px, -1px, 1px, #777;
+		background-color: #434240;
+		border-radius: 3px;
+	}
+
+    &.asTooltip-n {
+        .asTooltip-arrow {
+            left: 50%;
+            bottom: -4px;
+            margin-left: -10px;
+        }
+    }
+    &.asTooltip-s {
+        .asTooltip-arrow {
+            left: 50%;
+            top: -4px;
+            margin-left: -10px;
+        }
+    }
+    &.asTooltip-w {
+        .asTooltip-arrow {
+
+            top: 50%;
+            right: -4px;
+            margin-top: -10px;
+        }
+    }
+    &.asTooltip-e {
+        .asTooltip-arrow {
+
+            top: 50%;
+            left: -4px;
+            margin-top: -10px;
+        }
+    }
+    &.asTooltip-ne {
+        .asTooltip-arrow {
+            bottom: -4px;
+            left: 9px;
+        }
+    }
+    &.asTooltip-nw {
+        .asTooltip-arrow {
+            bottom: -4px;
+            right: 9px;
+        }
+    }
+    &.asTooltip-se {
+        .asTooltip-arrow {
+            left: 9px;
+            top: -4px;
+        }
+    }
+    &.asTooltip-sw {
+        .asTooltip-arrow {
+            right: 9px;
+            top: -4px;
+        }
+    }
+}

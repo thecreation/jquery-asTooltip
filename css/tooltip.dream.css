@@ -1,0 +1,62 @@
+.asTooltip_dream {
+  position: relative;
+  display: inline-block;
+}
+.asTooltip_dream .asTooltip-arrow {
+  position: absolute;
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  z-index: -1;
+  background-color: #434240;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.asTooltip_dream .asTooltip-content {
+  display: inline-block;
+  max-width: 200px;
+  padding: 6px 8px;
+  font-size: 13px;
+  color: #fff;
+  text-shadow: 1px, -1px, 1px, #777777;
+  background-color: #434240;
+  border-radius: 3px;
+}
+.asTooltip_dream.asTooltip-n .asTooltip-arrow {
+  left: 50%;
+  bottom: -4px;
+  margin-left: -10px;
+}
+.asTooltip_dream.asTooltip-s .asTooltip-arrow {
+  left: 50%;
+  top: -4px;
+  margin-left: -10px;
+}
+.asTooltip_dream.asTooltip-w .asTooltip-arrow {
+  top: 50%;
+  right: -4px;
+  margin-top: -10px;
+}
+.asTooltip_dream.asTooltip-e .asTooltip-arrow {
+  top: 50%;
+  left: -4px;
+  margin-top: -10px;
+}
+.asTooltip_dream.asTooltip-ne .asTooltip-arrow {
+  bottom: -4px;
+  left: 9px;
+}
+.asTooltip_dream.asTooltip-nw .asTooltip-arrow {
+  bottom: -4px;
+  right: 9px;
+}
+.asTooltip_dream.asTooltip-se .asTooltip-arrow {
+  left: 9px;
+  top: -4px;
+}
+.asTooltip_dream.asTooltip-sw .asTooltip-arrow {
+  right: 9px;
+  top: -4px;
+}
