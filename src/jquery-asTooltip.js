@@ -178,12 +178,12 @@
     }
 
     // Static method.
-    var AsTooltip = $.asTooltip = function(elem, options) {
+    var AsTooltip = $.asTooltip = function(element, options) {
         var metas = {};
 
-        this.$elem = $(elem);
+        this.$element = $(element);
 
-        $.each(this.$elem.data(), function(k, v) {
+        $.each(this.$element.data(), function(k, v) {
             if (/^asTooltip/i.test(k)) {
                 metas[k.toLowerCase().replace(/^asTooltip/i, '')] = v;
             }
@@ -193,20 +193,20 @@
         this.options = $.extend({}, AsTooltip.defaults, options, metas);
         this.namespace = this.options.namespace;
 
-        if (this.$elem.attr('title')) {
-            this.options.title = this.$elem.attr('title');
-            this.$elem.removeAttr('title');
+        if (this.$element.attr('title')) {
+            this.options.title = this.$element.attr('title');
+            this.$element.removeAttr('title');
         }
 
         this.content = null;
-        this.target = this.options.target || this.$elem;
+        this.target = this.options.target || this.$element;
 
-        this.isOpen = null;
+        this.isOpen = false;
         this.enabled = true;
         this.tolerance = null;
 
-        this.onlyOne = this.options.onlyOne || false;
-
+        this.onlyOne = this.options.onlyOne;
+        this._trigger('init');
         this.init();
     };
 
@@ -294,6 +294,7 @@
 
             //store all instance in dataPool
             dataPool.push(this);
+            this._trigger('ready');
         },
         load: function() {
             var self = this,
@@ -320,7 +321,7 @@
                 }));
             } else if (opts.inline === true) {
                 if (opts.title.indexOf('+') !== -1) {
-                    this.content = this.$elem.next().css({
+                    this.content = this.$element.next().css({
                         display: 'block'
                     });
                 } else {
@@ -328,14 +329,9 @@
                         display: 'block'
                     });
                 }
-
             } else {
                 this.content = opts.title;
             }
-
-            // if (this.content === null) {
-            //     throw new Error('no content');
-            // }
         },
         parseTpl: function(obj) {
             var tpl = {},
@@ -413,6 +409,21 @@
             this.posCss = posCss;
             this.$container.addClass(posCss);
         },
+        _trigger: function(eventType) {
+            // event
+            this.$element.trigger('asColorInput::' + eventType, this);
+            this.$element.trigger(eventType + '.asColorInput', this);
+
+            // callback
+            eventType = eventType.replace(/\b\w+\b/g, function(word) {
+                return word.substring(0, 1).toUpperCase() + word.substring(1);
+            });
+            var onFunction = 'on' + eventType;
+            var method_arguments = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : undefined;
+            if (typeof this.options[onFunction] === 'function') {
+                this.options[onFunction].apply(this, method_arguments);
+            }
+        },
 
         /*
             Public Method
@@ -441,7 +452,7 @@
             }
             this.$container.append(this.$arrow).append(this.$content);
 
-            this.$elem.addClass(this.namespace + '_active');
+            this.$element.addClass(this.namespace + '_active');
 
             // here judge the position first and then insert into body
             // if content has loaded , never load again
@@ -467,13 +478,7 @@
 
             this.setPosition();
 
-            //callback
-            if (opts.onShow === 'function') {
-                opts.onShow(this.$elem);
-            }
-
-            //support event
-            this.$container.trigger('show');
+            this._trigger('show');
             this.isOpen = true;
 
             return this;
@@ -483,17 +488,12 @@
             //unbinded all custom event
             this.$container.off('.asTooltip');
             //support event
-            this.$container.trigger('hide');
+            this._trigger('hide');
 
-            this.$elem.removeClass(this.namespace + '_active');
+            this.$element.removeClass(this.namespace + '_active');
 
             this.$container.remove();
             this.$container.removeClass(this.posCss);
-
-            //callback
-            if (this.options.onHide === 'function') {
-                this.options.onHide(this.$elem);
-            }
 
             this.isOpen = false;
             active = false;
@@ -529,7 +529,7 @@
         namespace: 'asTooltip',
         skin: null,
 
-        target: null, // mouse element
+        target: null, // mouse elementent
         onlyOne: false,
         trigger: 'hover', // hover click
         interactive: false,
