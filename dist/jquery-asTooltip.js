@@ -1,10 +1,10 @@
-/*! jQuery asTooltip - v0.2.0 - 2014-05-13
+/*! jQuery asTooltip - v0.2.0 - 2014-06-11
 * https://github.com/amazingSurge/jquery-asTooltip
 * Copyright (c) 2014 amazingSurge; Licensed GPL */
 (function($) {
     "use strict";
 
-    var v, $win = $(window);
+    var $win = $(window);
     var active = false;
     var dataPool = [];
 
@@ -112,12 +112,12 @@
         };
     }
 
-    function getViewportCollisions(target, popElem) {
+    function getViewportCollisions($target, popElem) {
         var scrollLeft = $win.scrollLeft(),
             scrollTop = $win.scrollTop(),
-            offset = target.offset(),
-            elementWidth = target.outerWidth(true),
-            elementHeight = target.outerHeight(true),
+            offset = $target.offset(),
+            elementWidth = $target.outerWidth(true),
+            elementHeight = $target.outerHeight(true),
             windowWidth = $win.width(),
             windowHeight = $win.height(),
             collisions = [],
@@ -148,53 +148,15 @@
         return collisions;
     }
 
-    // detecting support for CSS transitions
-    function supportsTransitions() {
-        var b = document.body || document.documentElement;
-        var s = b.style;
-        var p = 'transition';
-        if (typeof s[p] === 'string') {
-            return true;
-        }
-
-        v = ['Moz', 'Webkit', 'Khtml', 'O', 'ms'],
-        p = p.charAt(0).toUpperCase() + p.substr(1);
-        for (var i = 0; i < v.length; i++) {
-            if (typeof s[v[i] + p] === 'string') {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    var transitionSupport = true;
-    if (!supportsTransitions()) {
-        transitionSupport = false;
-    }
-
     // Static method.
     var AsTooltip = $.asTooltip = function(element, options) {
-        var metas = {};
-
         this.$element = $(element);
 
-        $.each(this.$element.data(), function(k, v) {
-            if (/^asTooltip/i.test(k)) {
-                metas[k.toLowerCase().replace(/^asTooltip/i, '')] = v;
-            }
-        });
-
-        //options is a static properity
-        this.options = $.extend({}, AsTooltip.defaults, options, metas);
+        this.options = $.extend({}, AsTooltip.defaults, options, this.$element.data());
         this.namespace = this.options.namespace;
 
-        if (this.$element.attr('title')) {
-            this.options.title = this.$element.attr('title');
-            this.$element.removeAttr('title');
-        }
-
         this.content = null;
-        this.target = this.options.target || this.$element;
+        this.$target = this.$element;
 
         this.isOpen = false;
         this.enabled = true;
@@ -208,88 +170,146 @@
     AsTooltip.prototype = {
         constructor: AsTooltip,
         init: function() {
-            var opts = this.options,
-                self = this;
-
             // add namespace
-            opts.tpl = this.parseTpl(opts.tpl);
+            var tpl = this.parseTpl(this.options.tpl);
 
-            this.$container = $(opts.tpl.container);
-            this.$loading = $(opts.tpl.loading);
-            this.$arrow = $(opts.tpl.arrow);
-            this.$close = $(opts.tpl.close);
-            this.$content = $(opts.tpl.content);
+            this.$container = $(tpl.container);
+            this.$loading = $(tpl.loading);
+            this.$arrow = $(tpl.arrow);
+            this.$close = $(tpl.close);
+            this.$content = $(tpl.content);
 
-            if (opts.trigger === 'hover') {
-                this.target.on('mouseenter.asTooltip', function() {
-                    if (self.isOpen === true) {
-                        clearTimeout(this.tolerance);
-                        return;
-                    } else {
-                        $.proxy(self.show, self)();
-                    }
-                });
-
-                if (opts.interactive === true) {
-                    this.target.on('mouseleave.asTooltip', function() {
-                        var keepShow = false;
-
-                        self.$container.on('mouseenter.asTooltip', function() {
-                            keepShow = true;
-                        });
-                        self.$container.on('mouseleave.asTooltip', function() {
-                            keepShow = false;
-                        });
-
-                        clearTimeout(this.tolerance);
-
-                        this.tolerance = setTimeout(function() {
-                            if (keepShow === true) {
-                                self.$container.on('mouseleave.asTooltip', $.proxy(self.hide, self));
-                            } else {
-                                $.proxy(self.hide, self)();
-                            }
-                        }, self.options.interactiveDelay);
-                    });
-
-                } else {
-                    this.target.on('mouseleave.asTooltip', $.proxy(self.hide, self));
-                }
+            if (this.options.trigger === 'hover') {
+                this.$target.on('mouseenter.asTooltip', this.options.selector, $.proxy(this.enter, this));
+                this.$target.on('mouseleave.asTooltip', this.options.selector, $.proxy(this.leave, this));
 
                 if (this.options.mouseTrace === true) {
-                    this.target.on('mousemove.asTooltip', function(event) {
-                        var pos, cursor = {},
-                            x = event.pageX,
-                            y = event.pageY;
-
-                        cursor = {
-                            top: y,
-                            left: x
-                        };
-
-                        pos = computePlacementCoords(cursor, self.options.position, self.width, self.height, self.options.popSpace, true);
-
-                        self.$container.css({
-                            display: 'block',
-                            top: pos.top,
-                            left: pos.left
-                        });
-                    });
+                    this.$target.on('mousemove.asTooltip', this.options.selector, $.proxy(this.move, this));
                 }
             }
-            if (opts.trigger === 'click') {
-                this.target.on('click.asTooltip', function() {
-                    if (self.isOpen === true) {
-                        $.proxy(self.hide, self)();
-                    } else {
-                        $.proxy(self.show, self)();
-                    }
+            if (this.options.trigger === 'click') {
+                this.$target.on('click.asTooltip', this.options.selector, $.proxy(this.toggle, this));
+            }
+
+            if (this.options.selector) {
+                this._options = $.extend({}, this.options, {
+                    trigger: 'manual',
+                    selector: ''
                 });
+            } else {
+                this.fixTitle();
             }
 
             //store all instance in dataPool
             dataPool.push(this);
             this._trigger('ready');
+        },
+        getDelegateOptions: function() {
+            var options = {}
+
+            this._options && $.each(this._options, function(key, value) {
+                if (AsTooltip.defaults[key] !== value) {
+                    options[key] = value;
+                }
+            });
+
+            return options;
+        },
+        fixTitle: function() {
+            if (this.$element.attr('title')) {
+                this.options.title = this.$element.attr('title');
+                this.$element.removeAttr('title');
+            }
+        },
+        enter: function(obj) {
+            var self = obj instanceof this.constructor ?
+                obj : $(obj.currentTarget).data('asTooltip');
+
+            if (!self) {
+                self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+                $(obj.currentTarget).data('asTooltip', self);
+            }
+
+            if (self.isOpen === true) {
+                clearTimeout(self.tolerance);
+                return;
+            } else {
+                $.proxy(self.show, self)();
+            }
+        },
+        leave: function(obj) {
+            var self = obj instanceof this.constructor ?
+                obj : $(obj.currentTarget).data('asTooltip');
+
+            if (!self) {
+                self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+                $(obj.currentTarget).data('asTooltip', self);
+            }
+
+
+            if (self.options.interactive === true) {
+                var keepShow = false;
+
+                self.$container.on('mouseenter.asTooltip', function() {
+                    keepShow = true;
+                });
+                self.$container.on('mouseleave.asTooltip', function() {
+                    keepShow = false;
+                });
+
+                clearTimeout(self.tolerance);
+
+                self.tolerance = setTimeout(function() {
+                    if (keepShow === true) {
+                        self.$container.on('mouseleave.asTooltip', $.proxy(self.hide, self));
+                    } else {
+                        $.proxy(self.hide, self)();
+                    }
+                }, self.options.interactiveDelay);
+            } else {
+                $.proxy(self.hide, self)();
+            }
+        },
+        toggle: function(obj) {
+            var self = obj instanceof this.constructor ?
+                obj : $(obj.currentTarget).data('asTooltip');
+
+            if (!self) {
+                self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+                $(obj.currentTarget).data('asTooltip', self);
+            }
+
+            if (self.isOpen === true) {
+                $.proxy(self.hide, self)();
+            } else {
+                $.proxy(self.show, self)();
+            }
+        },
+        move: function(obj) {
+            var pos, cursor = {},
+                x = obj.pageX,
+                y = obj.pageY;
+
+            var self = obj instanceof this.constructor ?
+                obj : $(obj.currentTarget).data('asTooltip');
+
+            if (!self) {
+                self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+                $(obj.currentTarget).data('asTooltip', self);
+            }
+
+            cursor = {
+                top: y,
+                left: x
+            };
+
+            pos = computePlacementCoords(cursor, self.options.position, self.width, self.height, self.options.popSpace, true);
+
+            self.$container.css({
+                display: 'block',
+                top: pos.top,
+                left: pos.left
+            });
         },
         load: function() {
             var self = this,
@@ -364,10 +384,10 @@
 
                     if (opts.ajax === true && this.content === null) {
                         // use default value to judge collisions
-                        collisions = getViewportCollisions($(this.target));
+                        collisions = getViewportCollisions(this.$target);
                     } else {
                         // change opts.postion
-                        collisions = getViewportCollisions($(this.target), this.$container);
+                        collisions = getViewportCollisions(this.$target, this.$container);
                     }
 
                     if (collisions.length === 0) {
@@ -388,9 +408,9 @@
                     }
 
                     posCss = this.namespace + '-' + newPos;
-                    pos = computePlacementCoords(this.target, newPos, this.width, this.height, this.options.popSpace);
+                    pos = computePlacementCoords(this.$target, newPos, this.width, this.height, this.options.popSpace);
                 } else {
-                    pos = computePlacementCoords(this.target, opts.position, this.width, this.height, this.options.popSpace);
+                    pos = computePlacementCoords(this.$target, opts.position, this.width, this.height, this.options.popSpace);
                 }
 
                 //show container
@@ -421,7 +441,7 @@
         },
 
         /*
-            Public Method
+         *  Public Method
          */
 
         show: function() {
@@ -442,6 +462,8 @@
                     }
                 });
             }
+            this.$container = $(this.options.tpl.container);
+
             if (opts.closeBtn) {
                 this.$container.append(this.$close);
             }
@@ -463,13 +485,16 @@
                 this.$container.addClass(this.namespace + '_' + opts.skin);
             }
 
+
             this.$container.css({
                 display: 'none',
                 top: 0,
                 left: 0,
                 position: 'absolute',
                 zIndex: 99990
-            }).appendTo($('body'));
+            });
+
+            this.options.container ? this.$container.appendTo(this.options.container) : this.$container.insertAfter(this.$element);
 
             this.setPosition();
 
@@ -488,7 +513,6 @@
             this.$element.removeClass(this.namespace + '_active');
 
             this.$container.remove();
-            this.$container.removeClass(this.posCss);
 
             this.isOpen = false;
             active = false;
@@ -498,16 +522,16 @@
         },
         enable: function() {
             this.enabled = true;
-            this.container.addClass(this.namespace + '-enabled');
+            this.$element.addClass(this.namespace + '-enabled');
             return this;
         },
         disable: function() {
             this.enabled = false;
-            this.container.removeClass(this.namespace + '-enabled');
+            this.$element.removeClass(this.namespace + '-enabled');
             return this;
         },
         destroy: function() {
-            this.target.off('.asTooltip');
+            this.$target.off('.asTooltip');
         }
     };
 
@@ -524,13 +548,15 @@
         namespace: 'asTooltip',
         skin: null,
 
-        target: null, // mouse elementent
         onlyOne: false,
         trigger: 'hover', // hover click
         interactive: false,
         interactiveDelay: 500,
         mouseTrace: false,
         closeBtn: false,
+
+        selector: false,
+        container: 'body',
 
         popSpace: 10, //set the distance between tooltip and element
 
@@ -548,7 +574,7 @@
         ajaxSettings: {
             dataType: 'html',
             headers: {
-                'asTooltip': true
+                'tooltip': true
             }
         },
 

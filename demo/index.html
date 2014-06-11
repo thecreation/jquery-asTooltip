@@ -52,7 +52,9 @@ $(".tooltip").asTooltip();
                         });
                         
                         $(document).ready(function() {
-                          $(".position_tooltip").asTooltip();                               
+                          $("body").asTooltip({
+                            selector: '.position_tooltip'
+                          });
                         });
 
                         
@@ -290,7 +292,6 @@ $('#api_destory').on('click',function(){
         </div>
     </section>
 </div>
-<script src="js/main.js"></script>
 <script>
 (function(){
 $('#toc').toc();
