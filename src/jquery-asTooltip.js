@@ -467,7 +467,7 @@
                     }
                 });
             }
-            this.$container = $(this.options.tpl.container);
+            // this.$container = $(this.options.tpl.container);
 
             if (opts.closeBtn) {
                 this.$container.append(this.$close);

@@ -1,4 +1,4 @@
-/*! jQuery asTooltip - v0.2.0 - 2014-06-11
+/*! jQuery asTooltip - v0.2.0 - 2014-08-25
 * https://github.com/amazingSurge/jquery-asTooltip
 * Copyright (c) 2014 amazingSurge; Licensed GPL */
 (function($) {
@@ -462,7 +462,7 @@
                     }
                 });
             }
-            this.$container = $(this.options.tpl.container);
+            // this.$container = $(this.options.tpl.container);
 
             if (opts.closeBtn) {
                 this.$container.append(this.$close);
