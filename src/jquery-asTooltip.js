@@ -467,7 +467,7 @@
                     }
                 });
             }
-            // this.$container = $(this.options.tpl.container);
+            this.$container = $(this.options.tpl.container.replace('{{namespace}}', this.namespace));
 
             if (opts.closeBtn) {
                 this.$container.append(this.$close);
