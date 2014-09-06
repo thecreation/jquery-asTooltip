@@ -10,9 +10,9 @@
   z-index: -1;
   background-color: #434240;
   -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-  transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+       -o-transform: rotate(45deg);
+          transform: rotate(45deg);
 }
 .asTooltip_dream .asTooltip-content {
   display: inline-block;

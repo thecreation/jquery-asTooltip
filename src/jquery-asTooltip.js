@@ -1,11 +1,10 @@
 /*
- * toolTip
- * https://github.com/amazingSurge/tooltip
+ * asTooltip
+ * https://github.com/amazingSurge/jquery-asTooltip
  *
  * Copyright (c) 2014 amazingSurge
  * Licensed under the MIT license.
  */
-
 (function($) {
     "use strict";
 
@@ -430,16 +429,17 @@
             this.$container.addClass(posCss);
         },
         _trigger: function(eventType) {
+            var method_arguments = Array.prototype.slice.call(arguments, 1),
+                data = method_arguments.concat([this]);
+
             // event
-            this.$element.trigger('asColorInput::' + eventType, this);
-            this.$element.trigger(eventType + '.asColorInput', this);
+            this.$element.trigger('asTooltip::' + eventType, data);
 
             // callback
             eventType = eventType.replace(/\b\w+\b/g, function(word) {
                 return word.substring(0, 1).toUpperCase() + word.substring(1);
             });
             var onFunction = 'on' + eventType;
-            var method_arguments = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : undefined;
             if (typeof this.options[onFunction] === 'function') {
                 this.options[onFunction].apply(this, method_arguments);
             }
@@ -599,14 +599,23 @@
     $.fn.asTooltip = function(options) {
         if (typeof options === 'string') {
             var method = options;
-            var method_arguments = arguments.length > 1 ? Array.prototype.slice.call(arguments, 1) : undefined;
+            var method_arguments = Array.prototype.slice.call(arguments, 1);
 
-            return this.each(function() {
-                var api = $.data(this, 'asTooltip');
-                if (typeof api[method] === 'function') {
-                    api[method].apply(api, method_arguments);
+            if (/^\_/.test(method)) {
+                return false;
+            } else if ((/^(get)/.test(method))) {
+                var api = this.first().data('asTooltip');
+                if (api && typeof api[method] === 'function') {
+                    return api[method].apply(api, method_arguments);
                 }
-            });
+            } else {
+                return this.each(function() {
+                    var api = $.data(this, 'asTooltip');
+                    if (api && typeof api[method] === 'function') {
+                        api[method].apply(api, method_arguments);
+                    }
+                });
+            }
         } else {
             return this.each(function() {
                 if (!$.data(this, 'asTooltip')) {

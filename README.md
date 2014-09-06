@@ -1,10 +1,8 @@
 #jquery-asTooltip
 
-The powerful jQuery plugin that creates asTooltip.<a href="https://github.com/amazingSurge/jquery-asTooltip">project page and dems</a>
+The powerful jQuery plugin that creates asTooltip. 
 
 Download:<a href="https://github.com/amazingSurge/jquery-asTooltip/archive/master.zip">jquery-asTooltip-master.zip.</a>
-
-***
 
 ##features
 
@@ -177,16 +175,6 @@ jquery-asTooltip is verified to work in Internet Explorer 7+, Firefox 2+, Opera 
 
 Mobile browsers (like Opera mini, Chrome mobile, Safari mobile, Android browser and others) is coming soon.
 
-## Changes
-
-| Version | Notes                                                            |
-|---------|------------------------------------------------------------------|
-|   0.1.2 | add next siblings selector shortcut                              |
-|   0.1.1 | ([compare][compare-1.1]) add auto position function              |
-|     ... | ...                                                              |
-
-[compare-1.2]: https://github.com/amazingSurge/jquery-asTooltip/compare/v1.2.0...v1.3.0
-[compare-1.1]: https://github.com/amazingSurge/jquery-asTooltip/compare/v1.1.0...v1.2.0
 
 ## Author
 [amazingSurge](http://amazingSurge.com)
