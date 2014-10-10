@@ -372,7 +372,7 @@
                 display: 'none'
             });
         },
-        setPosition: function() {
+        setPosition: function($target) {
             var opts = this.options,
                 pos,
                 posCss = this.namespace + '-' + opts.position;
@@ -412,9 +412,9 @@
                     }
 
                     posCss = this.namespace + '-' + newPos;
-                    pos = computePlacementCoords(this.$target, newPos, this.width, this.height, this.options.popSpace);
+                    pos = computePlacementCoords($target, newPos, this.width, this.height, this.options.popSpace);
                 } else {
-                    pos = computePlacementCoords(this.$target, opts.position, this.width, this.height, this.options.popSpace);
+                    pos = computePlacementCoords($target, opts.position, this.width, this.height, this.options.popSpace);
                 }
 
                 //show container
@@ -449,7 +449,7 @@
          *  Public Method
          */
 
-        show: function() {
+        show: function($target) {
             var opts = this.options,
                 self = this;
 
@@ -467,7 +467,6 @@
                     }
                 });
             }
-            this.$container = $(this.options.tpl.container.replace('{{namespace}}', this.namespace));
 
             if (opts.closeBtn) {
                 this.$container.append(this.$close);
@@ -501,7 +500,7 @@
 
             this.options.container ? this.$container.appendTo(this.options.container) : this.$container.insertAfter(this.$element);
 
-            this.setPosition();
+            this.setPosition($target ? $target : this.$target);
 
             this._trigger('show');
             this.isOpen = true;
