@@ -500,7 +500,7 @@
             }
 
             if (opts.skin) {
-                this.$tip.addClass(this.namespace + '_' + opts.skin);
+                this.$tip.addClass(opts.skin);
             }
 
 
