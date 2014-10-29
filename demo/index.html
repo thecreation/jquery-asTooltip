@@ -37,15 +37,15 @@
 $(".tooltip").asTooltip();
                 </code></pre>
                 <div class="positon_wrap example">
-                    <span class="position_tooltip" data-asTooltip-position="nw" title="North West">North West</span>
-                    <span class="position_tooltip" data-asTooltip-position="n" title="North">North</span>
-                    <span class="position_tooltip" data-asTooltip-position="ne" title="North East">North East</span>
-                    <span class="position_tooltip" data-asTooltip-position="w" title="West">West</span>
-                    <span class="position_tooltip" data-asTooltip-position="n" title="North West">Center</span>
-                    <span class="position_tooltip" data-asTooltip-position="e" title="East">East</span>
-                    <span class="position_tooltip" data-asTooltip-position="sw" title="South West">South West</span>
-                    <span class="position_tooltip" data-asTooltip-position="s" title="South">South</span>
-                    <span class="position_tooltip" data-asTooltip-position="se" title="South East">South East</span>
+                    <span class="position_tooltip" data-position="nw" title="North West">North West</span>
+                    <span class="position_tooltip" data-position="n" title="North">North</span>
+                    <span class="position_tooltip" data-position="ne" title="North East">North East</span>
+                    <span class="position_tooltip" data-position="w" title="West">West</span>
+                    <span class="position_tooltip" data-position="n" title="North West">Center</span>
+                    <span class="position_tooltip" data-position="e" title="East">East</span>
+                    <span class="position_tooltip" data-position="sw" title="South West">South West</span>
+                    <span class="position_tooltip" data-position="s" title="South">South</span>
+                    <span class="position_tooltip" data-position="se" title="South East">South East</span>
                     <script>
                         $(document).ready(function() {
                           $.asTooltip.defaults.skin = 'dream';                              
@@ -71,7 +71,7 @@ $(".tooltip-ajax").asTooltip({
 });
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-click show"  title="this triggers by click">click show</span>
+                <span class="tooltip-click show" title="this triggers by click">click show</span>
                 
                 <script>
                     
@@ -92,10 +92,9 @@ $(".tooltip-ajax").asTooltip({
 });
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-ajax show"  title="ajax.txt">ajax content</span>
+                <span class="tooltip-ajax show" title="ajax.txt">ajax content</span>
                 
                 <script>
-                    
                     $(document).ready(function() {
                         $(".tooltip-ajax").asTooltip({
                             ajax: true,
@@ -114,7 +113,7 @@ $(".tooltip-ajax").asTooltip({
 });
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-mouseTrace show trace" data-asTooltip-position="nw" title="You trace with me !">mouseTrace area</span>
+                <span class="tooltip-mouseTrace show trace" data-position="nw" title="You trace with me !">mouseTrace area</span>
                 
                 <script>
                     
@@ -134,7 +133,7 @@ $(".tooltip-ajax").asTooltip({
 });
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-interactive show" data-asTooltip-position="nw" title="Interactive with popup">Interactive with popup</span>
+                <span class="tooltip-interactive show" data-position="nw" title="Interactive with popup">Interactive with popup</span>
                 
                 <script>
                     
@@ -154,7 +153,7 @@ $(".tooltip-ajax").asTooltip({
 });
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-autoPosition show" data-asTooltip-position="nw" title="Autoposition with viewport">Autoposition</span>
+                <span class="tooltip-autoPosition show" data-position="nw" title="Autoposition with viewport">Autoposition</span>
                 
                 <script>
                     
@@ -171,17 +170,17 @@ $(".tooltip-ajax").asTooltip({
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-inline").asTooltip({
     inline: true,
-    title: '#tip'
+    content: '#tip'
 });
 
 // add content from next siblings
 $(".tooltip-inline-siblings").asTooltip({
     inline: true,
-    title: '+'
+    content: '+'
 });
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-inline show" data-asTooltip-position="nw">Inline</span>
+                <span class="tooltip-inline show" data-position="nw">Inline</span>
                 <div id="tip" style="display:none;">
                     <h6>hello</h6>
                     <span>this is inline content</span>
@@ -191,13 +190,13 @@ $(".tooltip-inline-siblings").asTooltip({
                     $(document).ready(function() {
                         $(".tooltip-inline").asTooltip({
                             inline: true,
-                            title: '#tip'
+                            content: '#tip'
                         });                             
                     });
                 </script>
             </div>
             <div class="positon_wrap example">
-                <span class="tooltip-inline-siblings show" data-asTooltip-position="nw">Inline-siblings</span>
+                <span class="tooltip-inline-siblings show" data-position="nw">Inline-siblings</span>
                 <div style="display:none;">
                     <h6>hello</h6>
                     <span>this is inline siblings</span>
@@ -207,7 +206,7 @@ $(".tooltip-inline-siblings").asTooltip({
                     $(document).ready(function() {
                         $(".tooltip-inline-siblings").asTooltip({
                             inline: true,
-                            title: '+'
+                            content: '+'
                         });                             
                     });
                 </script>
@@ -221,7 +220,7 @@ $(".tooltip-ajax").asTooltip({
 });
             </code></pre>
             <div class="positon_wrap example">
-                <span class="tooltip-skin show" data-asTooltip-position="nw" title="a beautiful skin">I have a 'sea' skin</span>
+                <span class="tooltip-skin show" title="a beautiful skin">I have a 'sea' skin</span>
                 
                 <script>
                     

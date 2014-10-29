@@ -5,12 +5,13 @@
  * Copyright (c) 2014 amazingSurge
  * Licensed under the MIT license.
  */
-(function($) {
+(function($, document, window, undefined) {
     "use strict";
 
+    var pluginName = 'asTooltip';
+
     var $win = $(window);
-    var active = false;
-    var dataPool = [];
+    var instances = [];
 
     var POSITION = 'nswe';
     var resovolution = {
@@ -53,13 +54,13 @@
     };
 
     // this is the core function to compute the position to show depended on the given placement argument 
-    function computePlacementCoords(element, placement, popWidth, popHeight, popSpace, onCursor) {
+    function computePlacementOffset(element, placement, tipWidth, tipHeight, distance, withCursor) {
         // grab measurements
         var objectOffset, objectWidth, objectHeight,
             x = 0,
             y = 0;
 
-        if (onCursor) {
+        if (withCursor) {
             objectOffset = element;
             objectWidth = 0;
             objectHeight = 0;
@@ -73,40 +74,40 @@
         // calculate the appropriate x and y position in the document
         switch (placement) {
             case 'n':
-                x = (objectOffset.left + (objectWidth / 2)) - (popWidth / 2);
-                y = objectOffset.top - popHeight - popSpace;
+                x = (objectOffset.left + (objectWidth / 2)) - (tipWidth / 2);
+                y = objectOffset.top - tipHeight - distance;
                 break;
             case 'e':
-                x = objectOffset.left + objectWidth + popSpace;
-                y = (objectOffset.top + (objectHeight / 2)) - (popHeight / 2);
+                x = objectOffset.left + objectWidth + distance;
+                y = (objectOffset.top + (objectHeight / 2)) - (tipHeight / 2);
                 break;
             case 's':
-                x = (objectOffset.left + (objectWidth / 2)) - (popWidth / 2);
-                y = objectOffset.top + objectHeight + popSpace;
+                x = (objectOffset.left + (objectWidth / 2)) - (tipWidth / 2);
+                y = objectOffset.top + objectHeight + distance;
                 break;
             case 'w':
-                x = objectOffset.left - popWidth - popSpace;
-                y = (objectOffset.top + (objectHeight / 2)) - (popHeight / 2);
+                x = objectOffset.left - tipWidth - distance;
+                y = (objectOffset.top + (objectHeight / 2)) - (tipHeight / 2);
                 break;
             case 'nw':
             case 'wn':
-                x = (objectOffset.left - popWidth) + 20;
-                y = objectOffset.top - popHeight - popSpace;
+                x = (objectOffset.left - tipWidth) + 20;
+                y = objectOffset.top - tipHeight - distance;
                 break;
             case 'ne':
             case 'en':
                 x = (objectOffset.left + objectWidth) - 20;
-                y = objectOffset.top - popHeight - popSpace;
+                y = objectOffset.top - tipHeight - distance;
                 break;
             case 'sw':
             case 'ws':
-                x = (objectOffset.left - popWidth) + 20;
-                y = objectOffset.top + objectHeight + popSpace;
+                x = (objectOffset.left - tipWidth) + 20;
+                y = objectOffset.top + objectHeight + distance;
                 break;
             case 'se':
             case 'es':
                 x = (objectOffset.left + objectWidth) - 20;
-                y = objectOffset.top + objectHeight + popSpace;
+                y = objectOffset.top + objectHeight + distance;
                 break;
         }
 
@@ -116,36 +117,36 @@
         };
     }
 
-    function getViewportCollisions($target, popElem) {
+    function getViewportCollisions($target, $tip) {
         var scrollLeft = $win.scrollLeft(),
             scrollTop = $win.scrollTop(),
             offset = $target.offset(),
-            elementWidth = $target.outerWidth(true),
-            elementHeight = $target.outerHeight(true),
+            elementWidth = $target.outerWidth(),
+            elementHeight = $target.outerHeight(),
             windowWidth = $win.width(),
             windowHeight = $win.height(),
             collisions = [],
-            popWidth, popHeight;
+            tipWidth, tipHeight;
 
-        if (popElem) {
-            popWidth = popElem.outerWidth(true);
-            popHeight = popElem.outerHeight(true);
+        if ($tip) {
+            tipWidth = $tip.outerWidth(true);
+            tipHeight = $tip.outerHeight(true);
         } else {
             // for loading animation icon placeholder
-            popWidth = 100;
-            popHeight = 50;
+            tipWidth = 100;
+            tipHeight = 50;
         }
 
-        if (offset.top < scrollTop + popHeight) {
+        if (offset.top < scrollTop + tipHeight) {
             collisions.push('n');
         }
-        if (offset.top + elementHeight + popHeight > scrollTop + windowHeight) {
+        if (offset.top + elementHeight + tipHeight > scrollTop + windowHeight) {
             collisions.push('s');
         }
-        if (offset.left < scrollLeft + popWidth) {
+        if (offset.left < scrollLeft + tipWidth) {
             collisions.push('w');
         }
-        if (offset.left + elementWidth + popWidth > scrollLeft + windowWidth) {
+        if (offset.left + elementWidth + tipWidth > scrollLeft + windowWidth) {
             collisions.push('e');
         }
 
@@ -153,10 +154,10 @@
     }
 
     // Static method.
-    var AsTooltip = $.asTooltip = function(element, options) {
+    var Plugin = $[pluginName] = function(element, options) {
         this.$element = $(element);
 
-        this.options = $.extend({}, AsTooltip.defaults, options, this.$element.data());
+        this.options = $.extend({}, Plugin.defaults, options, this.$element.data());
         this.namespace = this.options.namespace;
 
         this.content = null;
@@ -166,33 +167,38 @@
         this.enabled = true;
         this.tolerance = null;
 
+        this.classes = {
+            active: this.namespace + '-active',
+            enabled: this.namespace + '-enabled',
+        }
+
         this.onlyOne = this.options.onlyOne;
         this._trigger('init');
         this.init();
     };
 
-    AsTooltip.prototype = {
-        constructor: AsTooltip,
+    Plugin.prototype = {
+        constructor: Plugin,
         init: function() {
             // add namespace
             var tpl = this.parseTpl(this.options.tpl);
 
-            this.$container = $(tpl.container);
+            this.$tip = $(tpl.tip);
             this.$loading = $(tpl.loading);
             this.$arrow = $(tpl.arrow);
             this.$close = $(tpl.close);
             this.$content = $(tpl.content);
 
             if (this.options.trigger === 'hover') {
-                this.$target.on('mouseenter.asTooltip', this.options.selector, $.proxy(this.enter, this));
-                this.$target.on('mouseleave.asTooltip', this.options.selector, $.proxy(this.leave, this));
+                this.$target.on('mouseenter.' + pluginName, this.options.selector, $.proxy(this.enter, this));
+                this.$target.on('mouseleave.' + pluginName, this.options.selector, $.proxy(this.leave, this));
 
                 if (this.options.mouseTrace === true) {
-                    this.$target.on('mousemove.asTooltip', this.options.selector, $.proxy(this.move, this));
+                    this.$target.on('mousemove.' + pluginName, this.options.selector, $.proxy(this.move, this));
                 }
             }
             if (this.options.trigger === 'click') {
-                this.$target.on('click.asTooltip', this.options.selector, $.proxy(this.toggle, this));
+                this.$target.on('click.' + pluginName, this.options.selector, $.proxy(this.toggle, this));
             }
 
             if (this.options.selector) {
@@ -201,37 +207,43 @@
                     selector: ''
                 });
             } else {
-                this.fixTitle();
+                this.fixContent();
             }
 
-            //store all instance in dataPool
-            dataPool.push(this);
+            //store all instance in instances
+            instances.push(this);
             this._trigger('ready');
         },
         getDelegateOptions: function() {
             var options = {}
 
             this._options && $.each(this._options, function(key, value) {
-                if (AsTooltip.defaults[key] !== value) {
+                if (Plugin.defaults[key] !== value) {
                     options[key] = value;
                 }
             });
 
             return options;
         },
-        fixTitle: function() {
-            if (this.$element.attr('title')) {
-                this.options.title = this.$element.attr('title');
-                this.$element.removeAttr('title');
+        fixContent: function() {
+            var $e = this.$element;
+            var attr = this.options.contentAttr;
+            if ($e.attr(attr) || typeof($e.attr('data-original-content')) != 'string') {
+                $e.attr('data-original-content', $e.attr(attr) || '').attr(attr, '')
             }
+        },
+        getContent: function() {
+            var content = this.$element.attr('data-original-content') || (typeof this.options.content == 'function' ? this.options.content.call(this.$element[0]) : this.options.content)
+
+            return content;
         },
         enter: function(obj) {
             var self = obj instanceof this.constructor ?
-                obj : $(obj.currentTarget).data('asTooltip');
+                obj : $(obj.currentTarget).data(pluginName);
 
             if (!self) {
                 self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-                $(obj.currentTarget).data('asTooltip', self);
+                $(obj.currentTarget).data(pluginName, self);
             }
 
             if (self.isOpen === true) {
@@ -243,21 +255,21 @@
         },
         leave: function(obj) {
             var self = obj instanceof this.constructor ?
-                obj : $(obj.currentTarget).data('asTooltip');
+                obj : $(obj.currentTarget).data(pluginName);
 
             if (!self) {
                 self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-                $(obj.currentTarget).data('asTooltip', self);
+                $(obj.currentTarget).data(pluginName, self);
             }
 
 
             if (self.options.interactive === true) {
                 var keepShow = false;
 
-                self.$container.on('mouseenter.asTooltip', function() {
+                self.$tip.on('mouseenter.' + pluginName, function() {
                     keepShow = true;
                 });
-                self.$container.on('mouseleave.asTooltip', function() {
+                self.$tip.on('mouseleave.' + pluginName, function() {
                     keepShow = false;
                 });
 
@@ -265,7 +277,7 @@
 
                 self.tolerance = setTimeout(function() {
                     if (keepShow === true) {
-                        self.$container.on('mouseleave.asTooltip', $.proxy(self.hide, self));
+                        self.$tip.on('mouseleave.' + pluginName, $.proxy(self.hide, self));
                     } else {
                         $.proxy(self.hide, self)();
                     }
@@ -276,11 +288,11 @@
         },
         toggle: function(obj) {
             var self = obj instanceof this.constructor ?
-                obj : $(obj.currentTarget).data('asTooltip');
+                obj : $(obj.currentTarget).data(pluginName);
 
             if (!self) {
                 self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-                $(obj.currentTarget).data('asTooltip', self);
+                $(obj.currentTarget).data(pluginName, self);
             }
 
             if (self.isOpen === true) {
@@ -290,16 +302,16 @@
             }
         },
         move: function(obj) {
-            var pos, cursor = {},
+            var offset, cursor = {},
                 x = obj.pageX,
                 y = obj.pageY;
 
             var self = obj instanceof this.constructor ?
-                obj : $(obj.currentTarget).data('asTooltip');
+                obj : $(obj.currentTarget).data(pluginName);
 
             if (!self) {
                 self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-                $(obj.currentTarget).data('asTooltip', self);
+                $(obj.currentTarget).data(pluginName, self);
             }
 
             cursor = {
@@ -307,49 +319,51 @@
                 left: x
             };
 
-            pos = computePlacementCoords(cursor, self.options.position, self.width, self.height, self.options.popSpace, true);
+            offset = computePlacementOffset(cursor, self.options.position, self.width, self.height, self.options.distance, true);
 
-            self.$container.css({
+            self.$tip.css({
                 display: 'block',
-                top: pos.top,
-                left: pos.left
+                top: offset.top,
+                left: offset.left
             });
         },
         load: function() {
             var self = this,
-                opts = this.options;
+                opts = this.options,
+                content = this.getContent();
+
 
             // when ajax content add to container , recompulate the position again
             if (opts.ajax === true) {
                 $.ajax($.extend({}, opts.ajaxSettings, {
-                    url: opts.title,
+                    url: content,
                     error: function() {
                         throw new Error('ajax error');
                     },
                     success: function(data, status) {
                         if (status === 'success') {
                             self.content = data;
-                            self.$container.css({
+                            self.$tip.css({
                                 display: 'none'
                             });
                             self.$content.empty().append(self.content);
-                            self.$container.removeClass(self.posCss);
+                            self.$tip.removeClass(self.positionClass);
                             self.setPosition();
                         }
                     }
                 }));
             } else if (opts.inline === true) {
-                if (opts.title.indexOf('+') !== -1) {
+                if (content && content.indexOf('+') !== -1) {
                     this.content = this.$element.next().css({
                         display: 'block'
                     });
                 } else {
-                    this.content = $(opts.title).css({
+                    this.content = $(content).css({
                         display: 'block'
                     });
                 }
             } else {
-                this.content = opts.title;
+                this.content = content;
             }
         },
         parseTpl: function(obj) {
@@ -372,18 +386,18 @@
                 display: 'none'
             });
         },
-        setPosition: function($target) {
+        setPosition: function() {
             var opts = this.options,
-                pos,
-                posCss = this.namespace + '-' + opts.position;
+                Offset,
+                positionClass = this.namespace + '-' + opts.position;
 
-            this.width = this.$container.outerWidth();
-            this.height = this.$container.outerHeight();
+            this.width = this.$tip.outerWidth();
+            this.height = this.$tip.outerHeight();
 
             if (opts.mouseTrace !== true) {
                 //compute position
                 if (opts.autoPosition === true) {
-                    var newPos,
+                    var position,
                         collisions = [];
 
                     if (opts.ajax === true && this.content === null) {
@@ -391,49 +405,49 @@
                         collisions = getViewportCollisions(this.$target);
                     } else {
                         // change opts.postion
-                        collisions = getViewportCollisions(this.$target, this.$container);
+                        collisions = getViewportCollisions(this.$target, this.$tip);
                     }
 
                     if (collisions.length === 0) {
-                        newPos = opts.position;
+                        position = opts.position;
                     } else if (collisions.length === 1) {
                         var res = resovolution[opts.position][collisions[0]];
                         if (res === undefined) {
-                            newPos = opts.position;
+                            position = opts.position;
                         } else {
-                            newPos = res;
+                            position = res;
                         }
                     } else {
                         var cachString = POSITION;
                         $.each(collisions, function(i, v) {
                             cachString.replace(v, '');
                         });
-                        newPos = cachString;
+                        position = cachString;
                     }
 
-                    posCss = this.namespace + '-' + newPos;
-                    pos = computePlacementCoords($target, newPos, this.width, this.height, this.options.popSpace);
+                    positionClass = this.namespace + '-' + position;
+                    Offset = computePlacementOffset(this.$target, position, this.width, this.height, this.options.distance);
                 } else {
-                    pos = computePlacementCoords($target, opts.position, this.width, this.height, this.options.popSpace);
+                    Offset = computePlacementOffset(this.$target, opts.position, this.width, this.height, this.options.distance);
                 }
 
-                //show container
-                this.$container.css({
+                //show tip
+                this.$tip.css({
                     display: 'block',
-                    top: pos.top,
-                    left: pos.left
+                    top: Offset.top,
+                    left: Offset.left
                 });
             }
 
-            this.posCss = posCss;
-            this.$container.addClass(posCss);
+            this.positionClass = positionClass;
+            this.$tip.addClass(positionClass);
         },
         _trigger: function(eventType) {
             var method_arguments = Array.prototype.slice.call(arguments, 1),
                 data = [this].concat(method_arguments);
 
             // event
-            this.$element.trigger('asTooltip::' + eventType, data);
+            this.$element.trigger(pluginName + '::' + eventType, data);
 
             // callback
             eventType = eventType.replace(/\b\w+\b/g, function(word) {
@@ -448,8 +462,7 @@
         /*
          *  Public Method
          */
-
-        show: function($target) {
+        show: function() {
             var opts = this.options,
                 self = this;
 
@@ -457,7 +470,7 @@
                 return;
             }
             if (this.onlyOne) {
-                $.each(dataPool, function(i, v) {
+                $.each(instances, function(i, v) {
                     if (v === self) {
                         return;
                     } else {
@@ -467,13 +480,14 @@
                     }
                 });
             }
+            this.$tip = $(this.options.tpl.tip.replace('{{namespace}}', this.namespace));
 
             if (opts.closeBtn) {
-                this.$container.append(this.$close);
+                this.$tip.append(this.$close);
             }
-            this.$container.append(this.$arrow).append(this.$content);
+            this.$tip.append(this.$arrow).append(this.$content);
 
-            this.$element.addClass(this.namespace + '_active');
+            this.$element.addClass(this.classes.active);
 
             // here judge the position first and then insert into body
             // if content has loaded , never load again
@@ -486,21 +500,17 @@
             }
 
             if (opts.skin) {
-                this.$container.addClass(this.namespace + '_' + opts.skin);
+                this.$tip.addClass(this.namespace + '_' + opts.skin);
             }
 
 
-            this.$container.css({
-                display: 'none',
-                top: 0,
-                left: 0,
-                position: 'absolute',
-                zIndex: 99990
+            this.$tip.css({
+                display: 'none'
             });
 
-            this.options.container ? this.$container.appendTo(this.options.container) : this.$container.insertAfter(this.$element);
+            this.options.container ? this.$tip.appendTo(this.options.container) : this.$tip.insertAfter(this.$element);
 
-            this.setPosition($target ? $target : this.$target);
+            this.setPosition();
 
             this._trigger('show');
             this.isOpen = true;
@@ -508,39 +518,34 @@
             return this;
         },
         hide: function() {
-
-            //unbinded all custom event
-            this.$container.off('.asTooltip');
-            //support event
+            this.$tip.off('.' + pluginName);
             this._trigger('hide');
 
-            this.$element.removeClass(this.namespace + '_active');
+            this.$element.removeClass(this.classes.active);
 
-            this.$container.remove();
-
+            this.$tip.remove();
             this.isOpen = false;
-            active = false;
         },
         setContent: function(content) {
             this.content = content;
         },
         enable: function() {
             this.enabled = true;
-            this.$element.addClass(this.namespace + '-enabled');
+            this.$element.addClass(this.classes.enabled);
             return this;
         },
         disable: function() {
             this.enabled = false;
-            this.$element.removeClass(this.namespace + '-enabled');
+            this.$element.removeClass(this.classes.enabled);
             return this;
         },
         destroy: function() {
-            this.$target.off('.asTooltip');
+            this.$target.off('.' + pluginName);
         }
     };
 
-    AsTooltip.closeAll = function() {
-        dataPool.map(function(instance) {
+    Plugin.closeAll = function() {
+        instances.map(function(instance) {
             if (instance.isOpen) {
                 instance.hide();
             }
@@ -548,8 +553,8 @@
     };
 
     // Static method default options.
-    AsTooltip.defaults = {
-        namespace: 'asTooltip',
+    Plugin.defaults = {
+        namespace: pluginName,
         skin: null,
 
         onlyOne: false,
@@ -562,7 +567,7 @@
         selector: false,
         container: 'body',
 
-        popSpace: 10, //set the distance between tooltip and element
+        distance: 10, //set the distance between tooltip and element
 
         position: 'n',
         autoPosition: true,
@@ -573,6 +578,7 @@
 
         inline: false,
         content: null,
+        contentAttr: 'title',
 
         ajax: false,
         ajaxSettings: {
@@ -582,12 +588,8 @@
             }
         },
 
-        onShow: null,
-        onHide: null,
-        onUpdate: null,
-
         tpl: {
-            container: '<div class="{{namespace}}"></div>',
+            tip: '<div class="{{namespace}}"></div>',
             loading: '<span class="{{namespace}}-loading"></span>',
             content: '<div class="{{namespace}}-content"></div>',
             arrow: '<span class="{{namespace}}-arrow"></span>',
@@ -595,7 +597,7 @@
         }
     };
 
-    $.fn.asTooltip = function(options) {
+    $.fn[pluginName] = function(options) {
         if (typeof options === 'string') {
             var method = options;
             var method_arguments = Array.prototype.slice.call(arguments, 1);
@@ -603,13 +605,13 @@
             if (/^\_/.test(method)) {
                 return false;
             } else if ((/^(get)/.test(method))) {
-                var api = this.first().data('asTooltip');
+                var api = this.first().data(pluginName);
                 if (api && typeof api[method] === 'function') {
                     return api[method].apply(api, method_arguments);
                 }
             } else {
                 return this.each(function() {
-                    var api = $.data(this, 'asTooltip');
+                    var api = $.data(this, pluginName);
                     if (api && typeof api[method] === 'function') {
                         api[method].apply(api, method_arguments);
                     }
@@ -617,11 +619,10 @@
             }
         } else {
             return this.each(function() {
-                if (!$.data(this, 'asTooltip')) {
-                    $.data(this, 'asTooltip', new AsTooltip(this, options));
+                if (!$.data(this, pluginName)) {
+                    $.data(this, pluginName, new Plugin(this, options));
                 }
             });
         }
     };
-
-}(jQuery));
+}(jQuery, document, window));

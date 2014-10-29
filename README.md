@@ -11,13 +11,8 @@ Download:<a href="https://github.com/amazingSurge/jquery-asTooltip/archive/maste
 * **Auto position** — auto reposition to avoid being covered
 * **Lightweight size** — 1 kb gzipped
 
-![image][]
- [image]: https://raw.github.com/amazingSurge/jquery-asTooltip/master/demo/img/asTooltip.png
-
-
 ## Dependencies
 *<a href="http://jquery.com/" target="_blank">jQuery 1.83+</a>
-
 
 ## Usage
 
@@ -31,20 +26,17 @@ And CSS:
 
 Create base input element:
 ```html
-<span class="position_asTooltip" data-asTooltip-position="n" title="North">North</span>                   
-<span class="position_asTooltip" data-asTooltip-position="w" title="West">West</span>
-<span class="position_asTooltip" data-asTooltip-position="e" title="East">East</span>                  
-<span class="position_asTooltip" data-asTooltip-position="s" title="South">South</span>
+<span class="tip" data-asTooltip-position="n" title="This is tip content">trigger</span>                   
 ```
 
 Initialize asTooltip:
 ```javascript
- $(".position_asTooltip").asTooltip();
+ $(".tip").asTooltip();
 ```
 
 Or initialize asTooltip with custom settings:
 ```javascript
-$(".position_asTooltip").asTooltip({
+$(".tip").asTooltip({
      namespace: 'asTooltip',
      trigger: 'hover'    // hover click
 });
@@ -79,7 +71,7 @@ $(".position_asTooltip").asTooltip({
     closeBtn: false,
 
     // Optional property, set the distance between tip and element 
-    popSpace: 10, 
+    distance: 10, 
 
     // Optional property, choose asTooltip skin, more skins is coming soon
     skin: null,
@@ -103,7 +95,9 @@ $(".position_asTooltip").asTooltip({
     // by defaults, you can set your content as strings
     // if ajax is true, you can use resource reference, for example:'ajax.txt'
     // if inline is true, you can use inline DOm selector, for example: '#id', or '+', means select current element's next sibling element
-    title: content or resource reference or '+'
+    content: content or resource reference or '+'
+
+    contentAttr: 'title',
 
     // Optional property, if true, it will load content with ajax, the url attached in element's title property
     ajax: false,
@@ -116,14 +110,9 @@ $(".position_asTooltip").asTooltip({
         }
     },
 
-    // callback
-    onShow: null,
-    onHide: null,
-    onUpdate: null,
-
     // asTooltip template
     tpl: {
-        container: '<div class="{{namespace}}-container"></div>',
+        tip: '<div class="{{namespace}}"></div>',
         loading: '<span class="{{namespace}}-loading"></span>',
         content: '<div class="{{namespace}}-content"></div>',
         arrow: '<span class="{{namespace}}-arrow"></span>',
@@ -139,25 +128,25 @@ jquery asTooltip has different medthod , we can use it as below :
 ```javascript
 
 // show asTooltip 
-$("#api_asTooltip").asTooltip('show');
+$(".tip").asTooltip('show');
 
 // hide asTooltip 
-$("#api_asTooltip").asTooltip('hide');
+$(".tip").asTooltip('hide');
 
 // add a disable class to asTooltip elment
-$("#api_asTooltip").asTooltip('disable');
+$(".tip").asTooltip('disable');
 
 // remove the disable class
-$("#api_asTooltip").asTooltip('enable');
+$(".tip").asTooltip('enable');
 
 // remove asTooltip Dom emement and unbound all events 
-$("#api_asTooltip").asTooltip('destroy');
+$(".tip").asTooltip('destroy');
 ```
 
 
 ## Event
 
-* <code>toooltip::show</code>: trigger when show called
+* <code>asTooltip::show</code>: trigger when show called
 * <code>asTooltip::hide</code>: trigger when hide called
 * <code>asTooltip::update</code>: trigger when hide called
 
