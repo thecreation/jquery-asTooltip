@@ -1,4 +1,4 @@
-/*! jQuery asTooltip - v0.3.0 - 2014-10-29
+/*! jQuery asTooltip - v0.3.0 - 2014-11-17
 * https://github.com/amazingSurge/jquery-asTooltip
 * Copyright (c) 2014 amazingSurge; Licensed GPL */
 (function($, document, window, undefined) {
@@ -9,441 +9,301 @@
     var $win = $(window);
     var instances = [];
 
-    var POSITION = 'nswe';
-    var resovolution = {
-        n: {
-            n: 's',
-            w: 'ne',
-            e: 'nw'
-        },
-        s: {
-            s: 'n',
-            w: 'se',
-            e: 'sw'
-        },
-        w: {
-            w: 'e',
-            n: 'sw',
-            s: 'nw'
-        },
-        e: {
-            e: 'w',
-            n: 'se',
-            s: 'ne'
-        },
-        nw: {
-            n: 'sw',
-            w: 'ne'
-        },
-        ne: {
-            n: 'se',
-            e: 'nw'
-        },
-        sw: {
-            s: 'nw',
-            w: 'se'
-        },
-        se: {
-            s: 'ne',
-            e: 'sw'
-        }
-    };
-
     // this is the core function to compute the position to show depended on the given placement argument 
-    function computePlacementOffset(element, placement, tipWidth, tipHeight, distance, withCursor) {
+    var computePlacementOffset = function(element, $tip, position, isMove) {
         // grab measurements
-        var objectOffset, objectWidth, objectHeight,
+        var elOffset, elWidth, elHeight, tipWidth, tipHeight,
+            $el = $(element),
             x = 0,
             y = 0;
 
-        if (withCursor) {
-            objectOffset = element;
-            objectWidth = 0;
-            objectHeight = 0;
-        } else {
-            objectOffset = element.offset();
-            objectWidth = element.outerWidth();
-            objectHeight = element.outerHeight();
-        }
+        elOffset = isMove ? element : $el.offset();
+        elWidth = isMove ? 0 : $el.outerWidth();
+        elHeight = isMove ? 0 : $el.outerHeight();
 
+        tipWidth = $tip.outerWidth();
+        tipHeight = $tip.outerHeight();
 
-        // calculate the appropriate x and y position in the document
-        switch (placement) {
-            case 'n':
-                x = (objectOffset.left + (objectWidth / 2)) - (tipWidth / 2);
-                y = objectOffset.top - tipHeight - distance;
-                break;
-            case 'e':
-                x = objectOffset.left + objectWidth + distance;
-                y = (objectOffset.top + (objectHeight / 2)) - (tipHeight / 2);
-                break;
-            case 's':
-                x = (objectOffset.left + (objectWidth / 2)) - (tipWidth / 2);
-                y = objectOffset.top + objectHeight + distance;
-                break;
-            case 'w':
-                x = objectOffset.left - tipWidth - distance;
-                y = (objectOffset.top + (objectHeight / 2)) - (tipHeight / 2);
-                break;
-            case 'nw':
-            case 'wn':
-                x = (objectOffset.left - tipWidth) + 20;
-                y = objectOffset.top - tipHeight - distance;
-                break;
-            case 'ne':
-            case 'en':
-                x = (objectOffset.left + objectWidth) - 20;
-                y = objectOffset.top - tipHeight - distance;
-                break;
-            case 'sw':
-            case 'ws':
-                x = (objectOffset.left - tipWidth) + 20;
-                y = objectOffset.top + objectHeight + distance;
-                break;
-            case 'se':
-            case 'es':
-                x = (objectOffset.left + objectWidth) - 20;
-                y = objectOffset.top + objectHeight + distance;
-                break;
+        for (var i = 0; i < position.length; i++) {
+            switch (position[i]) {
+                case 'left':
+                    x = i === 0 ? elOffset.left - tipWidth : elOffset.left;
+                    break;
+                case 'middle':
+                    switch (position[0]) {
+                        case 'left':
+                        case 'right':
+                            y = elOffset.top + (elHeight - tipHeight) / 2;
+                            break;
+                        case 'top':
+                        case 'bottom':
+                            x = elOffset.left + (elWidth - tipWidth) / 2;
+                            break;
+                    }
+                    break;
+                case 'right':
+                    x = i === 0 ? elOffset.left + elWidth : elOffset.left + elWidth - tipWidth;
+                    break;
+                case 'top':
+                    y = i === 0 ? elOffset.top - tipHeight : elOffset.top;
+                    break;
+                case 'bottom':
+                    y = i === 0 ? elOffset.top + elHeight : elOffset.top + elHeight - tipHeight;
+                    break;
+            }
         }
 
         return {
             left: Math.round(x),
             top: Math.round(y)
         };
-    }
+    };
 
-    function getViewportCollisions($target, $tip) {
-        var scrollLeft = $win.scrollLeft(),
-            scrollTop = $win.scrollTop(),
-            offset = $target.offset(),
-            elementWidth = $target.outerWidth(),
-            elementHeight = $target.outerHeight(),
-            windowWidth = $win.width(),
-            windowHeight = $win.height(),
-            collisions = [],
-            tipWidth, tipHeight;
+    var getViewportCollisions = function(el, $tip, $container) {
+        var $el = $(el),
+            eOffset = $el.offset(),
+            cOffset = $container.offset(),
+            scrollLeft = $container[0].tagName === 'BODY' ? $win.scrollLeft() : $container.scrollLeft(),
+            scrollTop = $container[0].tagName === 'BODY' ? $win.scrollTop() : $container.scrollTop(),
+            offset = $container[0].tagName === 'BODY' ? eOffset : {
+                top: eOffset.top - cOffset.top,
+                left: eOffset.left - cOffset.left
+            },
+            eWidth = $el.outerWidth(),
+            eHeight = $el.outerHeight(),
+            tWidth = $tip.outerWidth(),
+            tHeight = $tip.outerHeight(),
+            cWidth = $container[0].tagName === 'BODY' ? $win.innerWidth() : $container.outerWidth(),
+            cHeight = $container[0].tagName === 'BODY' ? $win.innerHeight() : $container.outerHeight(),
+            collisions = [];
 
-        if ($tip) {
-            tipWidth = $tip.outerWidth(true);
-            tipHeight = $tip.outerHeight(true);
-        } else {
-            // for loading animation icon placeholder
-            tipWidth = 100;
-            tipHeight = 50;
-        }
-
-        if (offset.top < scrollTop + tipHeight) {
-            collisions.push('n');
-        }
-        if (offset.top + elementHeight + tipHeight > scrollTop + windowHeight) {
-            collisions.push('s');
-        }
-        if (offset.left < scrollLeft + tipWidth) {
-            collisions.push('w');
-        }
-        if (offset.left + elementWidth + tipWidth > scrollLeft + windowWidth) {
-            collisions.push('e');
-        }
+        if (tHeight > offset.top - scrollTop) collisions.push('top');
+        if (tHeight + eHeight + offset.top > scrollTop + cHeight) collisions.push('bottom');
+        if (tWidth > offset.left - scrollLeft) collisions.push('left');
+        if (tWidth + eWidth + offset.left > scrollLeft + cWidth) collisions.push('right');
 
         return collisions;
-    }
+    };
 
     // Static method.
     var Plugin = $[pluginName] = function(element, options) {
-        this.$element = $(element);
+        var body = $(document.body),
+            newTarget = element[0] === document ? body : element,
+            opts = this.options = $.extend({}, Plugin.defaults, options, $(newTarget).data());
 
-        this.options = $.extend({}, Plugin.defaults, options, this.$element.data());
-        this.namespace = this.options.namespace;
-
-        this.content = null;
-        this.$target = this.$element;
-
-        this.isOpen = false;
-        this.enabled = true;
-        this.tolerance = null;
-
-        this.classes = {
-            active: this.namespace + '-active',
-            enabled: this.namespace + '-enabled',
+        opts.positionContainer = !opts.positionContainer ? body : $(opts.positionContainer);
+        if (!opts.positionTarget) {
+            opts.positionTarget = newTarget;
+        }
+        if (!opts.showTarget) {
+            opts.showTarget = newTarget;
+        }
+        if (!opts.hideTarget) {
+            opts.hideTarget = newTarget;
         }
 
-        this.onlyOne = this.options.onlyOne;
-        this._trigger('init');
+        this.$el = $(newTarget);
+
+        this.namespace = this.options.namespace;
+        opts.content = this.getContent();
+
+        this.enabled = true;
+        this.isOpen = false;
+        this.loadFlag = false;
+        this.moveFlag = false;
+        this.showTimer = null;
+        this.hideTimer = null;
+
+        this.classes = {
+            show: this.namespace + '_isShow',
+            isLoading: this.namespace + '_isLoading',
+            active: this.namespace + '_active',
+            enabled: this.namespace + '_enabled',
+        };
+
+        this.trigger('init');
         this.init();
     };
 
     Plugin.prototype = {
         constructor: Plugin,
         init: function() {
-            // add namespace
-            var tpl = this.parseTpl(this.options.tpl);
+            var self = this,
+                opts = this.options,
+                showTarget = opts.showTarget,
+                hideTarget = opts.hideTarget,
+                showEvent = opts.showEvent,
+                hideEvent = opts.hideEvent;
 
-            this.$tip = $(tpl.tip);
-            this.$loading = $(tpl.loading);
-            this.$arrow = $(tpl.arrow);
-            this.$close = $(tpl.close);
-            this.$content = $(tpl.content);
+            // add namepace    
+            this.$tip = $(opts.tpl.replace(/{{namespace}}/g, this.namespace));
 
-            if (this.options.trigger === 'hover') {
-                this.$target.on('mouseenter.' + pluginName, this.options.selector, $.proxy(this.enter, this));
-                this.$target.on('mouseleave.' + pluginName, this.options.selector, $.proxy(this.leave, this));
+            this.$loading = $('.' + this.namespace + '-loading', this.$tip);
+            this.$content = $('.' + this.namespace + '-content', this.$tip);
 
-                if (this.options.mouseTrace === true) {
-                    this.$target.on('mousemove.' + pluginName, this.options.selector, $.proxy(this.move, this));
-                }
-            }
-            if (this.options.trigger === 'click') {
-                this.$target.on('click.' + pluginName, this.options.selector, $.proxy(this.toggle, this));
-            }
-
-            if (this.options.selector) {
-                this._options = $.extend({}, this.options, {
-                    trigger: 'manual',
-                    selector: ''
+            if (showTarget === hideTarget && showEvent === hideEvent) {
+                this._bind(showTarget, showEvent, function(e) {
+                    (this.isOpen ? this.hideMethod : this.showMethod).call(this, e);
                 });
             } else {
-                this.fixContent();
+                this._bind(showTarget, showEvent, function(e) {
+                    this.showMethod.call(this, e);
+                });
+                this._bind(hideTarget, hideEvent, function(e) {
+                    this.hideMethod.call(this, e);
+                });
             }
+            if (opts.positionContainer[0].tagName === 'BODY') {
+                if (opts.positionAdjustResize) {
+                    this._bind($win, 'resize', function() {
+                        if (self.isOpen) self.setPosition();
+                    });
+                }
+                if (opts.positionAdjustScroll) {
+                    this._bind($win, 'scroll', function() {
+                        if (self.isOpen) self.setPosition();
+                    });
+                }
+            }
+        },
+        _bind: function(targets, events, method, suffix) {
+            if (!targets || !method || !events.length) return;
+            var name = suffix ? events : events + '.' + suffix;
+            $(targets).on(name, $.proxy(method, this));
+            return this;
+        },
+        _unbind: function(targets, events, suffix) {
+            targets && $(targets).unbind(suffix ? events : events + '.' + suffix);
+            return this;
+        },
 
-            //store all instance in instances
-            instances.push(this);
-            this._trigger('ready');
+        parseTpl: function(string) {
+            return string.replace('{{namespace}}', self.namespace);
         },
         getDelegateOptions: function() {
-            var options = {}
+            var options = {};
 
             this._options && $.each(this._options, function(key, value) {
                 if (Plugin.defaults[key] !== value) {
                     options[key] = value;
                 }
             });
-
-            return options;
+            return options
         },
-        fixContent: function() {
-            var $e = this.$element;
-            var attr = this.options.contentAttr;
-            if ($e.attr(attr) || typeof($e.attr('data-original-content')) != 'string') {
-                $e.attr('data-original-content', $e.attr(attr) || '').attr(attr, '')
-            }
-        },
-        getContent: function() {
-            var content = this.$element.attr('data-original-content') || (typeof this.options.content == 'function' ? this.options.content.call(this.$element[0]) : this.options.content)
-
-            return content;
-        },
-        enter: function(obj) {
-            var self = obj instanceof this.constructor ?
-                obj : $(obj.currentTarget).data(pluginName);
+        showMethod: function(obj) {
+            var self = obj instanceof this.constructor ? obj : $(obj.currentTarget).data(pluginName),
+                opts = this.options;
 
             if (!self) {
-                self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
+                self = new this.constructor(obj.currentTarget, this.getDelegateOptions());
                 $(obj.currentTarget).data(pluginName, self);
             }
 
-            if (self.isOpen === true) {
-                clearTimeout(self.tolerance);
-                return;
+            if (!opts.ajax && !self.options.content) return;
+
+            if (self.isOpen) {
+                clearTimeout(self.hideTimer);
             } else {
-                $.proxy(self.show, self)();
+                clearTimeout(self.showTimer);
+                self.showTimer = setTimeout(function() {
+                    $.proxy(self.show, self)();
+                }, opts.showDelay);
+            }
+
+            if (opts.positionTarget === 'mouse') {
+                if (this.moveFlag) return;
+                this.isFirst = true;
+                $(document).on('mousemove.' + pluginName, $.proxy(this.move, self));
+                this.moveFlag = true;
+            }
+
+            if (opts.hideEvent === 'click') {
+                if (opts.hideContainer) {
+                    this._bind(opts.hideContainer, opts.hideEvent, function(e) {
+                        var $target = $(e.target);
+                        if ($target.closest(self.$el).length === 0 && $target.closest(self.$tip).length === 0) {
+                            if (self.isOpen) $.proxy(self.hide, self)();
+                        }
+                    });
+                }
             }
         },
-        leave: function(obj) {
-            var self = obj instanceof this.constructor ?
-                obj : $(obj.currentTarget).data(pluginName);
-
-            if (!self) {
-                self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-                $(obj.currentTarget).data(pluginName, self);
-            }
-
-
-            if (self.options.interactive === true) {
-                var keepShow = false;
-
-                self.$tip.on('mouseenter.' + pluginName, function() {
-                    keepShow = true;
-                });
-                self.$tip.on('mouseleave.' + pluginName, function() {
-                    keepShow = false;
-                });
-
-                clearTimeout(self.tolerance);
-
-                self.tolerance = setTimeout(function() {
-                    if (keepShow === true) {
-                        self.$tip.on('mouseleave.' + pluginName, $.proxy(self.hide, self));
-                    } else {
-                        $.proxy(self.hide, self)();
-                    }
-                }, self.options.interactiveDelay);
-            } else {
-                $.proxy(self.hide, self)();
-            }
-        },
-        toggle: function(obj) {
-            var self = obj instanceof this.constructor ?
-                obj : $(obj.currentTarget).data(pluginName);
-
-            if (!self) {
-                self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-                $(obj.currentTarget).data(pluginName, self);
-            }
-
-            if (self.isOpen === true) {
-                $.proxy(self.hide, self)();
-            } else {
-                $.proxy(self.show, self)();
-            }
-        },
-        move: function(obj) {
-            var offset, cursor = {},
-                x = obj.pageX,
-                y = obj.pageY;
-
-            var self = obj instanceof this.constructor ?
-                obj : $(obj.currentTarget).data(pluginName);
-
-            if (!self) {
-                self = new this.constructor(obj.currentTarget, this.getDelegateOptions())
-                $(obj.currentTarget).data(pluginName, self);
-            }
-
-            cursor = {
-                top: y,
-                left: x
-            };
-
-            offset = computePlacementOffset(cursor, self.options.position, self.width, self.height, self.options.distance, true);
-
-            self.$tip.css({
-                display: 'block',
-                top: offset.top,
-                left: offset.left
-            });
-        },
-        load: function() {
-            var self = this,
+        hideMethod: function(obj) {
+            var self = obj instanceof this.constructor ? obj : $(obj.currentTarget).data(pluginName),
                 opts = this.options,
-                content = this.getContent();
+                show = false;
+
+            if (!self) {
+                self = new this.constructor(obj.currentTarget, this.getDelegateOptions());
+                $(obj.currentTarget).data(pluginName, self);
+            }
+
+            if (!opts.ajax && !self.options.content) return;
+
+            if (!self.isOpen) {
+                clearTimeout(self.showTimer);
+                return;
+            }
+
+            if (opts.positionTarget === 'mouse') {
+                if (this.moveFlag) return;
+            }
+
+            if (opts.hideEvent === 'click') {
+                if (opts.hideContainer) {
+                    this._unbind(opts.hideContainer, opts.hideEvent);
+                }
+            }
+
+            if (opts.hideInactive) {
+                this._bind(self.$tip, 'mouseenter.' + pluginName, function() {
+                    show = true;
+                });
+                this._bind(self.$tip, 'mouseleave.' + pluginName, function() {
+                    show = false;
+                    clearTimeout(self.hideTimer);
+                    self.hideTimer = setTimeout(function() {
+                        $.proxy(self.hide, self)();
+                    }, self.options.hideDelay);
+
+                    self._unbind(self.$tip, 'mouseenter.' + pluginName + ' mouseleave.' + pluginName);
+                });
 
 
-            // when ajax content add to container , recompulate the position again
-            if (opts.ajax === true) {
-                $.ajax($.extend({}, opts.ajaxSettings, {
-                    url: content,
-                    error: function() {
-                        throw new Error('ajax error');
-                    },
-                    success: function(data, status) {
-                        if (status === 'success') {
-                            self.content = data;
-                            self.$tip.css({
-                                display: 'none'
-                            });
-                            self.$content.empty().append(self.content);
-                            self.$tip.removeClass(self.positionClass);
-                            self.setPosition();
-                        }
-                    }
-                }));
-            } else if (opts.inline === true) {
-                if (content && content.indexOf('+') !== -1) {
-                    this.content = this.$element.next().css({
-                        display: 'block'
-                    });
-                } else {
-                    this.content = $(content).css({
-                        display: 'block'
-                    });
+            }
+            clearTimeout(self.hideTimer);
+
+            self.hideTimer = setTimeout(function() {
+                if (!show) $.proxy(self.hide, self)();
+            }, opts.hideDelay);
+        },
+        move: function(e) {
+            var x = Math.round(e.pageX),
+                y = Math.round(e.pageY),
+                t = this.$el.offset().top,
+                l = this.$el.offset().left,
+                w = this.$el.outerWidth(),
+                h = this.$el.outerHeight();
+
+            if (x >= l && x <= l + w && y >= t && y <= t + h) {
+                if (this.options.positionAdjustMouse) {
+                    this.setPosition(e);
+                } else if (this.isFirst) {
+                    this.setPosition(e);
+                    this.isFirst = false;
                 }
             } else {
-                this.content = content;
+                $(document).off('mousemove.' + pluginName);
+                this.moveFlag = false;
+                this.hideMethod(this.$el.data(pluginName));
             }
         },
-        parseTpl: function(obj) {
-            var tpl = {},
-                self = this;
-            $.each(obj, function(key, value) {
-                tpl[key] = value.replace('{{namespace}}', self.namespace);
-            });
-
-            return tpl;
-        },
-        showLoading: function() {
-            this.$content.empty();
-            this.$loading.css({
-                display: 'block'
-            });
-        },
-        hideLoading: function() {
-            this.$loading.css({
-                display: 'none'
-            });
-        },
-        setPosition: function() {
-            var opts = this.options,
-                Offset,
-                positionClass = this.namespace + '-' + opts.position;
-
-            this.width = this.$tip.outerWidth();
-            this.height = this.$tip.outerHeight();
-
-            if (opts.mouseTrace !== true) {
-                //compute position
-                if (opts.autoPosition === true) {
-                    var position,
-                        collisions = [];
-
-                    if (opts.ajax === true && this.content === null) {
-                        // use default value to judge collisions
-                        collisions = getViewportCollisions(this.$target);
-                    } else {
-                        // change opts.postion
-                        collisions = getViewportCollisions(this.$target, this.$tip);
-                    }
-
-                    if (collisions.length === 0) {
-                        position = opts.position;
-                    } else if (collisions.length === 1) {
-                        var res = resovolution[opts.position][collisions[0]];
-                        if (res === undefined) {
-                            position = opts.position;
-                        } else {
-                            position = res;
-                        }
-                    } else {
-                        var cachString = POSITION;
-                        $.each(collisions, function(i, v) {
-                            cachString.replace(v, '');
-                        });
-                        position = cachString;
-                    }
-
-                    positionClass = this.namespace + '-' + position;
-                    Offset = computePlacementOffset(this.$target, position, this.width, this.height, this.options.distance);
-                } else {
-                    Offset = computePlacementOffset(this.$target, opts.position, this.width, this.height, this.options.distance);
-                }
-
-                //show tip
-                this.$tip.css({
-                    display: 'block',
-                    top: Offset.top,
-                    left: Offset.left
-                });
-            }
-
-            this.positionClass = positionClass;
-            this.$tip.addClass(positionClass);
-        },
-        _trigger: function(eventType) {
+        trigger: function(eventType) {
             var method_arguments = Array.prototype.slice.call(arguments, 1),
                 data = [this].concat(method_arguments);
 
             // event
-            this.$element.trigger(pluginName + '::' + eventType, data);
+            this.$el.trigger(pluginName + '::' + eventType, data);
 
             // callback
             eventType = eventType.replace(/\b\w+\b/g, function(word) {
@@ -454,89 +314,149 @@
                 this.options[onFunction].apply(this, method_arguments);
             }
         },
+        getContent: function() {
+            return this.$el.attr(this.options.contentAttr) ||
+                (typeof this.options.content === 'function' ? this.options.content() : this.options.content);
+        },
+        setPosition: function(e) {
+            var offset, _offset, positionAttr,
+                opts = this.options,
+                target = this.$el,
+                $container = opts.positionContainer,
+                flag = false,
+                isMove = false;
+
+            positionAttr = $container.css('position');
+
+            var position = opts.position.split(' ');
+
+            if (opts.positionTarget === 'mouse' && e) {
+                target = {
+                    top: Math.round(e.pageY),
+                    left: Math.round(e.pageX)
+                };
+                isMove = true;
+            } else {
+                if (typeof opts.positionTarget === 'object') target = opts.positionTarget;
+            }
+
+            if (opts.autoPosition) {
+                if (opts.positionTarget !== 'mouse') {
+                    var collisions = getViewportCollisions(target, this.$tip, $container),
+                        posArr = ['top', 'right', 'bottom', 'left'];
+                    $.each(collisions, function(i, v) {
+                        posArr = $.map(posArr, function(n) {
+                            return n !== v ? n : null;
+                        });
+                    });
+                    if (posArr.length > 0) position[0] = posArr[0];
+                }
+            }
+
+            this.$tip.addClass(this.namespace + '-element-' + position[0])
+                .addClass(this.namespace + '-arrow-' + position[1]);
+
+            offset = computePlacementOffset(target, this.$tip, position, isMove);
+
+            if (positionAttr !== 'static') {
+                _offset = $container.offset();
+                flag = true;
+            }
+
+            this.$tip.css({
+                top: offset.top + (flag ? -_offset.top : 0),
+                left: offset.left + (flag ? -_offset.left : 0)
+            });
+        },
+        loadToggle: function() {
+            var flag = this.loadFlag;
+            if (flag) {
+                this.$tip.removeClass(this.namespace + '_isLoading');
+                flag = false;
+            } else {
+                this.$tip.addClass(this.namespace + '_isLoading');
+                flag = true;
+            }
+        },
+        statusToggle: function(isOpen) {
+            if (isOpen) {
+                this.$el.removeClass(this.classes.active);
+            } else {
+                this.$el.addClass(this.classes.active);
+            }
+        },
+        adjustmouse: function() {
+
+        },
+        adjustResize: function() {
+
+        },
+        adjustScroll: function() {
+
+        },
 
         /*
          *  Public Method
          */
+
+        rePosition: function(e) {
+            this.setPosition(e);
+            return this;
+        },
+
+        setContent: function() {
+            var opts = this.options;
+            if (opts.ajax) {
+                this.loadToggle();
+            }
+            this.$content.html(opts.content);
+            this.$tip.appendTo(opts.positionContainer);
+
+            if (opts.positionTarget !== 'mouse') this.setPosition();
+        },
         show: function() {
-            var opts = this.options,
-                self = this;
+            var opts = this.options;
 
-            if (!this.enabled) {
-                return;
-            }
-            if (this.onlyOne) {
-                $.each(instances, function(i, v) {
-                    if (v === self) {
-                        return;
-                    } else {
-                        if (v.isOpen) {
-                            v.hide();
-                        }
-                    }
-                });
-            }
-            this.$tip = $(this.options.tpl.tip.replace('{{namespace}}', this.namespace));
+            if (!this.enabled) return;
 
-            if (opts.closeBtn) {
-                this.$tip.append(this.$close);
-            }
-            this.$tip.append(this.$arrow).append(this.$content);
+            // if (opts.closeBtn) this.$tip.addClass(this.classes.hasClose);
 
-            this.$element.addClass(this.classes.active);
+            if (opts.skin) this.$tip.addClass(this.namespace + '_' + opts.skin);
 
-            // here judge the position first and then insert into body
-            // if content has loaded , never load again
-            this.content === null && this.load();
-
-            if (this.content === null) {
-                this.$content.append(this.$loading);
-            } else {
-                this.$content.empty().append(this.content);
+            if (opts.ajax) {
+                opts.ajax(this);
             }
 
-            if (opts.skin) {
-                this.$tip.addClass(opts.skin);
-            }
+            this.setContent(this.isOpen);
+            this.statusToggle(this.isOpen);
 
-
-            this.$tip.css({
-                display: 'none'
-            });
-
-            this.options.container ? this.$tip.appendTo(this.options.container) : this.$tip.insertAfter(this.$element);
-
-            this.setPosition();
-
-            this._trigger('show');
             this.isOpen = true;
-
+            this.trigger('show');
             return this;
         },
         hide: function() {
+            if (this.options.ajax) {
+                this.loadToggle();
+            }
             this.$tip.off('.' + pluginName);
-            this._trigger('hide');
-
-            this.$element.removeClass(this.classes.active);
-
+            this.statusToggle(this.isOpen);
             this.$tip.remove();
             this.isOpen = false;
-        },
-        setContent: function(content) {
-            this.content = content;
+            this.trigger('hide');
+            return this;
         },
         enable: function() {
             this.enabled = true;
-            this.$element.addClass(this.classes.enabled);
+            this.$el.addClass(this.classes.enabled);
             return this;
         },
         disable: function() {
             this.enabled = false;
-            this.$element.removeClass(this.classes.enabled);
+            this.$el.removeClass(this.classes.enabled);
             return this;
         },
         destroy: function() {
-            this.$target.off('.' + pluginName);
+            this.$el.off('.' + pluginName);
         }
     };
 
@@ -551,46 +471,50 @@
     // Static method default options.
     Plugin.defaults = {
         namespace: pluginName,
-        skin: null,
+        skin: 'dream',
 
-        onlyOne: false,
-        trigger: 'hover', // hover click
-        interactive: false,
-        interactiveDelay: 500,
-        mouseTrace: false,
         closeBtn: false,
 
-        selector: false,
-        container: 'body',
+        position: 'right middle',
+        autoPosition: false, //if true, judge by positionContainer
 
-        distance: 10, //set the distance between tooltip and element
+        positionTarget: false, //mouse || jqueryObj
+        positionContainer: false,
+        positionAdjustMouse: true, //Work when positionTarget is mouse
+        positionAdjustResize: true,
+        positionAdjustScroll: true,
+        // positionEffect: function(){},
 
-        position: 'n',
-        autoPosition: true,
+        showTarget: false,
+        showEvent: 'mouseenter',
+        showDelay: 0,
 
-        delay: 0,
-        effect: 'fade', // fade none zoom
-        duration: 200,
+        hideTarget: false,
+        hideEvent: 'mouseleave',
+        hideDelay: 0,
+        // hideDistance: false,
+        hideContainer: false, // only hideEvent is click, it can be body or obj
+        hideInactive: false, //for true, it is always show when tip hovering
 
-        inline: false,
         content: null,
         contentAttr: 'title',
 
         ajax: false,
-        ajaxSettings: {
-            dataType: 'html',
-            headers: {
-                'tooltip': true
-            }
-        },
+        tpl: '<div class="{{namespace}}">' +
+            '<div class="{{namespace}}-inner">' +
+            '<div class="{{namespace}}-loading"></div>' +
+            '<div class="{{namespace}}-content"></div>' +
+            '</div>' +
+            '</div>',
 
-        tpl: {
-            tip: '<div class="{{namespace}}"></div>',
-            loading: '<span class="{{namespace}}-loading"></span>',
-            content: '<div class="{{namespace}}-content"></div>',
-            arrow: '<span class="{{namespace}}-arrow"></span>',
-            close: '<a class="{{namespace}}-close"></a>'
-        }
+        // width: false,
+        // height: false,
+
+        onInit: null,
+        onShow: null,
+        onHide: null,
+        onFocus: null,
+        onBlur: null
     };
 
     $.fn[pluginName] = function(options) {

@@ -153,13 +153,16 @@ pre.has-example {
 
 
 /* positons */
+.position_tooltip {
+    height: 50px;
+}
 .position_tooltip,.show {
     margin: 0.5em;
     background: #ddddff;
     padding: 10px;
     cursor: default;
     float:left;
-    width: 100px;
+    width: 150px;
     text-align: center;
 }
 .show {

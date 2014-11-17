@@ -1,8 +1,49 @@
 // core
-.asTooltip {
-	pointer-events: none;
-	top: 0;
-	left: 0;
+@namespace			: asTooltip;
+@loading-width 		: 20px;
+@loading-height 	: 20px;
+@loading-margin   	: 0 auto;
+@loading-color    	: #333;
+@loading-duration 	: 1.2s;
+
+@import 'chasing-dots.less';
+
+
+.@{namespace} {
+	// pointer-events: none;
+	top: 50%;
+	left: 50%;
 	position: absolute;
 	z-index: 9999;
+	box-sizing: border-box;
+
+	&-content {
+		display: block;
+	}
+	&-inner {
+		position: relative;
+	}
+
+	&-loading, &-close {
+		display: none;
+	}
+	&-loading {
+		.chasing-dots();
+	}
+}
+
+.@{namespace} {
+	&_isLoading {
+		.@{namespace}-loading {
+			display: block;
+		}
+		.@{namespace}-content {
+			display: none;
+		}
+	}
+	&_hasClose {
+		.@{namespace}-close {
+			display: block;
+		}
+	}
 }

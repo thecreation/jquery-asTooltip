@@ -1,72 +1,108 @@
+// skin sea
+//====================================================
+@asTooltip-arrow-width: 6px;
+
 .asTooltip_sea {
-    opacity: 0.6;
-    max-width: 250px;
-
-    .asTooltip-content {
-        background-color: #4C4C4C;
-        padding: 10px;
-        border-radius: 5px;
+    .asTooltip-inner {
+        padding: 0.2em 0.6em;
+        font-size: 1.1em;
+        line-height: 1.5em;
         color: #fff;
+        background-color: #4C4C4C;
+        opacity: 0.6;
+        border-radius: 3px;
+        box-sizing: border-box;
+        &:before {
+            content: '';
+            display: block;
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-width: @asTooltip-arrow-width;
+            border-style: solid;
+            border-color: transparent;
+            box-sizing: border-box;
+        }
     }
-
-    .asTooltip-arrow {
-        position: absolute;
-        width: 0px;
-        height: 0px;
-    }
-
     .asTooltip-loading {
-        display: block;
-        width: 16px;
-        height: 16px;
-        background: url("../img/tooltip-loading.gif") no-repeat scroll 0 0 transparent;
+       &:before, &:after {
+            background-color: white;
+       } 
     }
-
-    &.asTooltip-n {
-        padding-bottom: 10px;
-
-        .asTooltip-arrow {
-            border-top: 10px solid #4C4C4C;
+    &.asTooltip-element-top {
+        .asTooltip-inner {
+            margin-bottom: @asTooltip-arrow-width;
+            &:before {
+                top: 100%;
+                border-top-color: #434240;
+            }
         }
     }
-    &.asTooltip-s {
-        padding-top: 10px;
-
-        .asTooltip-arrow {
-            border-bottom: 10px solid #000;
+    &.asTooltip-element-left {
+        .asTooltip-inner {
+            margin-right: @asTooltip-arrow-width;
+            &:before {
+                left: 100%;
+                border-left-color: #434240;
+            }
         }
     }
-    &.asTooltip-w {
-        padding-left: 10px;
-
-        .asTooltip-arrow {
-            border-right: 10px solid #000;
+    &.asTooltip-element-right {
+        .asTooltip-inner {
+            margin-left: @asTooltip-arrow-width;
+            &:before {
+                right: 100%;
+                border-right-color: #434240;
+            }
         }
     }
-    &.asTooltip-e {
-        padding-right: 10px;
-
-        .asTooltip-arrow {
-            border-left: 10px solid #000;
+    &.asTooltip-element-bottom {
+        .asTooltip-inner {
+            margin-top: @asTooltip-arrow-width;
+            &:before {
+                bottom: 100%;
+                border-bottom-color: #434240;
+            }
         }
     }
-    &.asTooltip-ne {
-        padding-bottom: 10px;
-    }
-    &.asTooltip-nw {
-        padding-bottom: 10px;
 
-        .asTooltip-arrow {
-            border-top: 10px solid #000;
-            right: 0;
-            bottom:  -10px;
+    &.asTooltip-element-left, &.asTooltip-element-right {
+        &.asTooltip-arrow-middle {
+           .asTooltip-inner:before {
+                top: 50%;
+                margin-top: -@asTooltip-arrow-width;
+            } 
         }
     }
-    &.asTooltip-se {
-        padding-top: 10px;
-    }
-    &.asTooltip-sw {
-        padding-top: 10px;
+    &.asTooltip-element-top, &.asTooltip-element-bottom {
+        &.asTooltip-arrow-middle {
+            .asTooltip-inner:before {
+                left: 50%;
+                margin-left: -@asTooltip-arrow-width;
+            }
+        }
     }
 
+    &.asTooltip-arrow-left {
+        .asTooltip-inner:before {
+            left: @asTooltip-arrow-width;
+        }
+    }
+    
+    &.asTooltip-arrow-right {
+        .asTooltip-inner:before {
+            right: @asTooltip-arrow-width;
+        }
+    }
+    &.asTooltip-arrow-top {
+        .asTooltip-inner:before {
+            top: @asTooltip-arrow-width;
+        }
+    }
+    
+    &.asTooltip-arrow-bottom {
+        .asTooltip-inner:before {
+            bottom: @asTooltip-arrow-width;
+        }
+    }
 }
