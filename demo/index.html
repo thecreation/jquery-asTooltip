@@ -59,7 +59,8 @@ $(".tooltip").asTooltip({
                         
                         $(document).ready(function() {
                             $("body").asTooltip({
-                                show: {target: '.position_tooltip'}
+                                showTarget: '.position_tooltip',
+                                hideTarget: '.position_tooltip'
                             });
                         });
       
@@ -72,7 +73,8 @@ $(".tooltip").asTooltip({
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-click").asTooltip({
     showEvent: 'click',
-    hideEvent: 'click'
+    hideEvent: 'click',
+    position: 'right middle'
 });
             </code></pre>
             <div class="positon_wrap example">
@@ -83,7 +85,8 @@ $(".tooltip-click").asTooltip({
                     $(document).ready(function() {
                         $(".tooltip-click").asTooltip({
                             showEvent: 'click',
-                            hideEvent: 'click'
+                            hideEvent: 'click',
+                            position: 'right middle'
                         });                             
                     });
                 </script>
@@ -105,7 +108,8 @@ $(".tooltip-click-outer").asTooltip({
                         $(".tooltip-click-outer").asTooltip({
                             showEvent: 'click',
                             hideEvent: 'click',
-                            hideContainer: 'body'
+                            hideContainer: 'body',
+                            position: 'right middle'
                         });                             
                     });
                 </script>
@@ -125,7 +129,8 @@ $(".tooltip-focus").asTooltip({
                     $(document).ready(function() {
                         $(".tooltip-focus").asTooltip({
                             showEvent: 'focus',
-                            hideEvent: 'blur'
+                            hideEvent: 'blur',
+                            position: 'right middle'
                         });                             
                     });
                 </script>
