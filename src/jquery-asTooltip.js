@@ -93,17 +93,19 @@
     var Plugin = $[pluginName] = function(element, options) {
         var body = $(document.body),
             newTarget = element[0] === document ? body : element,
-            opts = this.options = $.extend({}, Plugin.defaults, options, $(newTarget).data());
+            opts, targetData;
+        targetData = this.parseTargetData($(newTarget).data());
+        opts = this.options = $.extend(true, {}, Plugin.defaults, options, targetData);
 
-        opts.positionContainer = !opts.positionContainer ? body : $(opts.positionContainer);
-        if (!opts.positionTarget) {
-            opts.positionTarget = newTarget;
+        opts.position.container = !opts.position.container ? body : $(opts.position.container);
+        if (!opts.position.target) {
+            opts.position.target = newTarget;
         }
-        if (!opts.showTarget) {
-            opts.showTarget = newTarget;
+        if (!opts.show.target) {
+            opts.show.target = newTarget;
         }
-        if (!opts.hideTarget) {
-            opts.hideTarget = newTarget;
+        if (!opts.hide.target) {
+            opts.hide.target = newTarget;
         }
 
         this.$el = $(newTarget);
@@ -134,10 +136,10 @@
         init: function() {
             var self = this,
                 opts = this.options,
-                showTarget = opts.showTarget,
-                hideTarget = opts.hideTarget,
-                showEvent = opts.showEvent,
-                hideEvent = opts.hideEvent;
+                showTarget = opts.show.target,
+                hideTarget = opts.hide.target,
+                showEvent = opts.show.event,
+                hideEvent = opts.hide.event;
 
             // add namepace    
             this.$tip = $(opts.tpl.replace(/{{namespace}}/g, this.namespace));
@@ -157,13 +159,13 @@
                     this.hideMethod.call(this, e);
                 });
             }
-            if (opts.positionContainer[0].tagName === 'BODY') {
-                if (opts.positionAdjustResize) {
+            if (opts.position.container[0].tagName === 'BODY') {
+                if (opts.position.adjust.resize) {
                     this._bind($win, 'resize', function() {
                         if (self.isOpen) self.setPosition();
                     });
                 }
-                if (opts.positionAdjustScroll) {
+                if (opts.position.adjust.scroll) {
                     this._bind($win, 'scroll', function() {
                         if (self.isOpen) self.setPosition();
                     });
@@ -180,7 +182,29 @@
             targets && $(targets).unbind(suffix ? events : events + '.' + suffix);
             return this;
         },
-
+        parseTargetData: function(data) {
+            var targetData = {};
+            $.each(data, function(n, v) {
+                var names = n.split('_'),
+                    len = names.length,
+                    path = targetData;
+                if (len === 1) {
+                    targetData[names[0]] = v;
+                } else {
+                    for (var i = 0; i < len; i++) {
+                        if (i === 0) {
+                            if (targetData[names[i]] === undefined) targetData[names[i]] = {};
+                        } else if (i === len - 1) {
+                            path[names[i]] = v;
+                        } else {
+                            if (path[names[i]] === undefined) path[names[i]] = {};
+                        }
+                        path = targetData[names[i]];
+                    }
+                }
+            });
+            return targetData;
+        },
         parseTpl: function(string) {
             return string.replace('{{namespace}}', self.namespace);
         },
@@ -211,19 +235,19 @@
                 clearTimeout(self.showTimer);
                 self.showTimer = setTimeout(function() {
                     $.proxy(self.show, self)();
-                }, opts.showDelay);
+                }, opts.show.delay);
             }
 
-            if (opts.positionTarget === 'mouse') {
+            if (opts.position.target === 'mouse') {
                 if (this.moveFlag) return;
                 this.isFirst = true;
                 $(document).on('mousemove.' + pluginName, $.proxy(this.move, self));
                 this.moveFlag = true;
             }
 
-            if (opts.hideEvent === 'click') {
-                if (opts.hideContainer) {
-                    this._bind(opts.hideContainer, opts.hideEvent, function(e) {
+            if (opts.hide.event === 'click') {
+                if (opts.hide.container) {
+                    this._bind(opts.hide.container, opts.hide.event, function(e) {
                         var $target = $(e.target);
                         if ($target.closest(self.$el).length === 0 && $target.closest(self.$tip).length === 0) {
                             if (self.isOpen) $.proxy(self.hide, self)();
@@ -249,17 +273,17 @@
                 return;
             }
 
-            if (opts.positionTarget === 'mouse') {
+            if (opts.position.target === 'mouse') {
                 if (this.moveFlag) return;
             }
 
-            if (opts.hideEvent === 'click') {
-                if (opts.hideContainer) {
-                    this._unbind(opts.hideContainer, opts.hideEvent);
+            if (opts.hide.event === 'click') {
+                if (opts.hide.container) {
+                    this._unbind(opts.hide.container, opts.hide.event);
                 }
             }
 
-            if (opts.hideInactive) {
+            if (opts.hide.inactive) {
                 this._bind(self.$tip, 'mouseenter.' + pluginName, function() {
                     show = true;
                 });
@@ -268,7 +292,7 @@
                     clearTimeout(self.hideTimer);
                     self.hideTimer = setTimeout(function() {
                         $.proxy(self.hide, self)();
-                    }, self.options.hideDelay);
+                    }, self.options.hide.delay);
 
                     self._unbind(self.$tip, 'mouseenter.' + pluginName + ' mouseleave.' + pluginName);
                 });
@@ -279,7 +303,7 @@
 
             self.hideTimer = setTimeout(function() {
                 if (!show) $.proxy(self.hide, self)();
-            }, opts.hideDelay);
+            }, opts.hide.delay);
         },
         move: function(e) {
             var x = Math.round(e.pageX),
@@ -290,7 +314,7 @@
                 h = this.$el.outerHeight();
 
             if (x >= l && x <= l + w && y >= t && y <= t + h) {
-                if (this.options.positionAdjustMouse) {
+                if (this.options.position.adjust.mouse) {
                     this.setPosition(e);
                 } else if (this.isFirst) {
                     this.setPosition(e);
@@ -326,26 +350,26 @@
             var offset, _offset, positionAttr,
                 opts = this.options,
                 target = this.$el,
-                $container = opts.positionContainer,
+                $container = opts.position.container,
                 flag = false,
                 isMove = false;
 
             positionAttr = $container.css('position');
 
-            var position = opts.position.split(' ');
+            var position = opts.position.value.split(' ');
 
-            if (opts.positionTarget === 'mouse' && e) {
+            if (opts.position.target === 'mouse' && e) {
                 target = {
                     top: Math.round(e.pageY),
                     left: Math.round(e.pageX)
                 };
                 isMove = true;
             } else {
-                if (typeof opts.positionTarget === 'object') target = opts.positionTarget;
+                if (typeof opts.position.target === 'object') target = opts.position.target;
             }
 
-            if (opts.autoPosition) {
-                if (opts.positionTarget !== 'mouse') {
+            if (opts.position.auto) {
+                if (opts.position.target !== 'mouse') {
                     var collisions = getViewportCollisions(target, this.$tip, $container),
                         posArr = ['top', 'right', 'bottom', 'left'];
                     $.each(collisions, function(i, v) {
@@ -376,10 +400,10 @@
             var flag = this.loadFlag;
             if (flag) {
                 this.$tip.removeClass(this.namespace + '_isLoading');
-                flag = false;
+                this.loadFlag = false;
             } else {
                 this.$tip.addClass(this.namespace + '_isLoading');
-                flag = true;
+                this.loadFlag = true;
             }
         },
         statusToggle: function(isOpen) {
@@ -388,15 +412,6 @@
             } else {
                 this.$el.addClass(this.classes.active);
             }
-        },
-        adjustmouse: function() {
-
-        },
-        adjustResize: function() {
-
-        },
-        adjustScroll: function() {
-
         },
 
         /*
@@ -410,13 +425,15 @@
 
         setContent: function() {
             var opts = this.options;
+
             if (opts.ajax) {
                 this.loadToggle();
             }
-            this.$content.html(opts.content);
-            this.$tip.appendTo(opts.positionContainer);
 
-            if (opts.positionTarget !== 'mouse') this.setPosition();
+            this.$content.html(opts.content);
+            this.$tip.appendTo(opts.position.container);
+
+            if (opts.position.target !== 'mouse') this.setPosition();
         },
         show: function() {
             var opts = this.options;
@@ -440,7 +457,8 @@
         },
         hide: function() {
             if (this.options.ajax) {
-                this.loadToggle();
+                this.$tip.removeClass(this.namespace + '_isLoading');
+                this.loadFlag = false;
             }
             this.$tip.off('.' + pluginName);
             this.statusToggle(this.isOpen);
@@ -479,26 +497,31 @@
 
         closeBtn: false,
 
-        position: 'right middle',
-        autoPosition: false, //if true, judge by positionContainer
+        position: {
+            value: 'right middle',
+            target: false, //mouse || jqueryObj
+            container: false,
+            auto: false, //if true, judge by positionContainer
+            adjust: {
+                mouse: true, //Work when positionTarget is mouse
+                resize: true,
+                scroll: true
+            }
+        },
 
-        positionTarget: false, //mouse || jqueryObj
-        positionContainer: false,
-        positionAdjustMouse: true, //Work when positionTarget is mouse
-        positionAdjustResize: true,
-        positionAdjustScroll: true,
-        // positionEffect: function(){},
+        show: {
+            target: false,
+            event: 'mouseenter',
+            delay: 0
+        },
 
-        showTarget: false,
-        showEvent: 'mouseenter',
-        showDelay: 0,
-
-        hideTarget: false,
-        hideEvent: 'mouseleave',
-        hideDelay: 0,
-        // hideDistance: false,
-        hideContainer: false, // only hideEvent is click, it can be body or obj
-        hideInactive: false, //for true, it is always show when tip hovering
+        hide: {
+            target: false,
+            event: 'mouseleave',
+            delay: 0,
+            container: false, // only hideEvent is click, it can be body or obj
+            inactive: false //if true, it is always show when tip hovering
+        },
 
         content: null,
         contentAttr: 'title',

@@ -35,32 +35,32 @@
             <h3>position</h3>
                 <pre class="has-example"><code class="language-javascript">
 $(".tooltip").asTooltip({
-    showTarget: '.position_tooltip',
-    hideTarget: '.position_tooltip'
+    show: { target: '.position_tooltip' },
+    hide: { target: '.position_tooltip' }
 });
                 </code></pre>
                 <div class="positon_wrap example">
-                    <span class="position_tooltip" data-position="top left" title="Top Left">Top Left</span>
-                    <span class="position_tooltip" data-position="top middle" title="Top Middle">Top Middle</span>
-                    <span class="position_tooltip" data-position="top right" title="Top Right">Top Right</span>
-                    <span class="position_tooltip" data-position="left top" title="Left Top">Left Top</span>
+                    <span class="position_tooltip" data-position_value="top left" title="Top Left">Top Left</span>
+                    <span class="position_tooltip" data-position_value="top middle" title="Top Middle">Top Middle</span>
+                    <span class="position_tooltip" data-position_value="top right" title="Top Right">Top Right</span>
+                    <span class="position_tooltip" data-position_value="left top" title="Left Top">Left Top</span>
                     <span class="position_tooltip" >None</span>
-                    <span class="position_tooltip" data-position="right top" title="Right Top">Right Top</span>
-                    <span class="position_tooltip" data-position="left middle" title="Left Middle">Left Middle</span>
+                    <span class="position_tooltip" data-position_value="right top" title="Right Top">Right Top</span>
+                    <span class="position_tooltip" data-position_value="left middle" title="Left Middle">Left Middle</span>
                     <span class="position_tooltip" >None</span>
-                    <span class="position_tooltip" data-position="right middle" title="Right Middle">Right Middle</span>
-                    <span class="position_tooltip" data-position="left bottom" title="Left Bottom">Left Bottom</span>
+                    <span class="position_tooltip" data-position_value="right middle" title="Right Middle">Right Middle</span>
+                    <span class="position_tooltip" data-position_value="left bottom" title="Left Bottom">Left Bottom</span>
                     <span class="position_tooltip" >None</span>
-                    <span class="position_tooltip" data-position="right bottom" title="Right Bottom">Right Bottom</span>
-                    <span class="position_tooltip" data-position="bottom left" title="Bottom Left">Bottom Left</span>
-                    <span class="position_tooltip" data-position="bottom middle" title="Bottom Middle">Bottom Middle</span>
-                    <span class="position_tooltip" data-position="bottom right" title="Bottom Right">Bottom Right</span>
+                    <span class="position_tooltip" data-position_value="right bottom" title="Right Bottom">Right Bottom</span>
+                    <span class="position_tooltip" data-position_value="bottom left" title="Bottom Left">Bottom Left</span>
+                    <span class="position_tooltip" data-position_value="bottom middle" title="Bottom Middle">Bottom Middle</span>
+                    <span class="position_tooltip" data-position_value="bottom right" title="Bottom Right">Bottom Right</span>
                     <script>
                         
                         $(document).ready(function() {
                             $("body").asTooltip({
-                                showTarget: '.position_tooltip',
-                                hideTarget: '.position_tooltip'
+                                show: { target: '.position_tooltip' },
+                                hide: { target: '.position_tooltip' }
                             });
                         });
       
@@ -72,9 +72,8 @@ $(".tooltip").asTooltip({
             <h3>Trigger</h3>
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-click").asTooltip({
-    showEvent: 'click',
-    hideEvent: 'click',
-    position: 'right middle'
+    show: { event: 'click' },
+    hide: { event: 'click' }
 });
             </code></pre>
             <div class="positon_wrap example">
@@ -84,19 +83,19 @@ $(".tooltip-click").asTooltip({
                     
                     $(document).ready(function() {
                         $(".tooltip-click").asTooltip({
-                            showEvent: 'click',
-                            hideEvent: 'click',
-                            position: 'right middle'
+                            show: { event: 'click' },
+                            hide: { event: 'click' }
                         });                             
                     });
                 </script>
             </div>
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-click-outer").asTooltip({
-    showEvent: 'click',
-    hideEvent: 'click',
-    hideContainer: 'body',
-    position: 'right middle'
+    show: { event: 'click' },
+    hide: { 
+        event: 'click',
+        container: 'body'
+    }
 });
             </code></pre>
             <div class="positon_wrap example">
@@ -106,10 +105,11 @@ $(".tooltip-click-outer").asTooltip({
                     
                     $(document).ready(function() {
                         $(".tooltip-click-outer").asTooltip({
-                            showEvent: 'click',
-                            hideEvent: 'click',
-                            hideContainer: 'body',
-                            position: 'right middle'
+                            show: { event: 'click' },
+                            hide: { 
+                                event: 'click',
+                                container: 'body'
+                            }
                         });                             
                     });
                 </script>
@@ -117,9 +117,8 @@ $(".tooltip-click-outer").asTooltip({
             <h5>focus to show</h5>
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-focus").asTooltip({
-    showEvent: 'focus',
-    hideEvent: 'blur',
-    position: 'right middle'
+    show: { event: 'focus' },
+    hide: { event: 'blur' }
 });
             </code></pre>
             <div class="positon_wrap example">
@@ -128,9 +127,8 @@ $(".tooltip-focus").asTooltip({
                     
                     $(document).ready(function() {
                         $(".tooltip-focus").asTooltip({
-                            showEvent: 'focus',
-                            hideEvent: 'blur',
-                            position: 'right middle'
+                            show: { event: 'focus' },
+                            hide: { event: 'blur' }
                         });                             
                     });
                 </script>
@@ -217,8 +215,12 @@ $(".tooltip-ajax").asTooltip({
             <h3>Mosuce Trace</h3>
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-mouseTrace").asTooltip({
-    positionTarget: 'mouse',
-    positionAdjustMouse: true
+    position: {
+        target: 'mouse',
+        adjust: {
+            mouse: true
+        }
+    }
 });
             </code></pre>
             <div class="positon_wrap example">
@@ -228,8 +230,12 @@ $(".tooltip-mouseTrace").asTooltip({
                     
                     $(document).ready(function() {
                         $(".tooltip-mouseTrace").asTooltip({
-                            positionTarget: 'mouse',
-                            positionAdjustMouse: true
+                            position: {
+                                target: 'mouse',
+                                adjust: {
+                                    mouse: true
+                                }
+                            }
                         });                             
                     });
                 </script>
@@ -237,8 +243,12 @@ $(".tooltip-mouseTrace").asTooltip({
 
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-mouseTrace-noAdjust").asTooltip({
-    positionTarget: 'mouse',
-    positionAdjustMouse: false
+    position: {
+        target: 'mouse',
+        adjust: {
+            mouse: false
+        }
+    }
 });
             </code></pre>
             <div class="positon_wrap example">
@@ -248,8 +258,12 @@ $(".tooltip-mouseTrace-noAdjust").asTooltip({
                     
                     $(document).ready(function() {
                         $(".tooltip-mouseTrace-noAdjust").asTooltip({
-                            positionTarget: 'mouse',
-                            positionAdjustMouse: false
+                            position: {
+                                target: 'mouse',
+                                adjust: {
+                                    mouse: false
+                                }
+                            }
                         });                             
                     });
                 </script>
@@ -257,7 +271,9 @@ $(".tooltip-mouseTrace-noAdjust").asTooltip({
 
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-positionTarget1").asTooltip({
-    positionTarget: $('.tooltip-positionTarget2')
+    position: {
+        target: $('.tooltip-positionTarget2')
+    }
 });
             </code></pre>
             <div class="positon_wrap example">
@@ -267,7 +283,9 @@ $(".tooltip-positionTarget1").asTooltip({
                     
                     $(document).ready(function() {
                         $(".tooltip-positionTarget1").asTooltip({
-                            positionTarget: $('.tooltip-positionTarget2')
+                            position: {
+                                target: $('.tooltip-positionTarget2')
+                            }
                         });                             
                     });
                 </script>
@@ -278,7 +296,7 @@ $(".tooltip-positionTarget1").asTooltip({
             <h3>Delay</h3>
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-showDelay").asTooltip({
-    showDelay: 500
+    show: { delay: 500 }
 });
             </code></pre>
             <div class="positon_wrap example">
@@ -288,14 +306,14 @@ $(".tooltip-showDelay").asTooltip({
                     
                     $(document).ready(function() {
                         $(".tooltip-showDelay").asTooltip({
-                            showDelay: 500
+                            show: { delay: 500 }
                         });                             
                     });
                 </script>
             </div>
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-hideDelay").asTooltip({
-    hideDelay: 500
+    hide: { delay: 500 }
 });
             </code></pre>
             <div class="positon_wrap example">
@@ -305,7 +323,7 @@ $(".tooltip-hideDelay").asTooltip({
                     
                     $(document).ready(function() {
                         $(".tooltip-hideDelay").asTooltip({
-                            hideDelay: 500
+                            hide: { delay: 500 }
                         });                             
                     });
                 </script>
@@ -315,7 +333,7 @@ $(".tooltip-hideDelay").asTooltip({
             <h3>HideInactive</h3>
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-ajax").asTooltip({
-    hideInactive: true
+    hide: { inactive: true }
 });
             </code></pre>
             <div class="positon_wrap example">
@@ -325,15 +343,17 @@ $(".tooltip-ajax").asTooltip({
                     
                     $(document).ready(function() {
                         $(".tooltip-hideInactive").asTooltip({
-                            hideInactive: true
+                            hide: { inactive: true }
                         });                             
                     });
                 </script>
             </div>
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-hideInactive-hideDelay").asTooltip({
-    hideInactive: true,
-    hideDelay: 500
+    hide: { 
+        inactive: true,
+        delay: 500
+    }
 });
             </code></pre>
             <div class="positon_wrap example">
@@ -343,8 +363,10 @@ $(".tooltip-hideInactive-hideDelay").asTooltip({
                     
                     $(document).ready(function() {
                         $(".tooltip-hideInactive-hideDelay").asTooltip({
-                            hideInactive: true,
-                            hideDelay: 500
+                            hide: { 
+                                inactive: true,
+                                delay: 500
+                            }
                         });                             
                     });
                 </script>
@@ -355,7 +377,7 @@ $(".tooltip-hideInactive-hideDelay").asTooltip({
             <h3>PositionContainer</h3>
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-positionContainer").asTooltip({
-    positionContainer: '.tooltip-positionContainer-wrap'
+    position: { contianer: '.tooltip-positionContainer-wrap' }
 });
             </code></pre>
             <div class="positon_wrap example">
@@ -368,7 +390,7 @@ $(".tooltip-positionContainer").asTooltip({
                     
                     $(document).ready(function() {
                         $(".tooltip-positionContainer").asTooltip({
-                            positionContainer: '.tooltip-positionContainer-wrap'
+                            position: { contianer: '.tooltip-positionContainer-wrap' }
                         });                             
                     });
                 </script>
@@ -378,7 +400,7 @@ $(".tooltip-positionContainer").asTooltip({
             <h3>Autoposition</h3>
             <pre class="has-example"><code class="language-javascript">
 $(".tooltip-autoPosition").asTooltip({
-    autoPosition: true
+    position: { auto: true }
 });
             </code></pre>
             <div class="positon_wrap example">
@@ -388,7 +410,7 @@ $(".tooltip-autoPosition").asTooltip({
                     
                     $(document).ready(function() {
                         $(".tooltip-autoPosition").asTooltip({
-                            autoPosition: true
+                            position: { auto: true }
                         });                             
                     });
                 </script>
@@ -396,8 +418,10 @@ $(".tooltip-autoPosition").asTooltip({
             <pre class="has-example"><code class="language-javascript">
 $(document).ready(function() {
     $(".tooltip-pos1").asTooltip({
-        positionContainer: '.tooltip-poswrap1',
-        autoPosition: true
+        position: { 
+            container: '.tooltip-poswrap1',
+            auto: true
+        }
     });                             
 });
             </code></pre>
@@ -420,24 +444,34 @@ $(document).ready(function() {
                 <script>
                     $(document).ready(function() {
                         $(".tooltip-pos1").asTooltip({
-                            positionContainer: '.tooltip-poswrap1',
-                            autoPosition: true
+                            position: { 
+                                container: '.tooltip-poswrap1',
+                                auto: true
+                            }
                         });  
                         $(".tooltip-pos2").asTooltip({
-                            positionContainer: '.tooltip-poswrap2',
-                            autoPosition: true
+                            position: { 
+                                container: '.tooltip-poswrap2',
+                                auto: true
+                            }
                         }); 
                         $(".tooltip-pos3").asTooltip({
-                            positionContainer: '.tooltip-poswrap3',
-                            autoPosition: true
+                            position: { 
+                                container: '.tooltip-poswrap3',
+                                auto: true
+                            }
                         });
                         $(".tooltip-pos4").asTooltip({
-                            positionContainer: '.tooltip-poswrap4',
-                            autoPosition: true
+                            position: { 
+                                container: '.tooltip-poswrap4',
+                                auto: true
+                            }
                         });
                         $(".tooltip-pos5").asTooltip({
-                            positionContainer: '.tooltip-poswrap5',
-                            autoPosition: true
+                            position: { 
+                                container: '.tooltip-poswrap5',
+                                auto: true
+                            }
                         });                         
                     });
                 </script>
@@ -446,7 +480,7 @@ $(document).ready(function() {
         <section>
             <h3>Skin</h3>
             <pre class="has-example"><code class="language-javascript">
-$(".tooltip-ajax").asTooltip({
+$(".tooltip-skin").asTooltip({
     skin: 'sea'
 });
             </code></pre>
