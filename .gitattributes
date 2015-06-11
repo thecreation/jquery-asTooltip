@@ -21,4 +21,5 @@
 
 # https://github.com/github/linguist#using-gitattributes
 demo/* linguist-documentation
-css/* linguist-documentation
+css/* linguist-vendored
+less/* linguist-vendored
