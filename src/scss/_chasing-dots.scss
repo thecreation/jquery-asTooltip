@@ -1,0 +1,41 @@
+@mixin chasing-dots(){
+	margin: $loading-margin;
+	width: $loading-width;
+	height: $loading-height;
+	position: relative;
+	text-align: center;
+
+	animation: chasingDotsRotate 2.0s infinite linear;
+
+	&:before, &:after {
+		content: '';
+		width: 60%;
+		height: 60%;
+		display: inline-block;
+		position: absolute;
+		top: 0;
+		background-color: $loading-color;
+		border-radius: 100%;
+
+		animation: chasingDotsBounce 2.0s infinite ease-in-out;
+	}
+
+	&:before {
+		top: auto;
+		bottom: 0;
+		animation-delay: -1.0s;
+	}
+
+	@keyframes chasingDotsRotate {
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+	@keyframes chasingDotsBounce {
+		0%, 100% {
+			transform: scale(0.0);
+		} 50% {
+			transform: scale(1.0);
+		}
+	}
+}

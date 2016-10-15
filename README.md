@@ -1,172 +1,277 @@
-#jquery-asTooltip
+# [jQuery asTooltip](https://github.com/amazingSurge/jquery-asTooltip) ![bower][bower-image] [![NPM version][npm-image]][npm-url] [![Dependency Status][daviddm-image]][daviddm-url] [![prs-welcome]](#contributing)
 
-The powerful jQuery plugin that creates asTooltip. 
+> A jQuery plugin for showing tooltip text when hover on a element.
 
-Download:<a href="https://github.com/amazingSurge/jquery-asTooltip/archive/master.zip">jquery-asTooltip-master.zip.</a>
+## Table of contents
+- [Main files](#main-files)
+- [Quick start](#quick-start)
+- [Requirements](#requirements)
+- [Usage](#usage)
+- [Examples](#examples)
+- [Options](#options)
+- [Methods](#methods)
+- [Events](#events)
+- [No conflict](#no-conflict)
+- [Browser support](#browser-support)
+- [Contributing](#contributing)
+- [Development](#development)
+- [Changelog](#changelog)
+- [Copyright and license](#copyright-and-license)
 
-##features
+## Main files
+```
+dist/
+├── jquery-asTooltip.js
+├── jquery-asTooltip.es.js
+├── jquery-asTooltip.min.js
+└── css/
+    ├── asTooltip.css
+    └── asTooltip.min.css
+```
 
-* **different positions** — asTooltip provides 9 position for tips to display
-* **AJAXed asTooltip spport** — ajax load content support
-* **Auto position** — auto reposition to avoid being covered
-* **Lightweight size** — 1 kb gzipped
+## Quick start
+Several quick start options are available:
+#### Download the latest build
 
-## Dependencies
-*<a href="http://jquery.com/" target="_blank">jQuery 1.83+</a>
+ * [Development](https://raw.githubusercontent.com/amazingSurge/jquery-asTooltip/master/dist/jquery-asTooltip.js) - unminified
+ * [Production](https://raw.githubusercontent.com/amazingSurge/jquery-asTooltip/master/dist/jquery-asTooltip.min.js) - minified
+
+#### Install From Bower
+```sh
+bower install jquery-asTooltip --save
+```
+
+#### Install From Npm
+```sh
+npm install jquery-asTooltip --save
+```
+
+#### Build From Source
+If you want build from source:
+
+```sh
+git clone git@github.com:amazingSurge/jquery-asTooltip.git
+cd jquery-asTooltip
+npm install
+npm install -g gulp-cli babel-cli
+gulp build
+```
+
+Done!
+
+## Requirements
+`jquery-asTooltip` requires the latest version of [`jQuery`](https://jquery.com/download/).
 
 ## Usage
+#### Including files:
 
-Import this libraries:
-* jQuery
-* jquery-asTooltip.js
-
-And CSS:
-* jquery-asTooltip.css - desirable if you have not yet connected one
-
-
-Create base input element:
 ```html
-<span class="tip" data-asTooltip-position="n" title="This is tip content">trigger</span>                   
+<link rel="stylesheet" href="/path/to/asTooltip.css">
+<script src="/path/to/jquery.js"></script>
+<script src="/path/to/jquery-asTooltip.js"></script>
 ```
 
-Initialize asTooltip:
-```javascript
- $(".tip").asTooltip();
+#### Required HTML structure
+
+```html
+<span class="example" data-asTooltip-position="n" title="This is tip content">trigger</span>
 ```
 
-Or initialize asTooltip with custom settings:
+#### Initialization
+All you need to do is call the plugin on the element:
+
 ```javascript
-$(".tip").asTooltip({
-     namespace: 'asTooltip',
-     trigger: 'hover'    // hover click
+jQuery(function($) {
+  $('.example').asTooltip(); 
 });
 ```
 
-## Settings
+## Examples
+There are some example usages that you can look at to get started. They can be found in the
+[examples folder](https://github.com/amazingSurge/jquery-asTooltip/tree/master/examples).
 
-```javascript
-{   
-    // Optional property, Set a namespace for css class
-    namespace: 'asTooltip',
+## Options
+`jquery-asTooltip` can accept an options object to alter the way it behaves. You can see the default options by call `$.asTooltip.setDefaults()`. The structure of an options object is as follows:
 
-    // Optional property, set target that show asTooltip 
-    // it works when title property was not set
-    target: null, 
+```
+{
+  namespace: 'asTooltip',
 
-    // Optional property, the way to trigger asTooltip content
-    // 'hover'/'click' to choose
-    trigger: 'hover', // hover click
+  skin: '',
 
-    // Optional property, if true, asTooltip will allow you interact with it 
-    // so you can some stuff, for example, copy the asTooltip content
-    interactive: false,
+  closeBtn: false,
 
-     // Optional property, set how long the asTooltip will stay  
-    interactiveDelay: 500,
-
-    // Optional property, if true, tip will trace with mouse inside selected element
-    mouseTrace: false,
-
-    // Optional property, if true, it will bind close function to a element
-    closeBtn: false,
-
-    // Optional property, set the distance between tip and element 
-    distance: 10, 
-
-    // Optional property, choose asTooltip skin, more skins is coming soon
-    skin: null,
-
-    // Optional property, set tip display position according to element
-    position: 'n',
-
-    // Optional property,  if true, it will adjust asTooltip's position when asTooltip occur collisions with viewport
-    autoPosition: true,
-
-    // Optional property, set transition effect, 'fade'/'zoom'/'none' to choose, more effects are coming soon
-    effect: 'fade', // fade none zoom
-
-    // Optional property, define how long animation effect will last
-    duration: 200,
-
-    // Optional property, set inline element as asTooltip content
-    inline: false,
-
-    // set asTooltip content
-    // by defaults, you can set your content as strings
-    // if ajax is true, you can use resource reference, for example:'ajax.txt'
-    // if inline is true, you can use inline DOm selector, for example: '#id', or '+', means select current element's next sibling element
-    content: content or resource reference or '+'
-
-    contentAttr: 'title',
-
-    // Optional property, if true, it will load content with ajax, the url attached in element's title property
-    ajax: false,
-
-    // Optional property, set ajax config
-    ajaxSettings: {
-        dataType: 'html',
-        headers: {
-            'asTooltip': true
-        }
-    },
-
-    // asTooltip template
-    tpl: {
-        tip: '<div class="{{namespace}}"></div>',
-        loading: '<span class="{{namespace}}-loading"></span>',
-        content: '<div class="{{namespace}}-content"></div>',
-        arrow: '<span class="{{namespace}}-arrow"></span>',
-        close: '<a class="{{namespace}}-close"></a>'
+  position: {
+    value: 'right middle',
+    target: false, //mouse || jqueryObj
+    container: false,
+    auto: false, //if true, judge by positionContainer
+    adjust: {
+      mouse: true, //Work when positionTarget is mouse
+      resize: true,
+      scroll: true
     }
+  },
 
+  show: {
+    target: false,
+    event: 'mouseenter',
+    delay: 0
+  },
+
+  hide: {
+    target: false,
+    event: 'mouseleave',
+    delay: 0,
+    container: false, // only hideEvent is click, it can be body or obj
+    inactive: false //if true, it is always show when tip hovering
+  },
+
+  content: null,
+  contentAttr: 'title',
+
+  ajax: false,
+  tpl: '<div class="{{namespace}}">' +
+    '<div class="{{namespace}}-inner">' +
+    '<div class="{{namespace}}-loading"></div>' +
+    '<div class="{{namespace}}-content"></div>' +
+    '</div>' +
+    '</div>',
+
+  onInit: null,
+  onShow: null,
+  onHide: null,
+  onFocus: null,
+  onBlur: null
 }
 ```
 
-## Public metheds
+## Methods
+Methods are called on asTooltip instances through the asTooltip method itself.
+You can also save the instances to variable for further use.
 
-jquery asTooltip has different medthod , we can use it as below :
 ```javascript
+// call directly
+$().asTooltip('destory');
 
-// show asTooltip 
-$(".tip").asTooltip('show');
-
-// hide asTooltip 
-$(".tip").asTooltip('hide');
-
-// add a disable class to asTooltip elment
-$(".tip").asTooltip('disable');
-
-// remove the disable class
-$(".tip").asTooltip('enable');
-
-// remove asTooltip Dom emement and unbound all events 
-$(".tip").asTooltip('destroy');
+// or
+var api = $().data('asTooltip');
+api.destory();
 ```
 
-
-## Event
-
-* <code>asTooltip::show</code>: trigger when show called
-* <code>asTooltip::hide</code>: trigger when hide called
-* <code>asTooltip::update</code>: trigger when hide called
-
-how to use event:
+#### show()
+Show the tooltip.
 ```javascript
-$(document).on('asTooltip::show', function(event,instance) {
-    // instance means current asTooltip instance 
-    // some stuff
+$().asTooltip('show');
+```
+
+#### hide()
+Hide the tooltip.
+```javascript
+$().asTooltip('enable');
+```
+
+#### enable()
+Enable the tooltip function.
+```javascript
+$().asTooltip('enable');
+```
+
+#### disable()
+Disable the tooltip functions.
+```javascript
+$().asTooltip('disable');
+```
+
+#### destroy()
+Destroy the tooltip instance.
+```javascript
+$().asTooltip('destroy');
+```
+
+## Events
+`jquery-asTooltip` provides custom events for the plugin’s unique actions. 
+
+```javascript
+$('.the-element').on('asTooltip::ready', function (e) {
+  // on instance ready
 });
+
 ```
 
+Event   | Description
+------- | -----------
+init    | Fires when the instance is setup for the first time.
+ready   | Fires when the instance is ready for API use.
+show    | Fired when the `show` instance method has been called.
+hide    | Fired when the `hide` instance method has been called.
+enable  | Fired when the `enable` instance method has been called.
+disable | Fired when the `enable` instance method has been called.
+destroy | Fires when an instance is destroyed. 
+
+## No conflict
+If you have to use other plugin with the same namespace, just call the `$.asTooltip.noConflict` method to revert to it.
+
+```html
+<script src="other-plugin.js"></script>
+<script src="jquery-asTooltip.js"></script>
+<script>
+  $.asTooltip.noConflict();
+  // Code that uses other plugin's "$().asTooltip" can follow here.
+</script>
+```
 
 ## Browser support
-jquery-asTooltip is verified to work in Internet Explorer 7+, Firefox 2+, Opera 9+, Google Chrome and Safari browsers. Should also work in many others.
 
-Mobile browsers (like Opera mini, Chrome mobile, Safari mobile, Android browser and others) is coming soon.
+Tested on all major browsers.
 
+| <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/safari/safari_32x32.png" alt="Safari"> | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/chrome/chrome_32x32.png" alt="Chrome"> | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/firefox/firefox_32x32.png" alt="Firefox"> | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/edge/edge_32x32.png" alt="Edge"> | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/internet-explorer/internet-explorer_32x32.png" alt="IE"> | <img src="https://raw.githubusercontent.com/alrra/browser-logos/master/opera/opera_32x32.png" alt="Opera"> |
+|:--:|:--:|:--:|:--:|:--:|:--:|
+| Latest ✓ | Latest ✓ | Latest ✓ | Latest ✓ | 9-11 ✓ | Latest ✓ |
 
-## Author
-[amazingSurge](http://amazingSurge.com)
+As a jQuery plugin, you also need to see the [jQuery Browser Support](http://jquery.com/browser-support/).
 
-## License
-jquery-asTooltip plugin is released under the <a href="https://github.com/amazingSurge/jquery-asTooltip/blob/master/LICENCE.GPL" target="_blank">GPL licence</a>.
+## Contributing
+Anyone and everyone is welcome to contribute. Please take a moment to
+review the [guidelines for contributing](CONTRIBUTING.md). Make sure you're using the latest version of `jquery-asTooltip` before submitting an issue. There are several ways to help out:
+
+* [Bug reports](CONTRIBUTING.md#bug-reports)
+* [Feature requests](CONTRIBUTING.md#feature-requests)
+* [Pull requests](CONTRIBUTING.md#pull-requests)
+* Write test cases for open bug issues
+* Contribute to the documentation
+
+## Development
+`jquery-asTooltip` is built modularly and uses Gulp as a build system to build its distributable files. To install the necessary dependencies for the build system, please run:
+
+```sh
+npm install -g gulp
+npm install -g babel-cli
+npm install
+```
+
+Then you can generate new distributable files from the sources, using:
+```
+gulp build
+```
+
+More gulp tasks can be found [here](CONTRIBUTING.md#available-tasks).
+
+## Changelog
+To see the list of recent changes, see [Releases section](https://github.com/amazingSurge/jquery-asTooltip/releases).
+
+## Copyright and license
+Copyright (C) 2016 amazingSurge.
+
+Licensed under [the LGPL license](LICENSE).
+
+[⬆ back to top](#table-of-contents)
+
+[bower-image]: https://img.shields.io/bower/v/jquery-asTooltip.svg?style=flat
+[bower-link]: https://david-dm.org/amazingSurge/jquery-asTooltip/dev-status.svg
+[npm-image]: https://badge.fury.io/js/jquery-asTooltip.svg?style=flat
+[npm-url]: https://npmjs.org/package/jquery-asTooltip
+[license]: https://img.shields.io/npm/l/jquery-asTooltip.svg?style=flat
+[prs-welcome]: https://img.shields.io/badge/PRs-welcome-brightgreen.svg
+[daviddm-image]: https://david-dm.org/amazingSurge/jquery-asTooltip.svg?style=flat
+[daviddm-url]: https://david-dm.org/amazingSurge/jquery-asTooltip
