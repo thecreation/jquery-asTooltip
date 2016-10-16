@@ -2,7 +2,7 @@
   "name": "jquery-asTooltip",
   "title": "jQuery asTooltip",
   "description": "A jQuery plugin for showing tooltip text when hover on a element.",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "homepage": "https://github.com/amazingSurge/jquery-asTooltip",
   "author": {
     "name": "amazingSurge",

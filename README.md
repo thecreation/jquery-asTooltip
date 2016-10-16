@@ -96,9 +96,7 @@ There are some example usages that you can look at to get started. They can be f
 ```
 {
   namespace: 'asTooltip',
-
   skin: '',
-
   closeBtn: false,
 
   position: {

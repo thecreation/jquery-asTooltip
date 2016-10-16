@@ -1,5 +1,5 @@
 /**
-* jQuery asTooltip v0.4.0
+* jQuery asTooltip v0.4.1
 * https://github.com/amazingSurge/jquery-asTooltip
 *
 * Copyright (c) amazingSurge
@@ -629,7 +629,7 @@ class asTooltip {
 }
 
 var info = {
-  version:'0.4.0'
+  version:'0.4.1'
 };
 
 const NAMESPACE = 'asTooltip';
@@ -667,6 +667,7 @@ $.fn.asTooltip = jQueryasTooltip;
 
 $.asTooltip = $.extend({
   setDefaults: asTooltip.setDefaults,
+  closeAll: asTooltip.closeAll,
   noConflict: function() {
     $.fn.asTooltip = OtherAsScrollbar;
     return jQueryasTooltip;

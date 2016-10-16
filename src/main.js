@@ -37,6 +37,7 @@ $.fn.asTooltip = jQueryasTooltip;
 
 $.asTooltip = $.extend({
   setDefaults: asTooltip.setDefaults,
+  closeAll: asTooltip.closeAll,
   noConflict: function() {
     $.fn.asTooltip = OtherAsScrollbar;
     return jQueryasTooltip;
