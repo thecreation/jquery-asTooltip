@@ -1,5 +1,5 @@
 /**
-* jQuery asTooltip v0.4.1
+* jQuery asTooltip v0.4.2
 * https://github.com/amazingSurge/jquery-asTooltip
 *
 * Copyright (c) amazingSurge
@@ -72,13 +72,13 @@ const computePlacementOffset = (element, $tip, position, isMove) => {
   let elHeight;
   let tipWidth;
   let tipHeight;
-  const $el = $(element);
+  const $element = $(element);
   let x = 0;
   let y = 0;
 
-  elOffset = isMove ? element : $el.offset();
-  elWidth = isMove ? 0 : $el.outerWidth();
-  elHeight = isMove ? 0 : $el.outerHeight();
+  elOffset = isMove ? element : $element.offset();
+  elWidth = isMove ? 0 : $element.outerWidth();
+  elHeight = isMove ? 0 : $element.outerHeight();
 
   tipWidth = $tip.outerWidth();
   tipHeight = $tip.outerHeight();
@@ -123,8 +123,8 @@ const computePlacementOffset = (element, $tip, position, isMove) => {
 };
 
 const getViewportCollisions = (el, $tip, $container) => {
-  const $el = $(el);
-  const eOffset = $el.offset();
+  const $element = $(el);
+  const eOffset = $element.offset();
   const cOffset = $container.offset();
   const scrollLeft = $container[0].tagName === 'BODY' ? $win.scrollLeft() : $container.scrollLeft();
   const scrollTop = $container[0].tagName === 'BODY' ? $win.scrollTop() : $container.scrollTop();
@@ -134,8 +134,8 @@ const getViewportCollisions = (el, $tip, $container) => {
     left: eOffset.left - cOffset.left
   };
 
-  const eWidth = $el.outerWidth();
-  const eHeight = $el.outerHeight();
+  const eWidth = $element.outerWidth();
+  const eHeight = $element.outerHeight();
   const tWidth = $tip.outerWidth();
   const tHeight = $tip.outerHeight();
   const cWidth = $container[0].tagName === 'BODY' ? $win.innerWidth() : $container.outerWidth();
@@ -181,7 +181,7 @@ class asTooltip {
       opts.hide.target = newTarget;
     }
 
-    this.$el = $(newTarget);
+    this.$element = $(newTarget);
 
     this.namespace = this.options.namespace;
     opts.content = this.getContent();
@@ -218,18 +218,18 @@ class asTooltip {
     this.$content = $(`.${this.namespace}-content`, this.$tip);
 
     if (showTarget === hideTarget && showEvent === hideEvent) {
-      this._bind(showTarget, showEvent, function(e) {
+      this._bind(showTarget, showEvent, (e) => {
         if(this.isOpen){
           this.hideMethod(e);
         } else {
-          this.hideMethod(e);
+          this.showMethod(e);
         }
       });
     } else {
-      this._bind(showTarget, showEvent, function(e) {
+      this._bind(showTarget, showEvent, (e) => {
         this.showMethod(e);
       });
-      this._bind(hideTarget, hideEvent, function(e) {
+      this._bind(hideTarget, hideEvent, (e) => {
         this.hideMethod(e);
       });
     }
@@ -252,10 +252,10 @@ class asTooltip {
   }
 
   trigger(eventType, ...params) {
-    let data = [this].concat(...params);
+    let data = [this].concat(params);
 
     // event
-    this.$el.trigger(`${NAMESPACE$1}::${eventType}`, data);
+    this.$element.trigger(`${NAMESPACE$1}::${eventType}`, data);
 
     // callback
     eventType = eventType.replace(/\b\w+\b/g, (word) => {
@@ -264,7 +264,7 @@ class asTooltip {
     let onFunction = `on${eventType}`;
 
     if (typeof this.options[onFunction] === 'function') {
-      this.options[onFunction].apply(this, ...params);
+      this.options[onFunction].apply(this, params);
     }
   }
 
@@ -434,10 +434,10 @@ class asTooltip {
   move(e) {
     const x = Math.round(e.pageX);
     const y = Math.round(e.pageY);
-    const t = this.$el.offset().top;
-    const l = this.$el.offset().left;
-    const w = this.$el.outerWidth();
-    const h = this.$el.outerHeight();
+    const t = this.$element.offset().top;
+    const l = this.$element.offset().left;
+    const w = this.$element.outerWidth();
+    const h = this.$element.outerHeight();
 
     if (x >= l && x <= l + w && y >= t && y <= t + h) {
       if (this.options.position.adjust.mouse) {
@@ -449,12 +449,12 @@ class asTooltip {
     } else {
       $(document).off(`mousemove.${NAMESPACE$1}`);
       this.moveFlag = false;
-      this.hideMethod(this.$el.data(NAMESPACE$1));
+      this.hideMethod(this.$element.data(NAMESPACE$1));
     }
   }
 
   getContent() {
-    return this.$el.attr(this.options.contentAttr) ||
+    return this.$element.attr(this.options.contentAttr) ||
       (typeof this.options.content === 'function' ? this.options.content() : this.options.content);
   }
 
@@ -526,9 +526,9 @@ class asTooltip {
 
   statusToggle(isOpen) {
     if (isOpen) {
-      this.$el.removeClass(this.classes.active);
+      this.$element.removeClass(this.classes.active);
     } else {
-      this.$el.addClass(this.classes.active);
+      this.$element.addClass(this.classes.active);
     }
   }
 
@@ -595,20 +595,20 @@ class asTooltip {
 
   enable() {
     this.enabled = true;
-    this.$el.addClass(this.classes.enabled);
+    this.$element.addClass(this.classes.enabled);
     this.trigger('enable');
     return this;
   }
 
   disable() {
     this.enabled = false;
-    this.$el.removeClass(this.classes.enabled);
+    this.$element.removeClass(this.classes.enabled);
     this.trigger('disable');
     return this;
   }
 
   destroy() {
-    this.$el.off(`.${NAMESPACE$1}`);
+    this.$element.off(`.${NAMESPACE$1}`);
     this.trigger('destroy');
     return this;
   }
@@ -629,13 +629,13 @@ class asTooltip {
 }
 
 var info = {
-  version:'0.4.1'
+  version:'0.4.2'
 };
 
 const NAMESPACE = 'asTooltip';
-const OtherAsScrollbar = $.fn.asTooltip;
+const OtherAsTooltip = $.fn.asTooltip;
 
-const jQueryasTooltip = function(options, ...args) {
+const jQueryAsTooltip = function(options, ...args) {
   if (typeof options === 'string') {
     const method = options;
 
@@ -663,13 +663,13 @@ const jQueryasTooltip = function(options, ...args) {
   });
 };
 
-$.fn.asTooltip = jQueryasTooltip;
+$.fn.asTooltip = jQueryAsTooltip;
 
 $.asTooltip = $.extend({
   setDefaults: asTooltip.setDefaults,
   closeAll: asTooltip.closeAll,
   noConflict: function() {
-    $.fn.asTooltip = OtherAsScrollbar;
-    return jQueryasTooltip;
+    $.fn.asTooltip = OtherAsTooltip;
+    return jQueryAsTooltip;
   }
 }, info);

@@ -46,6 +46,11 @@ bower install jquery-asTooltip --save
 npm install jquery-asTooltip --save
 ```
 
+#### Install From Yarn
+```sh
+yarn add jquery-asTooltip
+```
+
 #### Build From Source
 If you want build from source:
 
@@ -150,11 +155,11 @@ You can also save the instances to variable for further use.
 
 ```javascript
 // call directly
-$().asTooltip('destory');
+$().asTooltip('destroy');
 
 // or
 var api = $().data('asTooltip');
-api.destory();
+api.destroy();
 ```
 
 #### show()

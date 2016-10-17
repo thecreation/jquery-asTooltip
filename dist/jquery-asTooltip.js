@@ -1,5 +1,5 @@
 /**
-* jQuery asTooltip v0.4.1
+* jQuery asTooltip v0.4.2
 * https://github.com/amazingSurge/jquery-asTooltip
 *
 * Copyright (c) amazingSurge
@@ -131,13 +131,13 @@
       var elHeight = void 0;
       var tipWidth = void 0;
       var tipHeight = void 0;
-      var $el = (0, _jquery2.default)(element);
+      var $element = (0, _jquery2.default)(element);
       var x = 0;
       var y = 0;
 
-      elOffset = isMove ? element : $el.offset();
-      elWidth = isMove ? 0 : $el.outerWidth();
-      elHeight = isMove ? 0 : $el.outerHeight();
+      elOffset = isMove ? element : $element.offset();
+      elWidth = isMove ? 0 : $element.outerWidth();
+      elHeight = isMove ? 0 : $element.outerHeight();
 
       tipWidth = $tip.outerWidth();
       tipHeight = $tip.outerHeight();
@@ -182,8 +182,8 @@
     };
 
     var getViewportCollisions = function getViewportCollisions(el, $tip, $container) {
-      var $el = (0, _jquery2.default)(el);
-      var eOffset = $el.offset();
+      var $element = (0, _jquery2.default)(el);
+      var eOffset = $element.offset();
       var cOffset = $container.offset();
       var scrollLeft = $container[0].tagName === 'BODY' ? $win.scrollLeft() : $container.scrollLeft();
       var scrollTop = $container[0].tagName === 'BODY' ? $win.scrollTop() : $container.scrollTop();
@@ -193,8 +193,8 @@
         left: eOffset.left - cOffset.left
       };
 
-      var eWidth = $el.outerWidth();
-      var eHeight = $el.outerHeight();
+      var eWidth = $element.outerWidth();
+      var eHeight = $element.outerHeight();
       var tWidth = $tip.outerWidth();
       var tHeight = $tip.outerHeight();
       var cWidth = $container[0].tagName === 'BODY' ? $win.innerWidth() : $container.outerWidth();
@@ -249,7 +249,7 @@
           opts.hide.target = newTarget;
         }
 
-        this.$el = (0, _jquery2.default)(newTarget);
+        this.$element = (0, _jquery2.default)(newTarget);
 
         this.namespace = this.options.namespace;
         opts.content = this.getContent();
@@ -293,10 +293,10 @@
             this._bind(showTarget, showEvent,
 
               function(e) {
-                if (this.isOpen) {
-                  this.hideMethod(e);
+                if (_this.isOpen) {
+                  _this.hideMethod(e);
                 } else {
-                  this.hideMethod(e);
+                  _this.showMethod(e);
                 }
               }
             );
@@ -304,13 +304,13 @@
             this._bind(showTarget, showEvent,
 
               function(e) {
-                this.showMethod(e);
+                _this.showMethod(e);
               }
             );
             this._bind(hideTarget, hideEvent,
 
               function(e) {
-                this.hideMethod(e);
+                _this.hideMethod(e);
               }
             );
           }
@@ -343,16 +343,14 @@
       }, {
         key: 'trigger',
         value: function trigger(eventType) {
-          var _ref;
-
           for (var _len = arguments.length, params = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
             params[_key - 1] = arguments[_key];
           }
 
-          var data = (_ref = [this]).concat.apply(_ref, params);
+          var data = [this].concat(params);
 
           // event
-          this.$el.trigger(NAMESPACE$1 + '::' + eventType, data);
+          this.$element.trigger(NAMESPACE$1 + '::' + eventType, data);
 
           // callback
           eventType = eventType.replace(/\b\w+\b/g,
@@ -364,9 +362,7 @@
           var onFunction = 'on' + eventType;
 
           if (typeof this.options[onFunction] === 'function') {
-            var _options$onFunction;
-
-            (_options$onFunction = this.options[onFunction]).apply.apply(_options$onFunction, [this].concat(params));
+            this.options[onFunction].apply(this, params);
           }
         }
       }, {
@@ -587,10 +583,10 @@
         value: function move(e) {
           var x = Math.round(e.pageX);
           var y = Math.round(e.pageY);
-          var t = this.$el.offset().top;
-          var l = this.$el.offset().left;
-          var w = this.$el.outerWidth();
-          var h = this.$el.outerHeight();
+          var t = this.$element.offset().top;
+          var l = this.$element.offset().left;
+          var w = this.$element.outerWidth();
+          var h = this.$element.outerHeight();
 
           if (x >= l && x <= l + w && y >= t && y <= t + h) {
 
@@ -603,13 +599,13 @@
           } else {
             (0, _jquery2.default)(document).off('mousemove.' + NAMESPACE$1);
             this.moveFlag = false;
-            this.hideMethod(this.$el.data(NAMESPACE$1));
+            this.hideMethod(this.$element.data(NAMESPACE$1));
           }
         }
       }, {
         key: 'getContent',
         value: function getContent() {
-          return this.$el.attr(this.options.contentAttr) || (typeof this.options.content === 'function' ? this.options.content() : this.options.content);
+          return this.$element.attr(this.options.contentAttr) || (typeof this.options.content === 'function' ? this.options.content() : this.options.content);
         }
       }, {
         key: 'setPosition',
@@ -698,9 +694,9 @@
         key: 'statusToggle',
         value: function statusToggle(isOpen) {
           if (isOpen) {
-            this.$el.removeClass(this.classes.active);
+            this.$element.removeClass(this.classes.active);
           } else {
-            this.$el.addClass(this.classes.active);
+            this.$element.addClass(this.classes.active);
           }
         }
       }, {
@@ -773,7 +769,7 @@
         key: 'enable',
         value: function enable() {
           this.enabled = true;
-          this.$el.addClass(this.classes.enabled);
+          this.$element.addClass(this.classes.enabled);
           this.trigger('enable');
 
           return this;
@@ -782,7 +778,7 @@
         key: 'disable',
         value: function disable() {
           this.enabled = false;
-          this.$el.removeClass(this.classes.enabled);
+          this.$element.removeClass(this.classes.enabled);
           this.trigger('disable');
 
           return this;
@@ -790,7 +786,7 @@
       }, {
         key: 'destroy',
         value: function destroy() {
-          this.$el.off('.' + NAMESPACE$1);
+          this.$element.off('.' + NAMESPACE$1);
           this.trigger('destroy');
 
           return this;
@@ -820,13 +816,13 @@
     }();
 
     var info = {
-      version: '0.4.1'
+      version: '0.4.2'
     };
 
     var NAMESPACE = 'asTooltip';
-    var OtherAsScrollbar = _jquery2.default.fn.asTooltip;
+    var OtherAsTooltip = _jquery2.default.fn.asTooltip;
 
-    var jQueryasTooltip = function jQueryasTooltip(options) {
+    var jQueryAsTooltip = function jQueryAsTooltip(options) {
       var _this3 = this;
 
       for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
@@ -883,15 +879,15 @@
       );
     };
 
-    _jquery2.default.fn.asTooltip = jQueryasTooltip;
+    _jquery2.default.fn.asTooltip = jQueryAsTooltip;
 
     _jquery2.default.asTooltip = _jquery2.default.extend({
       setDefaults: asTooltip.setDefaults,
       closeAll: asTooltip.closeAll,
       noConflict: function noConflict() {
-        _jquery2.default.fn.asTooltip = OtherAsScrollbar;
+        _jquery2.default.fn.asTooltip = OtherAsTooltip;
 
-        return jQueryasTooltip;
+        return jQueryAsTooltip;
       }
     }, info);
   }

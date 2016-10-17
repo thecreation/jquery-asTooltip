@@ -3,9 +3,9 @@ import asTooltip from './asTooltip';
 import info from './info';
 
 const NAMESPACE = 'asTooltip';
-const OtherAsScrollbar = $.fn.asTooltip;
+const OtherAsTooltip = $.fn.asTooltip;
 
-const jQueryasTooltip = function(options, ...args) {
+const jQueryAsTooltip = function(options, ...args) {
   if (typeof options === 'string') {
     const method = options;
 
@@ -33,13 +33,13 @@ const jQueryasTooltip = function(options, ...args) {
   });
 };
 
-$.fn.asTooltip = jQueryasTooltip;
+$.fn.asTooltip = jQueryAsTooltip;
 
 $.asTooltip = $.extend({
   setDefaults: asTooltip.setDefaults,
   closeAll: asTooltip.closeAll,
   noConflict: function() {
-    $.fn.asTooltip = OtherAsScrollbar;
-    return jQueryasTooltip;
+    $.fn.asTooltip = OtherAsTooltip;
+    return jQueryAsTooltip;
   }
 }, info);
