@@ -1,10 +1,10 @@
 // core
-$namespace			: asTooltip;
-$loading-width 		: 20px;
-$loading-height 	: 20px;
-$loading-margin   	: 0 auto;
-$loading-color  	: #333;
-$loading-duration 	: 1.2s;
+$namespace			: asTooltip !default;
+$loading-width 		: 20px !default;
+$loading-height 	: 20px !default;
+$loading-margin   	: 0 auto !default;
+$loading-color  	: #333 !default;
+$loading-duration 	: 1.2s !default;
 
 @import 'chasing-dots.scss';
 
@@ -48,7 +48,7 @@ $loading-duration 	: 1.2s;
 }
 
 /* skin */
-$asTooltip-arrow-width: 6px;
+$asTooltip-arrow-width: 6px !default;
 
 .asTooltip {
   .asTooltip-inner {

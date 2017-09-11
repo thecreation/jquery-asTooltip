@@ -1,5 +1,5 @@
 /**
-* jQuery asTooltip v0.4.2
+* jQuery asTooltip v0.4.3
 * https://github.com/amazingSurge/jquery-asTooltip
 *
 * Copyright (c) amazingSurge
@@ -629,7 +629,7 @@ class asTooltip {
 }
 
 var info = {
-  version:'0.4.2'
+  version:'0.4.3'
 };
 
 const NAMESPACE = 'asTooltip';
